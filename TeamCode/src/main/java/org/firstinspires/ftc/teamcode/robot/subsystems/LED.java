@@ -7,21 +7,20 @@ import org.firstinspires.ftc.teamcode.Prism.Color;
 import org.firstinspires.ftc.teamcode.Prism.GoBildaPrismDriver;
 import org.firstinspires.ftc.teamcode.Prism.GoBildaPrismDriver.LayerHeight;
 import org.firstinspires.ftc.teamcode.Prism.PrismAnimations;
+import org.firstinspires.ftc.teamcode.robot.RobotState;
 
 public class LED {
     GoBildaPrismDriver prism;
     Servo indicator;
+    RobotState robotState;
 
     // LED animations
     PrismAnimations.Solid idle = new PrismAnimations.Solid(Color.PINK);
     PrismAnimations.Solid ready = new PrismAnimations.Solid(Color.GREEN);
     PrismAnimations.Blink spinUp = new PrismAnimations.Blink(Color.PINK);
 
-    public boolean shooterReady = false; // true if flywheel is at target speed
-    public boolean spinningUp = false; // true if flywheel is spinning up
-
     // constructor
-    public LED(HardwareMap hardwareMap) {
+    public LED(HardwareMap hardwareMap, RobotState robotState) {
         // initialize servo and prism driver
         indicator = hardwareMap.get(Servo.class, "indicator");
         prism = hardwareMap.get(GoBildaPrismDriver.class, "prism");
@@ -45,6 +44,9 @@ public class LED {
         spinUp.setStartIndex(0);
         spinUp.setStopIndex(36);
         spinUp.setPeriod(1000); // 1 second period
+
+        // store robot state
+        this.robotState = robotState;
     }
 
     // periodic method to be called in main loop
@@ -54,10 +56,10 @@ public class LED {
          * 1 - (flywheel spin up) slow flash hot pink
          * 2 - (flywheel at target speed) fast flash hot pink
          */
-        if (shooterReady) {
+        if (robotState.is(RobotState.State.SHOOTING_READY)) {
             prism.insertAndUpdateAnimation(LayerHeight.LAYER_0, ready);
             indicator.setPosition(0.500);
-        } else if (spinningUp) {
+        } else if (robotState.is(RobotState.State.SHOOTING)) {
             prism.insertAndUpdateAnimation(LayerHeight.LAYER_0, spinUp);
             indicator.setPosition(0.388);
         } else {

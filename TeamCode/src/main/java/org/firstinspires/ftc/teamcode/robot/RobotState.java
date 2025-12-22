@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.robot;
 
+import androidx.annotation.NonNull;
+
 import org.firstinspires.ftc.teamcode.robot.subsystems.LED;
 
 public class RobotState {
@@ -11,17 +13,21 @@ public class RobotState {
     }
 
     private State currentState;
-    private final LED led;
+    DriverControls controls;
 
-    public RobotState(LED led) {
-        this.led = led;
+    public RobotState(DriverControls controls) {
+        this.currentState = State.IDLE;
+        this.controls = controls;
+    }
+
+    public RobotState() {
         this.currentState = State.IDLE;
     }
 
     /**
      * Update the current robot state based on control inputs
      */
-    public void update(DriverControls controls) {
+    public void periodic() {
         State previousState = currentState;
 
         // Determine new state based on driver inputs
@@ -49,7 +55,7 @@ public class RobotState {
     }
 
     /**
-     * Manually set the robot state (useful for autonomous)
+     * Manually set the robot state
      */
     public void set(State state) {
         if (currentState != state) {
@@ -76,18 +82,9 @@ public class RobotState {
     }
 
     /**
-     * Control LEDs based on current state and subsystem status
-     * This is called after LED.periodic() to potentially override LED behavior
+     * String representation of the current state
      */
-    public void updateLEDs() {
-        // Note: LED subsystem already handles shooter-specific states
-        // This method can be expanded if you want state-specific LED overrides
-
-        // Example: Override LEDs based on state if needed
-        // Currently, shooter subsystem controls LEDs through led.shooterReady and led.spinningUp
-        // so we don't override here unless you want state-specific colors
-    }
-
+    @NonNull
     @Override
     public String toString() {
         return currentState.toString();

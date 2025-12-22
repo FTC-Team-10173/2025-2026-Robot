@@ -11,20 +11,21 @@ import com.arcrobotics.ftclib.hardware.motors.Motor;
 
 import org.firstinspires.ftc.teamcode.robot.Constants;
 import org.firstinspires.ftc.teamcode.robot.DriverControls;
+import org.firstinspires.ftc.teamcode.robot.RobotState;
 
 public class Shooter {
     public MotorGroup flywheel;
     DriverControls controls;
+    RobotState robotState;
     VisionController vision;
     public Double power = 0.5;
     public double targetVel = 1200;
-    LED led;
 
     // TeleOp constructor
     public Shooter(
             HardwareMap hardwareMap,
             DriverControls controls,
-            LED ledSubsystem,
+            RobotState robotState,
             VisionController vision
     ) {
         // initialize motors as a motor group
@@ -55,13 +56,14 @@ public class Shooter {
 
         // store vision controller
         this.vision = vision;
-
-        // LED subsystem
-        led = ledSubsystem;
     }
 
     // Autonomous constructor
-    public Shooter(HardwareMap hardwareMap, LED ledSubsystem, VisionController vision) {
+    public Shooter(
+            HardwareMap hardwareMap,
+            RobotState robotState,
+            VisionController vision
+    ) {
         // initialize motors as a motor group
         flywheel = new MotorGroup(
                 new Motor(hardwareMap, "flywheel_left", Motor.GoBILDA.BARE),
@@ -87,9 +89,6 @@ public class Shooter {
 
         // store vision controller
         this.vision = vision;
-
-        // LED subsystem
-        led = ledSubsystem;
     }
 
     // periodic method to be called in main loop
@@ -109,17 +108,9 @@ public class Shooter {
 
             // get current velocity
             double vel = flywheel.getVelocity();
-
-            // update LED status
-            led.spinningUp = true;
-            led.shooterReady = vel >= (targetVel - Constants.Shooter.VELOCITY_TOLERANCE);
         } else {
             // stop flywheel
             flywheel.set(0);
-
-            // update LED status
-            led.shooterReady = false;
-            led.spinningUp = false;
         }
     }
 
@@ -148,15 +139,6 @@ public class Shooter {
                 // get current velocity
                 double vel = flywheel.getVelocity();
                 packet.put("shooterVelocity", vel);
-
-                // update LED status
-                if (targetVel == 0) {
-                    led.shooterReady = false;
-                    led.spinningUp = false;
-                } else {
-                    led.spinningUp = true;
-                    led.shooterReady = vel >= (targetVel - Constants.Shooter.VELOCITY_TOLERANCE);
-                }
 
                 // run indefinitely
                 return true;

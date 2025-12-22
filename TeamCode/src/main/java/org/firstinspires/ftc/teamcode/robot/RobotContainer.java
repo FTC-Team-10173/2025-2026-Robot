@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.robot;
 
-import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -40,22 +39,12 @@ public class RobotContainer {
         robot.shooter.periodic();
         robot.intake.periodic();
         robot.led.periodic();
-
-        // Update state based on subsystem activities
-        if (controls.spinShooterPressed()) {
-            currentState = RobotState.SHOOTING;
-        } else if (controls.intakePower() > 0 || controls.fullIntakePressed()) {
-            currentState = RobotState.INTAKING;
-        } else if (controls.lockDrivePressed()) {
-            currentState = RobotState.ALIGNING;
-        } else {
-            currentState = RobotState.IDLE;
-        }
+        robot.robotState.periodic();
 
         /* Update telemetry with robot status */
 
         // Robot state
-        telemetry.addData("Robot State", currentState);
+        telemetry.addData("Robot State", robot.robotState.toString());
 
         // Pose information
         telemetry.addData("Pose X", robot.drive.getPose().position.x);
