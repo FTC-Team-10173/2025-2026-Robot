@@ -18,7 +18,7 @@ public class Intake {
     DriverControls controls;
     LED led;
 
-    // constructor
+    // TeleOp constructor
     public Intake(HardwareMap hardwareMap, DriverControls controls, LED ledSubsystem) {
         // initialize motors and servos
         intakeMotor = new Motor(hardwareMap, "intake", Motor.GoBILDA.RPM_435);
@@ -27,6 +27,17 @@ public class Intake {
 
         // store driver controls
         this.controls = controls;
+
+        // LED subsystem
+        led = ledSubsystem;
+    }
+
+    // Autonomous constructor
+    public Intake(HardwareMap hardwareMap, LED ledSubsystem) {
+        // initialize motors and servos
+        intakeMotor = new Motor(hardwareMap, "intake", Motor.GoBILDA.RPM_435);
+        intakeMotor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+        feederServo = new CRServo(hardwareMap, "feeder");
 
         // LED subsystem
         led = ledSubsystem;

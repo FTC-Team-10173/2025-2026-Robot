@@ -22,7 +22,7 @@ public class Drive {
     double lock_turn;
     PIDController pid;
 
-    // constructor
+    // TeleOp constructor
     public Drive(HardwareMap hardwareMap, DriverControls controls, VisionController vision) {
         // initialize drive with starting pose at origin
         drive = new MecanumDrive(hardwareMap, new Pose2d(0, 0, 0));
@@ -44,6 +44,28 @@ public class Drive {
         // initialize pid controller for heading lock
         pid = new PIDController(
             0.02, 0.0, 0.0
+        );
+    }
+
+    // Autonomous constructor
+    public Drive(HardwareMap hardwareMap, VisionController vision) {
+        // initialize drive with starting pose at origin
+        drive = new MecanumDrive(hardwareMap, new Pose2d(0, 0, 0));
+
+        // store vision controller
+        this.vision = vision;
+
+        // initialize imu
+        imu = hardwareMap.get(IMU.class, "imu");
+        IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
+                RevHubOrientationOnRobot.LogoFacingDirection.LEFT,
+                RevHubOrientationOnRobot.UsbFacingDirection.UP
+        ));
+        imu.initialize(parameters);
+
+        // initialize pid controller for heading lock
+        pid = new PIDController(
+                0.02, 0.0, 0.0
         );
     }
 

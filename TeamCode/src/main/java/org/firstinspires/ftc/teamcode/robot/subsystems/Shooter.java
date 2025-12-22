@@ -29,7 +29,7 @@ public class Shooter {
         public static final double kA = 0;
     }
 
-    // constructor
+    // TeleOp constructor
     public Shooter(HardwareMap hardwareMap, DriverControls controls, LED ledSubsystem, VisionController vision) {
         // initialize motors as a motor group
         flywheel = new MotorGroup(
@@ -48,6 +48,30 @@ public class Shooter {
 
         // store driver controls
         this.controls = controls;
+
+        // store vision controller
+        this.vision = vision;
+
+        // LED subsystem
+        led = ledSubsystem;
+    }
+
+    // Autonomous constructor
+    public Shooter(HardwareMap hardwareMap, LED ledSubsystem, VisionController vision) {
+        // initialize motors as a motor group
+        flywheel = new MotorGroup(
+                new Motor(hardwareMap, "flywheel_left", Motor.GoBILDA.BARE),
+                new Motor(hardwareMap, "flywheel_right", Motor.GoBILDA.BARE)
+        );
+
+        // configure motor settings
+        flywheel.setInverted(true);
+        flywheel.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+        flywheel.setRunMode(Motor.RunMode.VelocityControl);
+
+        // set PIDF and feedforward coefficients
+        flywheel.setVeloCoefficients(Params.kP, Params.kI, Params.kD);
+        flywheel.setFeedforwardCoefficients(Params.kS, Params.kV, Params.kA);
 
         // store vision controller
         this.vision = vision;

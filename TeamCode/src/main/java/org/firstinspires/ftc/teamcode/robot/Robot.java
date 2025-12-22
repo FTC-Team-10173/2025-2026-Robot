@@ -15,11 +15,21 @@ public class Robot {
     public final LED led;
     public final VisionController vision;
 
+    // TeleOp constructor
     public Robot(HardwareMap hardwareMap, DriverControls controls) {
         led = new LED(hardwareMap);
         vision = new VisionController(hardwareMap);
         shooter = new Shooter(hardwareMap, controls, led, vision);
         intake = new Intake(hardwareMap, controls, led);
         drive = new Drive(hardwareMap, controls, vision);
+    }
+
+    // Autonomous constructor
+    public Robot(HardwareMap hardwareMap) {
+        led = new LED(hardwareMap);
+        vision = new VisionController(hardwareMap);
+        shooter = new Shooter(hardwareMap, led, vision);
+        intake = new Intake(hardwareMap, led);
+        drive = new Drive(hardwareMap, vision);
     }
 }
