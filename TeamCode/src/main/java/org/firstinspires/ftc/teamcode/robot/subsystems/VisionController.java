@@ -1,0 +1,102 @@
+package org.firstinspires.ftc.teamcode.robot.subsystems;
+
+import static org.firstinspires.ftc.teamcode.Constants.BLUE_ID;
+import static org.firstinspires.ftc.teamcode.Constants.EXPOSURE;
+import static org.firstinspires.ftc.teamcode.Constants.GAIN;
+import static org.firstinspires.ftc.teamcode.Constants.RED_ID;
+
+import com.qualcomm.robotcore.hardware.HardwareMap;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.ExposureControl;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.GainControl;
+import org.firstinspires.ftc.vision.VisionPortal;
+import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
+import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
+
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+public class VisionController {
+
+    AprilTagProcessor aprilTagProcessor;
+    VisionPortal visionPortal;
+    int exposure, gain;
+
+    // constructor
+    public VisionController(HardwareMap hardwareMap) {
+        // initialize webcam
+        WebcamName camera = hardwareMap.get(WebcamName.class, "Webcam 1");
+
+        // initialize april tag processor
+        aprilTagProcessor = AprilTagProcessor.easyCreateWithDefaults();
+
+        // initialize vision portal
+        visionPortal = new VisionPortal.Builder()
+                .setCamera(camera)
+                .addProcessors(aprilTagProcessor)
+                .build();
+
+        // set default exposure and gain
+        exposure = 100;
+        gain = 1;
+    }
+
+    // get distance to tag with specified ID
+    public double getDistance(int ID) {
+        List<AprilTagDetection> currentDetections = aprilTagProcessor.getDetections();
+
+        // Step through the list of detections
+        for (AprilTagDetection detection : currentDetections) {
+            if (ID != 0) {
+                if (detection.id == ID) { // If tag has the specified ID
+                    return detection.ftcPose.range;
+                }
+            } else {
+                if (detection.id == BLUE_ID || detection.id == RED_ID) {
+                    return detection.ftcPose.range;
+                }
+            }
+        }   // end for() loop
+
+        return -1.0; // Return tag data
+    }
+
+    // get distance to tag with specified ID
+    public double getBearing(int ID) {
+        List<AprilTagDetection> currentDetections = aprilTagProcessor.getDetections();
+
+        // Step through the list of detections
+        for (AprilTagDetection detection : currentDetections) {
+            if (ID != 0) {
+                if (detection.id == ID) { // If tag has the specified ID
+                    return detection.ftcPose.bearing;
+                }
+            } else {
+                if (detection.id == BLUE_ID || detection.id == RED_ID) {
+                    return detection.ftcPose.bearing;
+                }
+            }
+        }   // end for() loop
+
+        return -1.0;
+    }
+
+    // set manual exposure and gain
+    public void setManualExposure() {
+        if (visionPortal.getCameraState() == VisionPortal.CameraState.STREAMING) {
+            // Set exposure.  Make sure we are in Manual Mode for these values to take effect.
+            ExposureControl exposureControl = visionPortal.getCameraControl(ExposureControl.class);
+            if (exposureControl.getMode() != ExposureControl.Mode.Manual) {
+                exposureControl.setMode(ExposureControl.Mode.Manual);
+            }
+            exposureControl.setExposure((long) exposure, TimeUnit.MILLISECONDS);
+
+            // Set Gain.
+            GainControl gainControl = visionPortal.getCameraControl(GainControl.class);
+            gainControl.setGain(gain);
+
+            exposure = EXPOSURE;
+            gain = GAIN;
+        }
+    }
+}
