@@ -59,7 +59,7 @@ public class LED {
         if (robotState.is(RobotState.State.SHOOTING_READY)) {
             prism.insertAndUpdateAnimation(LayerHeight.LAYER_0, ready);
             indicator.setPosition(0.500);
-        } else if (robotState.is(RobotState.State.SHOOTING)) {
+        } else if (robotState.is(RobotState.State.SPINNING_UP)) {
             prism.insertAndUpdateAnimation(LayerHeight.LAYER_0, spinUp);
             indicator.setPosition(0.388);
         } else {

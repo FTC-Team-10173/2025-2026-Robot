@@ -8,12 +8,15 @@ public class RobotState {
     public enum State {
         IDLE,
         INTAKING,
-        SHOOTING,
+        SHOOTING_READY,
+        SPINNING_UP,
         ALIGNING
     }
 
     private State currentState;
     DriverControls controls;
+
+    public Boolean shooterReady = false;
 
     public RobotState(DriverControls controls) {
         this.currentState = State.IDLE;
@@ -30,9 +33,13 @@ public class RobotState {
     public void periodic() {
         State previousState = currentState;
 
-        // Determine new state based on driver inputs
+        // Determine new state based on driver inputs and shooter status
         if (controls.spinShooterPressed()) {
-            currentState = State.SHOOTING;
+            if (shooterReady) {
+                currentState = State.SHOOTING_READY;
+            } else {
+                currentState = State.SPINNING_UP;
+            }
         } else if (controls.intakePower() > 0.1 || controls.fullIntakePressed()) {
             currentState = State.INTAKING;
         } else if (controls.lockDrivePressed()) {
@@ -78,7 +85,6 @@ public class RobotState {
      */
     private void onStateChange(State from, State to) {
         // Currently no special transition logic
-        // Could add: rumble controller, play sounds, etc.
     }
 
     /**

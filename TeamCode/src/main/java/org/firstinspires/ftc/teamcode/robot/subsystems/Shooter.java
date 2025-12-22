@@ -54,6 +54,9 @@ public class Shooter {
         // store driver controls
         this.controls = controls;
 
+        // store robot state
+        this.robotState = robotState;
+
         // store vision controller
         this.vision = vision;
     }
@@ -87,6 +90,9 @@ public class Shooter {
                 Constants.Shooter.kA
         );
 
+        // store robot state
+        this.robotState = robotState;
+
         // store vision controller
         this.vision = vision;
     }
@@ -108,9 +114,15 @@ public class Shooter {
 
             // get current velocity
             double vel = flywheel.getVelocity();
+
+            // update shooter ready status
+            robotState.shooterReady = vel >= (targetVel - Constants.Shooter.VELOCITY_TOLERANCE);
         } else {
             // stop flywheel
             flywheel.set(0);
+
+            // update shooter ready status
+            robotState.shooterReady = false;
         }
     }
 
