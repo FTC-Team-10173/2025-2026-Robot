@@ -7,5 +7,3 @@ Key features and tools include:
 - **FTCLib**: Library for streamlined FTC robotics programming.
 - **GoBilda Odometry Pods**: High-precision tracking of robot position.
 - **Limelight 3A**: Vision system for detecting targets and guiding autonomous actions.
-
-This code integrates modular subsystems for drivetrain control, autonomous navigation, and vision-assisted decision making.
