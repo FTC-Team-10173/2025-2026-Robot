@@ -62,7 +62,6 @@ public class RobotContainer {
         telemetry.addData("Bearing", robot.vision.bearing);
 
         // Shooter data
-        telemetry.addData("Shooter Power", robot.shooter.power);
-        telemetry.addData("Target Vel", robot.shooter.targetVel);
+        robot.shooter.updateTelemetry(telemetry);
     }
 }

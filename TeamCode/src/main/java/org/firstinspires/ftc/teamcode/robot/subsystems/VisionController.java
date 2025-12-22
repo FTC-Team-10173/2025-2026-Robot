@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.robot.subsystems;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.ExposureControl;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.GainControl;
@@ -11,7 +13,7 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-public class VisionController {
+public class VisionController implements Subsystem {
 
     public double distance, bearing;
 
@@ -38,7 +40,9 @@ public class VisionController {
         gain = 1;
     }
 
-    // periodic method to be called in main loop
+    /**
+     * Periodic method to be called in main loop
+     */
     public void periodic() {
         // set manual exposure and gain
         setManualExposure();
@@ -48,7 +52,19 @@ public class VisionController {
         bearing = getBearing(0);
     }
 
-    // get distance to tag with specified ID
+    public boolean isHealthy() {
+        return aprilTagProcessor != null && visionPortal != null;
+    }
+
+    public void updateTelemetry(Telemetry telemetry) {
+        telemetry.addData( getName() + " Distance", "%.0f Inches", distance);
+        telemetry.addData(getName() + " Bearing", "%.0f Degrees", bearing);
+        telemetry.addData(getName() + " Healthy", isHealthy());
+    }
+
+    /**
+     * Get distance to tag with specified ID
+     */
     public double getDistance(int ID) {
         List<AprilTagDetection> currentDetections = aprilTagProcessor.getDetections();
 
@@ -71,7 +87,9 @@ public class VisionController {
         return -1.0; // Return tag data
     }
 
-    // get distance to tag with specified ID
+    /**
+     * Get distance to tag with specified ID
+     */
     public double getBearing(int ID) {
         List<AprilTagDetection> currentDetections = aprilTagProcessor.getDetections();
 
@@ -94,7 +112,9 @@ public class VisionController {
         return -1.0;
     }
 
-    // set manual exposure and gain
+    /**
+     * Set manual exposure and gain
+     */
     public void setManualExposure() {
         if (visionPortal.getCameraState() == VisionPortal.CameraState.STREAMING) {
             // Set exposure.  Make sure we are in Manual Mode for these values to take effect.

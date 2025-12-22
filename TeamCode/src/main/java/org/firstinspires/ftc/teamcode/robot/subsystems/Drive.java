@@ -14,7 +14,7 @@ import org.firstinspires.ftc.teamcode.MecanumDrive;
 import org.firstinspires.ftc.teamcode.robot.Constants;
 import org.firstinspires.ftc.teamcode.robot.DriverControls;
 
-public class Drive {
+public class Drive implements Subsystem {
 
     MecanumDrive drive;
     DriverControls controls;
@@ -89,6 +89,22 @@ public class Drive {
 
         // update drive pose estimate
         drive.updatePoseEstimate();
+    }
+
+    public boolean isHealthy() {
+        return drive != null && imu != null;
+    }
+
+    public void stop() {
+        drive.setDrivePowers(new PoseVelocity2d(new Vector2d(0, 0), 0));
+    }
+
+    public void updateTelemetry(org.firstinspires.ftc.robotcore.external.Telemetry telemetry) {
+        Pose2d pose = getPose();
+        telemetry.addData(getName() + " X", "%.2f Inches", pose.position.x);
+        telemetry.addData(getName() + " Y", "%.2f Inches", pose.position.x);
+        telemetry.addData(getName() + " Heading", "%.2f Degrees", Math.toDegrees(pose.heading.real));
+        telemetry.addData(getName() + " Healthy", isHealthy());
     }
 
     // set drive powers based on field-centric controls

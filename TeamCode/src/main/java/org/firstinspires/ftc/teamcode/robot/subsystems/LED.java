@@ -3,13 +3,14 @@ package org.firstinspires.ftc.teamcode.robot.subsystems;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Prism.Color;
 import org.firstinspires.ftc.teamcode.Prism.GoBildaPrismDriver;
 import org.firstinspires.ftc.teamcode.Prism.GoBildaPrismDriver.LayerHeight;
 import org.firstinspires.ftc.teamcode.Prism.PrismAnimations;
 import org.firstinspires.ftc.teamcode.robot.RobotState;
 
-public class LED {
+public class LED implements Subsystem {
     GoBildaPrismDriver prism;
     Servo indicator;
     RobotState robotState;
@@ -66,5 +67,23 @@ public class LED {
             prism.insertAndUpdateAnimation(LayerHeight.LAYER_0, idle);
             indicator.setPosition(0.722);
         }
+
+        prism.updateAllAnimations();
+    }
+
+    public void stop() {
+        prism.clearAllAnimations();
+        prism.updateAllAnimations();
+    }
+
+    public boolean isHealthy() {
+        return prism != null && indicator != null;
+    }
+
+    public void updateTelemetry(Telemetry telemetry) {
+        telemetry.addData(getName() + " LED count", "%.0d LEDs", prism.getNumberOfLEDs());
+        telemetry.addData(getName() + " FPS", "%.0d", prism.getCurrentFPS());
+        telemetry.addData(getName() + " Indicator Position", "%.3f", indicator.getPosition());
+        telemetry.addData(getName() + " Healthy", isHealthy());
     }
 }

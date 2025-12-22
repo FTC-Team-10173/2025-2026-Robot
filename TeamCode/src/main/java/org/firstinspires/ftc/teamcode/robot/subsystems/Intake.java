@@ -9,9 +9,10 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.robot.DriverControls;
 
-public class Intake {
+public class Intake implements Subsystem {
 
     Motor intakeMotor;
     CRServo feederServo;
@@ -44,6 +45,21 @@ public class Intake {
                 controls.fullIntakePressed(),
                 controls.topOuttakePressed()
         );
+    }
+
+    public boolean isHealthy() {
+        return intakeMotor != null && feederServo != null;
+    }
+
+    public void stop() {
+        intakeMotor.set(0);
+        feederServo.set(0);
+    }
+
+    public void updateTelemetry(Telemetry telemetry) {
+        telemetry.addData(getName() + " Intake Power", "%.2f", intakeMotor.get());
+        telemetry.addData(getName() + " Feeder Power", "%.2f", feederServo.get());
+        telemetry.addData(getName() + " Healthy", isHealthy());
     }
 
     // set intake and feeder power
