@@ -10,10 +10,6 @@ public class DriverControls {
         this.driver = driver;
     }
 
-    public boolean resetYawPressed() {
-        return driver.getButton(GamepadKeys.Button.BACK);
-    }
-
     public boolean lockDrivePressed() {
         return driver.getButton(GamepadKeys.Button.A);
     }
