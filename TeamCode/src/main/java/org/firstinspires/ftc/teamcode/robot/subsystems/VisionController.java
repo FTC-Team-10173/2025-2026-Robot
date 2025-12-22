@@ -46,6 +46,7 @@ public class VisionController {
         gain = 1;
     }
 
+    // periodic method to be called in main loop
     public void periodic() {
         // set manual exposure and gain
         setManualExposure();

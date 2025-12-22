@@ -43,6 +43,7 @@ public class Intake {
         led = ledSubsystem;
     }
 
+    // periodic method to be called in main loop
     public void periodic() {
         // set intake and feeder power based on driver controls
         setPower(

@@ -80,6 +80,7 @@ public class Shooter {
         led = ledSubsystem;
     }
 
+    // periodic method to be called in main loop
     public void periodic() {
         // adjust power based on tag distance
         setPower(vision.distance);

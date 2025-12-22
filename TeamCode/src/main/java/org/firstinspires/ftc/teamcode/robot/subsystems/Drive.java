@@ -69,6 +69,7 @@ public class Drive {
         );
     }
 
+    // periodic method to be called in main loop
     public void periodic() {
         // reset yaw if requested
         if (controls.resetYawPressed()) {

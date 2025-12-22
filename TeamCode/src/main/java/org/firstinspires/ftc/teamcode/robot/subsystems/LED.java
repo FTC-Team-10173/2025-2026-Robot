@@ -47,7 +47,7 @@ public class LED {
         spinUp.setPeriod(1000); // 1 second period
     }
 
-    // update LED pattern based on shooter state
+    // periodic method to be called in main loop
     public void periodic() {
         /*
          * 0 - (idle) solid hot pink
