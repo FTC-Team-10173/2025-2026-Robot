@@ -11,6 +11,7 @@ import com.qualcomm.robotcore.hardware.IMU;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
+import org.firstinspires.ftc.teamcode.robot.Constants;
 import org.firstinspires.ftc.teamcode.robot.DriverControls;
 
 public class Drive {
@@ -43,7 +44,9 @@ public class Drive {
 
         // initialize pid controller for heading lock
         pid = new PIDController(
-            0.02, 0.0, 0.0
+                Constants.Drive.HEADING_KP,
+                Constants.Drive.HEADING_KI,
+                Constants.Drive.HEADING_KD
         );
     }
 
@@ -65,14 +68,18 @@ public class Drive {
 
         // initialize pid controller for heading lock
         pid = new PIDController(
-                0.02, 0.0, 0.0
+                Constants.Drive.HEADING_KP,
+                Constants.Drive.HEADING_KI,
+                Constants.Drive.HEADING_KD
         );
     }
 
     // periodic method to be called in main loop
     public void periodic() {
         // update heading lock
-        lock(vision.bearing);
+        if (controls.lockDrivePressed()) {
+            lock(vision.bearing);
+        }
 
         // set drive powers based on driver controls
         setDrivePowers(
@@ -118,8 +125,6 @@ public class Drive {
                     -driver.getRightX()
             ));
         }
-
-        drive.updatePoseEstimate(); // update pose estimate
     }
 
     // lock heading using pid controller

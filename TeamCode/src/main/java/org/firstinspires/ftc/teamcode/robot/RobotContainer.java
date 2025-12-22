@@ -1,8 +1,11 @@
 package org.firstinspires.ftc.teamcode.robot;
 
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class RobotContainer {
     public final DriverControls controls;
@@ -21,7 +24,7 @@ public class RobotContainer {
                 .whenPressed(robot.drive::resetYaw);
     }
 
-    public void periodic() {
+    public void periodic(Telemetry telemetry) {
         /*
          * Call periodic methods of all subsystems
          *
@@ -37,5 +40,15 @@ public class RobotContainer {
         robot.shooter.periodic();
         robot.intake.periodic();
         robot.led.periodic();
+
+        // Send telemetry data
+        telemetry.addData("Pose X", robot.drive.getPose().position.x);
+        telemetry.addData("Pose Y", robot.drive.getPose().position.y);
+        telemetry.addData("Pose Heading", robot.drive.getPose().heading.real);
+
+        telemetry.addData("Distance", robot.vision.distance);
+        telemetry.addData("Bearing", robot.vision.bearing);
+        telemetry.addData("Shooter Power", robot.shooter.power);
+        telemetry.addData("Target Vel", robot.shooter.targetVel);
     }
 }

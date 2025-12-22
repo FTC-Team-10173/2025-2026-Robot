@@ -15,7 +15,7 @@ public class Main extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive()) {
-            container.periodic();
+            container.periodic(telemetry);
             telemetry.update();
         }
     }
