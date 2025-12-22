@@ -17,12 +17,18 @@ public class RobotContainer {
         configureBindings();
     }
 
+    /**
+     * Configure button bindings for driver controls
+     */
     private void configureBindings() {
         // Reset robot yaw when BACK button is pressed
         controls.driver.getGamepadButton(GamepadKeys.Button.BACK)
                 .whenPressed(robot.drive::resetYaw);
     }
 
+    /**
+     * Periodic method to be called in main op mode loop
+     */
     public void periodic(Telemetry telemetry) {
         /*
          * Call periodic methods of all subsystems
