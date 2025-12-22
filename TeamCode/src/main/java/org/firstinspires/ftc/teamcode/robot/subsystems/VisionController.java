@@ -1,10 +1,4 @@
 package org.firstinspires.ftc.teamcode.robot.subsystems;
-
-import static org.firstinspires.ftc.teamcode.Constants.BLUE_ID;
-import static org.firstinspires.ftc.teamcode.Constants.EXPOSURE;
-import static org.firstinspires.ftc.teamcode.Constants.GAIN;
-import static org.firstinspires.ftc.teamcode.Constants.RED_ID;
-
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.ExposureControl;
@@ -17,6 +11,15 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class VisionController {
+
+    public static class Constants {
+        public static int EXPOSURE = 25;
+        public static int GAIN = -325;
+
+        // Tag ID Constants
+        public static int BLUE_ID = 20;
+        public static int RED_ID = 24;
+    }
 
     AprilTagProcessor aprilTagProcessor;
     VisionPortal visionPortal;
@@ -52,7 +55,7 @@ public class VisionController {
                     return detection.ftcPose.range;
                 }
             } else {
-                if (detection.id == BLUE_ID || detection.id == RED_ID) {
+                if (detection.id == Constants.BLUE_ID || detection.id == Constants.RED_ID) {
                     return detection.ftcPose.range;
                 }
             }
@@ -72,7 +75,7 @@ public class VisionController {
                     return detection.ftcPose.bearing;
                 }
             } else {
-                if (detection.id == BLUE_ID || detection.id == RED_ID) {
+                if (detection.id == Constants.BLUE_ID || detection.id == Constants.RED_ID) {
                     return detection.ftcPose.bearing;
                 }
             }
@@ -91,12 +94,13 @@ public class VisionController {
             }
             exposureControl.setExposure((long) exposure, TimeUnit.MILLISECONDS);
 
-            // Set Gain.
+            // Set Gain
             GainControl gainControl = visionPortal.getCameraControl(GainControl.class);
             gainControl.setGain(gain);
 
-            exposure = EXPOSURE;
-            gain = GAIN;
+            // Get new exposure and gain values
+            exposure = Constants.EXPOSURE;
+            gain = Constants.GAIN;
         }
     }
 }
