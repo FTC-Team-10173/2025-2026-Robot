@@ -77,6 +77,11 @@ public class Drive implements Subsystem {
 
     // periodic method to be called in main loop
     public void periodic() {
+        // reset imu yaw
+        if (controls.imuResetPressed()) {
+            resetYaw();
+        }
+
         // update heading lock
         if (controls.lockDrivePressed()) {
             lock(vision.bearing);
@@ -102,10 +107,11 @@ public class Drive implements Subsystem {
 
     public void updateTelemetry(org.firstinspires.ftc.robotcore.external.Telemetry telemetry) {
         Pose2d pose = getPose();
-        telemetry.addData(getName() + " X", "%.2f Inches", pose.position.x);
-        telemetry.addData(getName() + " Y", "%.2f Inches", pose.position.x);
-        telemetry.addData(getName() + " Heading", "%.2f Degrees", Math.toDegrees(pose.heading.real));
-        telemetry.addData(getName() + " IMU Yaw", "%.2f Degrees", imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
+        telemetry.addLine();
+        telemetry.addData(getName() + " X (Inches)", "%.2f", pose.position.x);
+        telemetry.addData(getName() + " Y (Inches)", "%.2f", pose.position.y);
+        telemetry.addData(getName() + " Heading (Degrees)", "%.2f", Math.toDegrees(pose.heading.real));
+        telemetry.addData(getName() + " IMU Yaw (Degrees)", "%.2f", imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
         telemetry.addData(getName() + " Healthy", isHealthy());
     }
 

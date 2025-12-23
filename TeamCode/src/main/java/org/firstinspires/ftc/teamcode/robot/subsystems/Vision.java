@@ -34,8 +34,12 @@ public class Vision implements Subsystem {
         visionPortal = new VisionPortal.Builder()
                 .setCamera(camera)
                 .addProcessors(aprilTagProcessor)
+                .setCameraResolution(new android.util.Size(640, 480))  // Optional: set resolution
+                .setStreamFormat(VisionPortal.StreamFormat.MJPEG)      // MJPEG for 30 FPS
+                .enableLiveView(true)                                  // Optional: enable live view
+                .setAutoStopLiveView(true)                             // Optional: auto-stop when not needed
                 .build();
-
+;
         // set default exposure and gain
         exposure = 100;
         gain = 1;
@@ -58,9 +62,17 @@ public class Vision implements Subsystem {
     }
 
     public void updateTelemetry(Telemetry telemetry) {
-        telemetry.addData( getName() + " Distance", "%.0f Inches", distance);
-        telemetry.addData(getName() + " Bearing", "%.0f Degrees", bearing);
+        telemetry.addLine();
+        telemetry.addData( getName() + " Distance (Inches)", "%.0f", distance);
+        telemetry.addData(getName() + " Bearing (Degrees)", "%.0f", bearing);
         telemetry.addData(getName() + " Healthy", isHealthy());
+    }
+
+    @Override
+    public void stop() {
+        if (visionPortal != null) {
+            visionPortal.close();
+        }
     }
 
     /**

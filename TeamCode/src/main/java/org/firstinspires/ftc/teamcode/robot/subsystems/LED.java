@@ -81,8 +81,9 @@ public class LED implements Subsystem {
     }
 
     public void updateTelemetry(Telemetry telemetry) {
-        telemetry.addData(getName() + " LED count", "%.0d LEDs", prism.getNumberOfLEDs());
-        telemetry.addData(getName() + " FPS", "%.0d", prism.getCurrentFPS());
+        telemetry.addLine();
+        telemetry.addData(getName() + " LED count", "%d", prism.getNumberOfLEDs());
+        telemetry.addData(getName() + " FPS", "%d", prism.getCurrentFPS());
         telemetry.addData(getName() + " Indicator Position", "%.3f", indicator.getPosition());
         telemetry.addData(getName() + " Healthy", isHealthy());
     }

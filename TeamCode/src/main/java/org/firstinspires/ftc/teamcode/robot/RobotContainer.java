@@ -25,8 +25,8 @@ public class RobotContainer {
     private void configureBindings() {
 //        Does not work properly right now, currently working in the drive periodic method
 //        // Reset robot yaw when BACK button is pressed
-        controls.driver.getGamepadButton(GamepadKeys.Button.BACK)
-                .whenPressed(robot.drive::resetYaw);
+//        controls.driver.getGamepadButton(GamepadKeys.Button.BACK)
+//                .whenPressed(robot.drive::resetYaw);
     }
 
     /**
@@ -47,8 +47,6 @@ public class RobotContainer {
         if (!robot.areAllSubsystemsHealthy()) {
             telemetry.addData("Subsystem Issues", robot.getUnhealthySubsystems());
         }
-
-        telemetry.addLine();
 
         robot.telemetryUpdateAll(telemetry);
     }

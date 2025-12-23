@@ -117,9 +117,10 @@ public class Shooter implements Subsystem {
     // add telemetry data for this subsystem
     @Override
     public void updateTelemetry(Telemetry telemetry) {
+        telemetry.addLine();
         telemetry.addData(getName() + " Power", "%.2f", power);
-        telemetry.addData(getName() + " Target", "%.0f RPM", targetVel);
-        telemetry.addData(getName() + " Current", "%.0f RPM", flywheel.getVelocity());
+        telemetry.addData(getName() + " Target", "%.0f", targetVel);
+        telemetry.addData(getName() + " Current", "%.0f", flywheel.getVelocity());
         telemetry.addData(getName() + " Ready", robotState.shooterReady);
         telemetry.addData(getName() + " Healthy", isHealthy());
     }

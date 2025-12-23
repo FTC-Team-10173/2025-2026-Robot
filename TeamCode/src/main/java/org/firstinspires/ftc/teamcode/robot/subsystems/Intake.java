@@ -57,6 +57,7 @@ public class Intake implements Subsystem {
     }
 
     public void updateTelemetry(Telemetry telemetry) {
+        telemetry.addLine();
         telemetry.addData(getName() + " Intake Power", "%.2f", intakeMotor.get());
         telemetry.addData(getName() + " Feeder Power", "%.2f", feederServo.get());
         telemetry.addData(getName() + " Healthy", isHealthy());
