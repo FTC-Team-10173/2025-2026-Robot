@@ -11,6 +11,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 import org.firstinspires.ftc.teamcode.robot.Robot;
+import org.firstinspires.ftc.teamcode.robot.RobotState;
 import org.firstinspires.ftc.teamcode.tuning.TuningOpModes;
 
 @Autonomous(name="BlueLarge", group="2025-2026")
@@ -23,8 +24,8 @@ public final class BlueLarge extends LinearOpMode {
 
         if (TuningOpModes.DRIVE_CLASS.equals(MecanumDrive.class)) {
             MecanumDrive drive = new MecanumDrive(hardwareMap, beginPose);
-
-            Robot robot = new Robot(hardwareMap);
+            RobotState robotState = new RobotState();
+            Robot robot = new Robot(hardwareMap, robotState);
 
             waitForStart();
 

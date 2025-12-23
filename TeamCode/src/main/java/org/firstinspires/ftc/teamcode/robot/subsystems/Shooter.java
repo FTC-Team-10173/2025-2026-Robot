@@ -18,7 +18,7 @@ public class Shooter implements Subsystem {
     public MotorGroup flywheel;
     DriverControls controls;
     RobotState robotState;
-    VisionController vision;
+    Vision vision;
     public Double power = 0.5;
     public double targetVel = 1200;
 
@@ -27,7 +27,7 @@ public class Shooter implements Subsystem {
             HardwareMap hardwareMap,
             DriverControls controls,
             RobotState robotState,
-            VisionController vision
+            Vision vision
     ) {
         // initialize motors as a motor group
         flywheel = new MotorGroup(
@@ -66,7 +66,7 @@ public class Shooter implements Subsystem {
     public Shooter(
             HardwareMap hardwareMap,
             RobotState robotState,
-            VisionController vision
+            Vision vision
     ) {
         // initialize motors as a motor group
         flywheel = new MotorGroup(

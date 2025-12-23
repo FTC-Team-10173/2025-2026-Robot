@@ -18,13 +18,13 @@ public class Drive implements Subsystem {
 
     MecanumDrive drive;
     DriverControls controls;
-    VisionController vision;
+    Vision vision;
     IMU imu;
     double lock_turn;
     PIDController pid;
 
     // TeleOp constructor
-    public Drive(HardwareMap hardwareMap, DriverControls controls, VisionController vision) {
+    public Drive(HardwareMap hardwareMap, DriverControls controls, Vision vision) {
         // initialize drive with starting pose at origin
         drive = new MecanumDrive(hardwareMap, new Pose2d(0, 0, 0));
 
@@ -51,7 +51,7 @@ public class Drive implements Subsystem {
     }
 
     // Autonomous constructor
-    public Drive(HardwareMap hardwareMap, VisionController vision) {
+    public Drive(HardwareMap hardwareMap, Vision vision) {
         // initialize drive with starting pose at origin
         drive = new MecanumDrive(hardwareMap, new Pose2d(0, 0, 0));
 

@@ -9,10 +9,12 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 public class RobotContainer {
     public final DriverControls controls;
     public final Robot robot;
+    public RobotState robotState;
 
     public RobotContainer(HardwareMap hardwareMap, GamepadEx driverGamepad) {
         controls = new DriverControls(driverGamepad);
-        robot = new Robot(hardwareMap, controls);
+        robotState = new RobotState(controls);
+        robot = new Robot(hardwareMap, robotState, controls);
 
         configureBindings();
     }
@@ -30,38 +32,22 @@ public class RobotContainer {
      * Periodic method to be called in main op mode loop
      */
     public void periodic(Telemetry telemetry) {
-        /*
-         * Call periodic methods of all subsystems
-         *
-         * Order of calls:
-         * 1 - Vision to get latest data
-         * 2 - Drive to update pose
-         * 3 - Shooter to adjust to new target if needed
-         * 4 - Intake to respond to driver inputs
-         * 5 - LED to update status
-         */
-        robot.vision.periodic();
-        robot.drive.periodic();
-        robot.shooter.periodic();
-        robot.intake.periodic();
-        robot.led.periodic();
-        robot.robotState.periodic();
+        robot.periodicAll();
 
-        /* Update telemetry with robot status */
+        robotState.periodic();
 
-        // Robot state
-        telemetry.addData("Robot State", robot.robotState.toString());
+        updateTelemetry(telemetry);
+    }
 
-        // Pose information
-        telemetry.addData("Pose X", robot.drive.getPose().position.x);
-        telemetry.addData("Pose Y", robot.drive.getPose().position.y);
-        telemetry.addData("Pose Heading", robot.drive.getPose().heading.real);
+    private void updateTelemetry(Telemetry telemetry) {
+        telemetry.addData("State", robotState.get());
 
-        // Vision data
-        telemetry.addData("Distance", robot.vision.distance);
-        telemetry.addData("Bearing", robot.vision.bearing);
+        if (!robot.areAllSubsystemsHealthy()) {
+            telemetry.addData("Subsystem Issues", robot.getUnhealthySubsystems());
+        }
 
-        // Shooter data
-        robot.shooter.updateTelemetry(telemetry);
+        telemetry.addLine();
+
+        robot.telemetryUpdateAll(telemetry);
     }
 }

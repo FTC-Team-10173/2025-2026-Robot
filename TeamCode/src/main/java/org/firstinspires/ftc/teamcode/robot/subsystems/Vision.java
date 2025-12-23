@@ -13,7 +13,7 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-public class VisionController implements Subsystem {
+public class Vision implements Subsystem {
 
     public double distance, bearing;
 
@@ -22,7 +22,7 @@ public class VisionController implements Subsystem {
     int exposure, gain;
 
     // constructor
-    public VisionController(HardwareMap hardwareMap) {
+    public Vision(HardwareMap hardwareMap) {
         // initialize webcam
         WebcamName camera = hardwareMap.get(WebcamName.class, "Webcam 1");
 
