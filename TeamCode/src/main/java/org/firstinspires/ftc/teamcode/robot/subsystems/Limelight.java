@@ -35,6 +35,7 @@ public class Limelight implements Subsystem {
         public double tx;
         public double ty;
         public double ta;
+        public long stalenessMillis;
     }
 
     // Constructor
@@ -42,8 +43,8 @@ public class Limelight implements Subsystem {
         this.limelight = hardwareMap.get(Limelight3A.class, "limelight");
         this.imu = imu;
 
-        limelight.setPollRateHz(100);
-        limelight.start();
+        limelight.setPollRateHz(100); // update at 100 Hz (100 times per second)
+        limelight.start(); // start the limelight processing
 
         desiredPipeline = 0;
         limelight.pipelineSwitch(desiredPipeline);
@@ -84,10 +85,14 @@ public class Limelight implements Subsystem {
         double y = robotToTag.getPosition().y;
         double z = robotToTag.getPosition().z;
 
+        // distance to tag
         results.distanceMeters = Math.sqrt(x * x + y * y + z * z);
+
+        // update auxiliary data
+        results.stalenessMillis = result.getStaleness();
         results.hasTarget = true;
 
-        // Optional: yaw error to tag (useful for auto-align)
+        // yaw error to tag
         results.tx = fiducial.getTargetXDegrees();
         results.ty = fiducial.getTargetYDegrees();
         results.ta = fiducial.getTargetArea();
@@ -96,14 +101,19 @@ public class Limelight implements Subsystem {
     @Override
     public void updateTelemetry(Telemetry telemetry) {
         telemetry.addLine(); // Separator from other data
-        telemetry.addData("Limelight State", currentState);
+        telemetry.addData(getName() + " State", currentState);
 
         if (results.hasTarget) {
-            telemetry.addData("Tag Distance (m)", "%.2f", results.distanceMeters);
-            telemetry.addData("Tag Distance (in)", "%.1f", results.distanceMeters * 39.37);
-            telemetry.addData("tx", "%.2f", results.tx);
-            telemetry.addData("ty", "%.2f", results.ty);
-            telemetry.addData("ta", "%.2f", results.ta);
+            telemetry.addData(getName() + " Tag Distance (m)", "%.2f", results.distanceMeters);
+            telemetry.addData(getName() + " Tag Distance (in)", "%.1f", results.distanceMeters * 39.37);
+            telemetry.addData(getName() + " tx", "%.2f", results.tx);
+            telemetry.addData(getName() + " ty", "%.2f", results.ty);
+            telemetry.addData(getName() + " ta", "%.2f", results.ta);
+            if (results.stalenessMillis < 100) {
+                telemetry.addData(getName() + " Staleness", "FRESH");
+            } else {
+                telemetry.addData(getName() + " Staleness", "STALE");
+            }
             telemetry.addData(getName() + " Healthy", isHealthy());
         } else {
             telemetry.addLine("No AprilTags detected");
