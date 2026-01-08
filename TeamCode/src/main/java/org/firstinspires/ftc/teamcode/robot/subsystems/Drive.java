@@ -145,8 +145,8 @@ public class Drive implements Subsystem {
     }
 
     // lock heading using pid controller
-    public void lock(double bearing) {
-        lock_turn = -pid.calculate(bearing);
+    public void lock(double error) {
+        lock_turn = -pid.calculate(error);
     }
 
     // get current pose

@@ -76,6 +76,9 @@ public class Limelight implements Subsystem {
 
     @Override
     public void periodic() {
+        double robotYaw = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
+        limelight.updateRobotOrientation(robotYaw);
+
         LLResult result = limelight.getLatestResult();
         llStatus = limelight.getStatus();
 
@@ -95,9 +98,6 @@ public class Limelight implements Subsystem {
     }
 
     public void updateBotpose(LLResult result) {
-        double robotYaw = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
-        limelight.updateRobotOrientation(robotYaw);
-
         Pose3D botpose_mt2 = result.getBotpose_MT2();
         if (botpose_mt2 != null) {
             botpose.x = botpose_mt2.getPosition().x;
