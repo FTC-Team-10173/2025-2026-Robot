@@ -145,6 +145,7 @@ public class Limelight implements Subsystem {
         telemetry.addData(getName() + " Pipeline", "%d", llStatus.getPipelineIndex());
         telemetry.addData(getName() + " FPS", "%.0f", llStatus.getFps());
         telemetry.addData(getName() + " RAM", "%.1f", llStatus.getRam());
+        telemetry.addData(getName() + " CPU", "%.1f", llStatus.getCpu());
         telemetry.addData(getName() + " TEMP", "%.1f", llStatus.getTemp());
 
         if (botpose.result != null) {
