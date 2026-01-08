@@ -104,6 +104,7 @@ public class Limelight implements Subsystem {
             telemetry.addData("tx", "%.2f", results.tx);
             telemetry.addData("ty", "%.2f", results.ty);
             telemetry.addData("ta", "%.2f", results.ta);
+            telemetry.addData(getName() + " Healthy", isHealthy());
         } else {
             telemetry.addLine("No AprilTags detected");
         }
