@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.robot;
 
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
-import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -23,10 +22,6 @@ public class RobotContainer {
      * Configure button bindings for driver controls
      */
     private void configureBindings() {
-//        Does not work properly right now, currently working in the drive periodic method
-//        // Reset robot yaw when BACK button is pressed
-//        controls.driver.getGamepadButton(GamepadKeys.Button.BACK)
-//                .whenPressed(robot.drive::resetYaw);
     }
 
     /**

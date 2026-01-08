@@ -34,10 +34,10 @@ public class Vision implements Subsystem {
         visionPortal = new VisionPortal.Builder()
                 .setCamera(camera)
                 .addProcessors(aprilTagProcessor)
-                .setCameraResolution(new android.util.Size(640, 480))  // Optional: set resolution
-                .setStreamFormat(VisionPortal.StreamFormat.MJPEG)      // MJPEG for 30 FPS
-                .enableLiveView(true)                                  // Optional: enable live view
-                .setAutoStopLiveView(true)                             // Optional: auto-stop when not needed
+                .setCameraResolution(new android.util.Size(640, 480)) // Optional: set resolution
+                .setStreamFormat(VisionPortal.StreamFormat.MJPEG) // MJPEG for 30 FPS
+                .enableLiveView(true) // enable live view
+                .setAutoStopLiveView(true) // auto-stop when not needed
                 .build();
 ;
         // set default exposure and gain
