@@ -17,10 +17,6 @@ public class Main extends LinearOpMode {
         while (opModeIsActive()) {
             container.periodic(telemetry);
             telemetry.update();
-
-            container.ddosOtherRobots();
-            container.deployRazorBlades();
-            container.firingSquad(container.getOpposingRobots());
         }
 
         // Stop all subsystems
