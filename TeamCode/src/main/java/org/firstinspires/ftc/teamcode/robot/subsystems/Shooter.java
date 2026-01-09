@@ -18,7 +18,7 @@ public class Shooter implements Subsystem {
     public MotorGroup flywheel;
     DriverControls controls;
     RobotState robotState;
-    Vision vision;
+    Limelight limelight;
     public Double power = 0.5;
     public double targetVel = 1200;
 
@@ -27,7 +27,7 @@ public class Shooter implements Subsystem {
             HardwareMap hardwareMap,
             DriverControls controls,
             RobotState robotState,
-            Vision vision
+            Limelight limelight
     ) {
         // initialize motors as a motor group
         flywheel = new MotorGroup(
@@ -58,15 +58,15 @@ public class Shooter implements Subsystem {
         // store robot state
         this.robotState = robotState;
 
-        // store vision controller
-        this.vision = vision;
+        // store limelight
+        this.limelight = limelight;
     }
 
     // Autonomous constructor
     public Shooter(
             HardwareMap hardwareMap,
             RobotState robotState,
-            Vision vision
+            Limelight limelight
     ) {
         // initialize motors as a motor group
         flywheel = new MotorGroup(
@@ -94,14 +94,14 @@ public class Shooter implements Subsystem {
         // store robot state
         this.robotState = robotState;
 
-        // store vision controller
-        this.vision = vision;
+        // store limelight
+        this.limelight = limelight;
     }
 
     // periodic method to be called in main loop
     public void periodic() {
         // adjust power based on tag distance
-        setPower(vision.distance);
+        setPower(limelight.results.distanceMeters);
 
         // set flywheel spin based on driver controls
         spin(controls.spinShooterPressed());

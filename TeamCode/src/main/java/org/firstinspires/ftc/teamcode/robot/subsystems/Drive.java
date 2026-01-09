@@ -5,7 +5,6 @@ import com.acmerobotics.roadrunner.PoseVelocity2d;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.arcrobotics.ftclib.controller.PIDController;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
-import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 
@@ -14,33 +13,30 @@ import org.firstinspires.ftc.teamcode.Roadrunner.MecanumDrive;
 import org.firstinspires.ftc.teamcode.robot.Constants;
 import org.firstinspires.ftc.teamcode.robot.DriverControls;
 
+import org.firstinspires.ftc.teamcode.robot.subsystems.Limelight.Results;
+
 public class Drive implements Subsystem {
 
     MecanumDrive drive;
     DriverControls controls;
-    Vision vision;
+    Limelight limelight;
     IMU imu;
     double lock_turn;
     PIDController pid;
 
     // TeleOp constructor
-    public Drive(HardwareMap hardwareMap, DriverControls controls, Vision vision) {
+    public Drive(HardwareMap hardwareMap, DriverControls controls, Limelight limelight, IMU imu) {
         // initialize drive with starting pose at origin
         drive = new MecanumDrive(hardwareMap, new Pose2d(0, 0, 0));
 
         // store driver controls
         this.controls = controls;
 
-        // store vision controller
-        this.vision = vision;
+        // store limelight
+        this.limelight = limelight;
 
-        // initialize imu
-        imu = hardwareMap.get(IMU.class, "imu");
-        IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
-                RevHubOrientationOnRobot.LogoFacingDirection.LEFT,
-                RevHubOrientationOnRobot.UsbFacingDirection.UP
-        ));
-        imu.initialize(parameters);
+        // store imu
+        this.imu = imu;
 
         // initialize pid controller for heading lock
         pid = new PIDController(
@@ -51,20 +47,15 @@ public class Drive implements Subsystem {
     }
 
     // Autonomous constructor
-    public Drive(HardwareMap hardwareMap, Vision vision) {
+    public Drive(HardwareMap hardwareMap, Limelight limelight, IMU imu) {
         // initialize drive with starting pose at origin
         drive = new MecanumDrive(hardwareMap, new Pose2d(0, 0, 0));
 
-        // store vision controller
-        this.vision = vision;
+        // store limelight
+        this.limelight = limelight;
 
-        // initialize imu
-        imu = hardwareMap.get(IMU.class, "imu");
-        IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
-                RevHubOrientationOnRobot.LogoFacingDirection.LEFT,
-                RevHubOrientationOnRobot.UsbFacingDirection.UP
-        ));
-        imu.initialize(parameters);
+        // store imu
+        this.imu = imu;
 
         // initialize pid controller for heading lock
         pid = new PIDController(
@@ -83,7 +74,10 @@ public class Drive implements Subsystem {
 
         // update heading lock
         if (controls.lockDrivePressed()) {
-            lock(vision.bearing);
+            Results results = limelight.results;
+            if (results.hasTarget) { // if the limelight sees a tag
+                lock(limelight.results.tx);
+            }
         }
 
         // set drive powers based on driver controls
@@ -151,8 +145,8 @@ public class Drive implements Subsystem {
     }
 
     // lock heading using pid controller
-    public void lock(double bearing) {
-        lock_turn = -pid.calculate(bearing);
+    public void lock(double error) {
+        lock_turn = -pid.calculate(error);
     }
 
     // get current pose
