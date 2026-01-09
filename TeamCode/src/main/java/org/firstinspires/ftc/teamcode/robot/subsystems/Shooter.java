@@ -153,7 +153,6 @@ public class Shooter implements Subsystem {
     // adjust power based on tag distance
     public void setPower(double tag_distance) {
         if (tag_distance != -1) {
-
             // power formula derived from testing
             power = Math.sqrt(tag_distance + Constants.Shooter.INTERCEPT)
                     / Math.sqrt(Constants.Shooter.SCALE + Constants.Shooter.INTERCEPT);
