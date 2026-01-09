@@ -186,6 +186,7 @@ public class AutoBuilder {
                 new SequentialAction(
                     actions.toArray(new Action[0])
                 ),
+                robot.led.updateLEDs(),
                 robot.shooter.maintainVelocity()
             )
         );

@@ -1,5 +1,9 @@
 package org.firstinspires.ftc.teamcode.robot.subsystems;
 
+import androidx.annotation.NonNull;
+
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.acmerobotics.roadrunner.Action;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -69,5 +73,25 @@ public class LED implements Subsystem {
         telemetry.addData(getName() + " FPS", "%d", prism.getCurrentFPS());
         telemetry.addData(getName() + " Indicator Position", "%.3f", indicator.getPosition());
         telemetry.addData(getName() + " Healthy", isHealthy());
+    }
+
+    public Action updateLEDs() {
+        return new Action() {
+
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                // set flywheel power
+                if (robotState.is(RobotState.State.SHOOTING_READY)) {
+                    indicator.setPosition(0.500);
+                } else if (robotState.is(RobotState.State.SPINNING_UP)) {
+                    indicator.setPosition(0.388);
+                } else {
+                    indicator.setPosition(0.722);
+                }
+
+                // run indefinitely
+                return true;
+            }
+        };
     }
 }
