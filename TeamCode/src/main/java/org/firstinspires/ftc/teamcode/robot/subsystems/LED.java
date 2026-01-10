@@ -38,6 +38,9 @@ public class LED implements Subsystem {
         // insert solid animation into layer 0
         prism.insertAndUpdateAnimation(LayerHeight.LAYER_0, solid);
 
+        // set initial indicator position to idle
+        indicator.setPosition(0.722);
+
         // store robot state
         this.robotState = robotState;
     }

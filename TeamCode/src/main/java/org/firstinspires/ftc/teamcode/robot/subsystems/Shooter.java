@@ -109,7 +109,7 @@ public class Shooter implements Subsystem {
 
         // initialize hood servo
         hood = new SimpleServo(
-                hardwareMap, "servo_name", MIN_ANGLE, MAX_ANGLE, AngleUnit.DEGREES
+                hardwareMap, "hood", MIN_ANGLE, MAX_ANGLE, AngleUnit.DEGREES
         );
 
         // configure hood servo

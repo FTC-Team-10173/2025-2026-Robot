@@ -35,7 +35,7 @@ public class Intake implements Subsystem {
 
         // initialize gate servo
         feedGate = new SimpleServo(
-                hardwareMap, "servo_name", OPEN_ANGLE, CLOSED_ANGLE, AngleUnit.DEGREES
+                hardwareMap, "feedGate", OPEN_ANGLE, CLOSED_ANGLE, AngleUnit.DEGREES
         );
 
         // configure gate servo
