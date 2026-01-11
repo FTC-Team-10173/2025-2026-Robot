@@ -125,7 +125,7 @@ public class AutoBuilder {
 
                     // strafe through artifacts
                     drive.actionBuilder(currentPose)
-                            .strafeToLinearHeading(new Vector2d(currentPose.position.x, strafeY), currentPose.heading.toDouble(), new TranslationalVelConstraint(17.5))
+                            .strafeToLinearHeading(new Vector2d(currentPose.position.x, strafeY), currentPose.heading.toDouble())
                             .build(),
 
                     // stop intake

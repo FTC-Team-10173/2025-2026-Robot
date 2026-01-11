@@ -1,9 +1,11 @@
 package org.firstinspires.ftc.teamcode.robot;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.Vector2d;
 
-public class Constants {
+@Config
+public final class Constants {
     public static class Drive {
         // PID constants for heading lock
         public static final double HEADING_KP = 0.02;
@@ -14,20 +16,20 @@ public class Constants {
     public static class ShootingPoses {
         public static final Pose2d BLUE_CLOSE = new Pose2d(-18, -18, Math.toRadians(225));
         public static final Pose2d RED_CLOSE = new Pose2d(-18, 18, Math.toRadians(135));
-        public static final Pose2d BLUE_FAR = new Pose2d(52, -16, Math.toRadians(204));
-        public static final Pose2d RED_FAR = new Pose2d(52, 16, Math.toRadians(156));
+        public static final Pose2d BLUE_FAR = new Pose2d(54, -16, Math.toRadians(204));
+        public static final Pose2d RED_FAR = new Pose2d(54, 16, Math.toRadians(156));
     }
 
     public static class ShootingPower {
-        public static final double CLOSE = 0.409;
-        public static final double FAR = 0.463;
+        public static final double CLOSE = 0.40;
+        public static final double FAR = 0.475;
     }
 
     public static class Gate {
         public static final double MIN_ANGLE = 0;
-        public static final double MAX_ANGLE = 100;
-        public static final double OPEN_ANGLE = 83;
-        public static final double CLOSED_ANGLE = 93;
+        public static final double MAX_ANGLE = 1800;
+        public static final double OPEN_ANGLE = 1494;
+        public static final double CLOSED_ANGLE = 1674;
     }
 
     public static class Hood {
@@ -37,8 +39,8 @@ public class Constants {
 
     public static class Shooter {
         // Shooter velocity control constants
-        public static final double SCALE = 1000;
-        public static final double INTERCEPT = 150;
+        public static final double SCALE = 800;
+        public static final double INTERCEPT = 85;
         public static final double MAX_RPM = 2400;
         public static final double VELOCITY_TOLERANCE = 20;
 

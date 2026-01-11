@@ -6,33 +6,33 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.robot.Constants;
 
-@Autonomous(name="Blue Far", group="2025-2026")
-public final class BlueFar extends LinearOpMode {
+@Autonomous(name="Red Close", group="2025-2026")
+public final class RedClose extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
 
         // starting pose
-        Pose2d beginPose = new Pose2d(66, -16, Math.toRadians(180));
+        Pose2d beginPose = new Pose2d(-54, 48, Math.toRadians(135));
 
-        Pose2d BLUE_CLOSE = Constants.ShootingPoses.BLUE_CLOSE;
-        Pose2d BLUE_FAR = Constants.ShootingPoses.BLUE_FAR;
+        Pose2d RED_CLOSE = Constants.ShootingPoses.RED_CLOSE;
+        Pose2d RED_FAR = Constants.ShootingPoses.RED_FAR;
 
         double CLOSE_SHOOTER_POWER = Constants.ShootingPower.CLOSE;
         double FAR_SHOOTER_POWER = Constants.ShootingPower.FAR;
 
-        AutoBuilder autoBuilder = new AutoBuilder(hardwareMap, beginPose, AutoBuilder.Alliance.BLUE);
+        AutoBuilder autoBuilder = new AutoBuilder(hardwareMap, beginPose, AutoBuilder.Alliance.RED);
 
         waitForStart();
 
         autoBuilder
-                .moveAndShoot(FAR_SHOOTER_POWER, 3, BLUE_FAR)
-                .alignWithArtifacts(21)
+                .moveAndShoot(CLOSE_SHOOTER_POWER, 3, RED_CLOSE)
+                .alignWithArtifacts(23)
                 .straightIntake()
-                .moveAndShoot(FAR_SHOOTER_POWER, 3, BLUE_FAR)
+                .moveAndShoot(CLOSE_SHOOTER_POWER, 3, RED_CLOSE)
                 .alignWithArtifacts(22)
                 .straightIntake()
-                .moveAndShoot(FAR_SHOOTER_POWER, 3, BLUE_FAR)
-                .alignWithArtifacts(21)
+                .moveAndShoot(CLOSE_SHOOTER_POWER, 3, RED_CLOSE)
+                .alignWithArtifacts(22)
                 .build();
     }
 }

@@ -306,7 +306,7 @@ public final class MecanumDrive {
             if (
                     (
                             t >= timeTrajectory.duration
-                            && error.position.norm() < 2
+                            && error.position.norm() < 3
                             && robotVelRobot.linearVel.norm() < 0.5
                     )
                     || t >= timeTrajectory.duration + 1

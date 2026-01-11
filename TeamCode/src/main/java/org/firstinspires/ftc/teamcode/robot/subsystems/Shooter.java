@@ -215,8 +215,17 @@ public class Shooter implements Subsystem {
                 double vel = flywheel.getVelocity();
                 packet.put("shooterVelocity", vel);
 
-                // update shooter ready status
-                robotState.shooterReady = targetVel != 0 && isReady();
+                if (targetVel != 0) {
+                    if (isReady()) {
+                        robotState.set(RobotState.State.SHOOTING_READY);
+                    }
+                    else {
+                        robotState.set(RobotState.State.SPINNING_UP);
+                    }
+                }
+                else {
+                    robotState.set(RobotState.State.IDLE);
+                }
 
                 // run indefinitely
                 return true;
