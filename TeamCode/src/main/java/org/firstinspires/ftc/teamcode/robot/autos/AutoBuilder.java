@@ -61,12 +61,8 @@ public class AutoBuilder {
     private final MecanumDrive drive;
     private final Robot robot;
     private final Alliance alliance;
-
-    private Pose2d startPose;
-
     private final List<Action> actions = new ArrayList<>();
     private final List<Integer> availableMotifs = new ArrayList<>(List.of(21, 22, 23));
-
     private int motifID = -1;
 
     /* Constructor */
@@ -81,8 +77,6 @@ public class AutoBuilder {
         this.robot = new Robot(hardwareMap, new RobotState());
         this.alliance = alliance;
         this.side = side;
-        this.startPose = startPose;
-
         drive.localizer.setPose(startPose);
     }
 
@@ -151,6 +145,54 @@ public class AutoBuilder {
                                     currentPose.heading.toDouble()
                             )
                             .build();
+                }
+
+                return inner.run(packet);
+            }
+        });
+
+        actions.add(robot.intake.intake(0));
+
+        return this;
+    }
+
+    public AutoBuilder straightIntake(boolean usingMotif) {
+        double y = (alliance == Alliance.BLUE) ? -55 : 55;
+
+        actions.add(robot.intake.intake(1));
+
+        actions.add(new Action() {
+
+            private Action inner = null;
+
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+
+                // Build ONCE
+                if (inner == null) {
+
+                    Pose2d currentPose = drive.localizer.getPose();
+
+                    if (motifID == 22) {
+                        inner = drive.actionBuilder(currentPose)
+                                .strafeToLinearHeading(
+                                        new Vector2d(currentPose.position.x, y),
+                                        currentPose.heading.toDouble()
+                                )
+                                .strafeToLinearHeading(
+                                        new Vector2d(currentPose.position.x, currentPose.position.y),
+                                        currentPose.heading.toDouble()
+                                )
+                                .build();
+                    }
+                    else {
+                        inner = drive.actionBuilder(currentPose)
+                                .strafeToLinearHeading(
+                                        new Vector2d(currentPose.position.x, y),
+                                        currentPose.heading.toDouble()
+                                )
+                                .build();
+                    }
                 }
 
                 return inner.run(packet);
@@ -292,24 +334,56 @@ public class AutoBuilder {
 
                     int selected;
 
-                    // Prefer vision result
-                    if (motifID != -1) {
-                        selected = motifID;
-                        packet.put("Align", "using vision motif " + selected);
-                        motifID = -1;
+                    if (availableMotifs.isEmpty()) {
+                        throw new IllegalStateException("No motifs remaining");
                     }
-                    // Otherwise use side-based rule
-                    else {
-                        if (availableMotifs.isEmpty()) {
-                            throw new IllegalStateException("No motifs remaining");
-                        }
 
-                        selected = (side == Side.CLOSE)
-                                ? availableMotifs.stream().max(Integer::compare).get()
-                                : availableMotifs.stream().min(Integer::compare).get();
+                    selected = (side == Side.CLOSE)
+                            ? availableMotifs.stream().max(Integer::compare).get()
+                            : availableMotifs.stream().min(Integer::compare).get();
 
-                        packet.put("Align", "fallback side=" + side + " motif=" + selected);
-                    }
+                    packet.put("Align", "aligning with motif " + selected);
+
+                    availableMotifs.remove(Integer.valueOf(selected));
+
+                    double x = IntakePose.fromId(selected).getX();
+                    double y = (alliance == Alliance.BLUE) ? -18 : 18;
+                    double heading = Math.toRadians(
+                            (alliance == Alliance.BLUE) ? 270 : 90
+                    );
+
+                    Pose2d currentPose = drive.localizer.getPose();
+
+                    inner = drive.actionBuilder(currentPose)
+                            .strafeToLinearHeading(
+                                    new Vector2d(x, y),
+                                    heading
+                            )
+                            .build();
+                }
+
+                return inner.run(packet);
+            }
+        });
+
+        return this;
+    }
+
+    public AutoBuilder alignWithArtifacts(boolean usingMotif) {
+        actions.add(new Action() {
+
+            private Action inner = null;
+
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+
+                // Build ONCE
+                if (inner == null) {
+
+                    int selected;
+
+                    selected = motifID;
+                    packet.put("Align", "using vision motif " + selected);
 
                     availableMotifs.remove(Integer.valueOf(selected));
 
