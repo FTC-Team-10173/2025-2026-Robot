@@ -25,23 +25,22 @@ public final class BlueFar extends LinearOpMode {
                 startPose,
                 AutoBuilder.Alliance.BLUE,
                 AutoBuilder.Side.FAR
-        );
+        )
+                .moveAndShoot(FAR_POWER, FEED_TIME, BLUE_FAR)
+                .alignWithArtifactsDeferred()
+                .straightIntake()
+                .moveAndShoot(FAR_POWER, FEED_TIME, BLUE_FAR)
+                .alignWithArtifactsDeferred()
+                .straightIntake()
+                .moveAndShoot(FAR_POWER, FEED_TIME, BLUE_FAR)
+                .moveToPose(PARK);
 
         waitForStart();
 
         if (isStopRequested()) return;
 
         autoBuilder
-                .moveAndShoot(FAR_POWER, FEED_TIME, BLUE_FAR)
-                .alignWithArtifactsDeferred()
-                .straightIntake()
-                .moveAndShoot(FAR_POWER, FEED_TIME, BLUE_FAR)
-                .alignWithArtifactsDeferred()
-                .straightIntake()
-                .moveAndShoot(FAR_POWER, FEED_TIME, BLUE_FAR)
-                .moveToPose(PARK)
-                .run();
-
-        autoBuilder.stop();
+                .run()
+                .stop();
     }
 }

@@ -25,23 +25,22 @@ public final class BlueClose extends LinearOpMode {
                 startPose,
                 AutoBuilder.Alliance.BLUE,
                 AutoBuilder.Side.CLOSE
-        );
+        )
+                .moveAndShoot(CLOSE_POWER, FEED_TIME, BLUE_CLOSE)
+                .alignWithArtifactsDeferred()
+                .straightIntake()
+                .moveAndShoot(CLOSE_POWER, FEED_TIME, BLUE_CLOSE)
+                .alignWithArtifactsDeferred()
+                .straightIntake()
+                .moveAndShoot(CLOSE_POWER, FEED_TIME, BLUE_CLOSE)
+                .moveToPose(PARK);
 
         waitForStart();
 
         if (isStopRequested()) return;
 
         autoBuilder
-                .moveAndShoot(CLOSE_POWER, FEED_TIME, BLUE_CLOSE)
-                .alignWithArtifactsDeferred()
-                .straightIntake()
-                .moveAndShoot(CLOSE_POWER, FEED_TIME, BLUE_CLOSE)
-                .alignWithArtifactsDeferred()
-                .straightIntake()
-                .moveAndShoot(CLOSE_POWER, FEED_TIME, BLUE_CLOSE)
-                .moveToPose(PARK)
-                .run();
-
-        autoBuilder.stop();
+                .run()
+                .stop();
     }
 }

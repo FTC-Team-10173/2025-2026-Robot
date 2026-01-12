@@ -25,13 +25,7 @@ public final class Test extends LinearOpMode {
                 startPose,
                 AutoBuilder.Alliance.BLUE,
                 AutoBuilder.Side.CLOSE
-        );
-
-        waitForStart();
-
-        if (isStopRequested()) return;
-
-        autoBuilder
+        )
                 .moveAndShoot(CLOSE_POWER, FEED_TIME, BLUE_CLOSE)
                 .moveToMotif(BLUE_CLOSE)
                 .alignWithArtifactsDeferred()
@@ -43,9 +37,14 @@ public final class Test extends LinearOpMode {
                 .alignWithArtifactsDeferred()
                 .straightIntake()
                 .moveAndShoot(CLOSE_POWER, FEED_TIME, BLUE_CLOSE)
-                .moveToPose(PARK)
-                .run();
+                .moveToPose(PARK);
 
-        autoBuilder.stop();
+        waitForStart();
+
+        if (isStopRequested()) return;
+
+        autoBuilder
+                .run()
+                .stop();
     }
 }

@@ -244,8 +244,9 @@ public class AutoBuilder {
         );
     }
 
-    public void run() {
+    public AutoBuilder run() {
         Actions.runBlocking(build());
+        return  this;
     }
 
     public void stop() {

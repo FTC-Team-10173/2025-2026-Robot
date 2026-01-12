@@ -25,23 +25,22 @@ public final class RedFar extends LinearOpMode {
                 startPose,
                 AutoBuilder.Alliance.RED,
                 AutoBuilder.Side.FAR
-        );
+        )
+                .moveAndShoot(FAR_POWER, FEED_TIME, RED_FAR)
+                .alignWithArtifactsDeferred()
+                .straightIntake()
+                .moveAndShoot(FAR_POWER, FEED_TIME, RED_FAR)
+                .alignWithArtifactsDeferred()
+                .straightIntake()
+                .moveAndShoot(FAR_POWER, FEED_TIME, RED_FAR)
+                .moveToPose(PARK);
 
         waitForStart();
 
         if (isStopRequested()) return;
 
         autoBuilder
-                .moveAndShoot(FAR_POWER, FEED_TIME, RED_FAR)
-                .alignWithArtifactsDeferred()
-                .straightIntake()
-                .moveAndShoot(FAR_POWER, FEED_TIME, RED_FAR)
-                .alignWithArtifactsDeferred()
-                .straightIntake()
-                .moveAndShoot(FAR_POWER, FEED_TIME, RED_FAR)
-                .moveToPose(PARK)
-                .run();
-
-        autoBuilder.stop();
+                .run()
+                .stop();
     }
 }

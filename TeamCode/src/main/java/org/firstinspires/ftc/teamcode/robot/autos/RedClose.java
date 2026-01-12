@@ -25,23 +25,22 @@ public final class RedClose extends LinearOpMode {
                 startPose,
                 AutoBuilder.Alliance.RED,
                 AutoBuilder.Side.CLOSE
-        );
+        )
+                .moveAndShoot(CLOSE_POWER, FEED_TIME, RED_CLOSE)
+                .alignWithArtifactsDeferred()
+                .straightIntake()
+                .moveAndShoot(CLOSE_POWER, FEED_TIME, RED_CLOSE)
+                .alignWithArtifactsDeferred()
+                .straightIntake()
+                .moveAndShoot(CLOSE_POWER, FEED_TIME, RED_CLOSE)
+                .moveToPose(PARK);
 
         waitForStart();
 
         if (isStopRequested()) return;
 
         autoBuilder
-                .moveAndShoot(CLOSE_POWER, FEED_TIME, RED_CLOSE)
-                .alignWithArtifactsDeferred()
-                .straightIntake()
-                .moveAndShoot(CLOSE_POWER, FEED_TIME, RED_CLOSE)
-                .alignWithArtifactsDeferred()
-                .straightIntake()
-                .moveAndShoot(CLOSE_POWER, FEED_TIME, RED_CLOSE)
-                .moveToPose(PARK)
-                .run();
-
-        autoBuilder.stop();
+                .run()
+                .stop();
     }
 }
