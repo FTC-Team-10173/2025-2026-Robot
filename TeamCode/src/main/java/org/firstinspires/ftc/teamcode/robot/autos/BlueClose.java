@@ -6,33 +6,39 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.robot.Constants;
 
-@Autonomous(name="Blue Close", group="2025-2026")
+@Autonomous(name = "Blue Close", group = "2025-2026")
 public final class BlueClose extends LinearOpMode {
+
     @Override
-    public void runOpMode() throws InterruptedException {
+    public void runOpMode() {
 
-        // starting pose
-        Pose2d beginPose = new Pose2d(-54, -48, Math.toRadians(225));
-
+        Pose2d startPose = new Pose2d(-54, -48, Math.toRadians(225));
         Pose2d BLUE_CLOSE = Constants.ShootingPoses.BLUE_CLOSE;
-        Pose2d BLUE_FAR = Constants.ShootingPoses.BLUE_FAR;
 
-        double CLOSE_SHOOTER_POWER = Constants.ShootingPower.CLOSE;
-        double FAR_SHOOTER_POWER = Constants.ShootingPower.FAR;
+        double CLOSE_POWER = Constants.ShootingPower.CLOSE;
 
-        AutoBuilder autoBuilder = new AutoBuilder(hardwareMap, beginPose, AutoBuilder.Alliance.BLUE);
+        AutoBuilder autoBuilder = new AutoBuilder(
+                hardwareMap,
+                startPose,
+                AutoBuilder.Alliance.BLUE,
+                AutoBuilder.Side.CLOSE
+        );
 
         waitForStart();
 
+        if (isStopRequested()) return;
+
         autoBuilder
-                .moveAndShoot(CLOSE_SHOOTER_POWER, 3, BLUE_CLOSE)
-                .alignWithArtifacts(23)
+                .moveAndShoot(CLOSE_POWER, 3, BLUE_CLOSE)
+                .alignWithArtifactsDeferred()
                 .straightIntake()
-                .moveAndShoot(CLOSE_SHOOTER_POWER, 3, BLUE_CLOSE)
-                .alignWithArtifacts(22)
+                .moveAndShoot(CLOSE_POWER, 3, BLUE_CLOSE)
+                .alignWithArtifactsDeferred()
                 .straightIntake()
-                .moveAndShoot(CLOSE_SHOOTER_POWER, 3, BLUE_CLOSE)
-                .alignWithArtifacts(22)
-                .build();
+                .moveAndShoot(CLOSE_POWER, 3, BLUE_CLOSE)
+                .moveToPose(new Pose2d(-60, -12, Math.toRadians(90)))
+                .run();
+
+        autoBuilder.stop();
     }
 }

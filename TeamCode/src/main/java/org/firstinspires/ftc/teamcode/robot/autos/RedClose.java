@@ -6,33 +6,39 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.robot.Constants;
 
-@Autonomous(name="Red Close", group="2025-2026")
+@Autonomous(name = "Red Close", group = "2025-2026")
 public final class RedClose extends LinearOpMode {
+
     @Override
-    public void runOpMode() throws InterruptedException {
+    public void runOpMode() {
 
-        // starting pose
-        Pose2d beginPose = new Pose2d(-54, 48, Math.toRadians(135));
-
+        Pose2d startPose = new Pose2d(-54, -48, Math.toRadians(225));
         Pose2d RED_CLOSE = Constants.ShootingPoses.RED_CLOSE;
-        Pose2d RED_FAR = Constants.ShootingPoses.RED_FAR;
 
-        double CLOSE_SHOOTER_POWER = Constants.ShootingPower.CLOSE;
-        double FAR_SHOOTER_POWER = Constants.ShootingPower.FAR;
+        double CLOSE_POWER = Constants.ShootingPower.CLOSE;
 
-        AutoBuilder autoBuilder = new AutoBuilder(hardwareMap, beginPose, AutoBuilder.Alliance.RED);
+        AutoBuilder autoBuilder = new AutoBuilder(
+                hardwareMap,
+                startPose,
+                AutoBuilder.Alliance.RED,
+                AutoBuilder.Side.CLOSE
+        );
 
         waitForStart();
 
+        if (isStopRequested()) return;
+
         autoBuilder
-                .moveAndShoot(CLOSE_SHOOTER_POWER, 3, RED_CLOSE)
-                .alignWithArtifacts(23)
+                .moveAndShoot(CLOSE_POWER, 3, RED_CLOSE)
+                .alignWithArtifactsDeferred()
                 .straightIntake()
-                .moveAndShoot(CLOSE_SHOOTER_POWER, 3, RED_CLOSE)
-                .alignWithArtifacts(22)
+                .moveAndShoot(CLOSE_POWER, 3, RED_CLOSE)
+                .alignWithArtifactsDeferred()
                 .straightIntake()
-                .moveAndShoot(CLOSE_SHOOTER_POWER, 3, RED_CLOSE)
-                .alignWithArtifacts(22)
-                .build();
+                .moveAndShoot(CLOSE_POWER, 3, RED_CLOSE)
+                .moveToPose(new Pose2d(-60, 12, Math.toRadians(270)))
+                .run();
+
+        autoBuilder.stop();
     }
 }

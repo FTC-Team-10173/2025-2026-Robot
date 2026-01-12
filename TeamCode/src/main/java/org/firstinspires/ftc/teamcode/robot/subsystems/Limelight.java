@@ -41,6 +41,7 @@ public class Limelight implements Subsystem {
         public double tx;
         public double ty;
         public double ta;
+        public int motifID;
         public LLResult result;
     }
 
@@ -115,6 +116,14 @@ public class Limelight implements Subsystem {
             return;
         }
 
+        for (FiducialResult fiducial : fiducials) {
+            int id = fiducial.getFiducialId(); // The ID number of the fiducial
+            if (id == 21 || id == 22 || id == 23) {
+                results.motifID = id;
+                break;
+            }
+        }
+
         // Use the best / closest fiducial
         FiducialResult fiducial = fiducials.get(0);
         Pose3D robotToTag = fiducial.getRobotPoseTargetSpace();
@@ -137,15 +146,22 @@ public class Limelight implements Subsystem {
         results.ta = fiducial.getTargetArea();
     }
 
+    public int getMotifID() {
+        return results.hasTarget ? results.motifID : -1;
+    }
+
     @Override
     public void updateTelemetry(Telemetry telemetry) {
         telemetry.addLine(); // Separator from other data
         telemetry.addData(getName() + " State", currentState);
-        telemetry.addData(getName() + " Pipeline", "%d", llStatus.getPipelineIndex());
-        telemetry.addData(getName() + " FPS", "%.0f", llStatus.getFps());
-        telemetry.addData(getName() + " RAM", "%.1f", llStatus.getRam());
-        telemetry.addData(getName() + " CPU", "%.1f", llStatus.getCpu());
-        telemetry.addData(getName() + " TEMP", "%.1f", llStatus.getTemp());
+
+        if (llStatus != null) {
+            telemetry.addData(getName() + " Pipeline", "%d", llStatus.getPipelineIndex());
+            telemetry.addData(getName() + " FPS", "%.0f", llStatus.getFps());
+            telemetry.addData(getName() + " RAM", "%.1f", llStatus.getRam());
+            telemetry.addData(getName() + " CPU", "%.1f", llStatus.getCpu());
+            telemetry.addData(getName() + " TEMP", "%.1f", llStatus.getTemp());
+        }
 
         if (botpose.result != null) {
             telemetry.addData(getName() + "Pose X", "%.1f", botpose.x);

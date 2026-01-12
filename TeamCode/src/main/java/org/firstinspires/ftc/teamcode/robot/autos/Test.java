@@ -6,22 +6,22 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.robot.Constants;
 
-@Autonomous(name = "Red Far", group = "2025-2026")
-public final class RedFar extends LinearOpMode {
+@Autonomous(name = "Test Auto", group = "2025-2026")
+public final class Test extends LinearOpMode {
 
     @Override
     public void runOpMode() {
 
         Pose2d startPose = new Pose2d(-54, -48, Math.toRadians(225));
-        Pose2d RED_FAR = Constants.ShootingPoses.RED_FAR;
+        Pose2d BLUE_CLOSE = Constants.ShootingPoses.BLUE_CLOSE;
 
-        double FAR_POWER = Constants.ShootingPower.FAR;
+        double CLOSE_POWER = Constants.ShootingPower.CLOSE;
 
         AutoBuilder autoBuilder = new AutoBuilder(
                 hardwareMap,
                 startPose,
-                AutoBuilder.Alliance.RED,
-                AutoBuilder.Side.FAR
+                AutoBuilder.Alliance.BLUE,
+                AutoBuilder.Side.CLOSE
         );
 
         waitForStart();
@@ -29,14 +29,18 @@ public final class RedFar extends LinearOpMode {
         if (isStopRequested()) return;
 
         autoBuilder
-                .moveAndShoot(FAR_POWER, 3, RED_FAR)
+                .moveAndShoot(CLOSE_POWER, 3, BLUE_CLOSE)
+                .moveToMotif(BLUE_CLOSE)
                 .alignWithArtifactsDeferred()
                 .straightIntake()
-                .moveAndShoot(FAR_POWER, 3, RED_FAR)
+                .moveAndShoot(CLOSE_POWER, 3, BLUE_CLOSE)
                 .alignWithArtifactsDeferred()
                 .straightIntake()
-                .moveAndShoot(FAR_POWER, 3, RED_FAR)
-                .moveToPose(new Pose2d(60, 36, Math.toRadians(270)))
+                .moveAndShoot(CLOSE_POWER, 3, BLUE_CLOSE)
+                .alignWithArtifactsDeferred()
+                .straightIntake()
+                .moveAndShoot(CLOSE_POWER, 3, BLUE_CLOSE)
+                .moveToPose(new Pose2d(-60, -12, Math.toRadians(90)))
                 .run();
 
         autoBuilder.stop();
