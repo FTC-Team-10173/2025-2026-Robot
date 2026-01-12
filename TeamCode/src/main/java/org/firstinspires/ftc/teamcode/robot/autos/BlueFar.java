@@ -12,10 +12,13 @@ public final class BlueFar extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-        Pose2d startPose = new Pose2d(-54, -48, Math.toRadians(225));
+        Pose2d startPose = Constants.StartingPoses.BLUE_FAR;
         Pose2d BLUE_FAR = Constants.ShootingPoses.BLUE_FAR;
+        Pose2d PARK = Constants.ParkingPoses.BLUE_FAR;
 
         double FAR_POWER = Constants.ShootingPower.FAR;
+
+        double FEED_TIME = Constants.Intake.FEED_TIME_SEC;
 
         AutoBuilder autoBuilder = new AutoBuilder(
                 hardwareMap,
@@ -29,14 +32,14 @@ public final class BlueFar extends LinearOpMode {
         if (isStopRequested()) return;
 
         autoBuilder
-                .moveAndShoot(FAR_POWER, 3, BLUE_FAR)
+                .moveAndShoot(FAR_POWER, FEED_TIME, BLUE_FAR)
                 .alignWithArtifactsDeferred()
                 .straightIntake()
-                .moveAndShoot(FAR_POWER, 3, BLUE_FAR)
+                .moveAndShoot(FAR_POWER, FEED_TIME, BLUE_FAR)
                 .alignWithArtifactsDeferred()
                 .straightIntake()
-                .moveAndShoot(FAR_POWER, 3, BLUE_FAR)
-                .moveToPose(new Pose2d(60, -36, Math.toRadians(90)))
+                .moveAndShoot(FAR_POWER, FEED_TIME, BLUE_FAR)
+                .moveToPose(PARK)
                 .run();
 
         autoBuilder.stop();

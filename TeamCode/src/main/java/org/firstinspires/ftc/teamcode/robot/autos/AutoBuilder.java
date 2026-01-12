@@ -86,7 +86,7 @@ public class AutoBuilder {
     }
 
     /* Shooter Actions */
-    public AutoBuilder moveAndShoot(double power, int feedTime, Pose2d targetPose) {
+    public AutoBuilder moveAndShoot(double power, double feedTime, Pose2d targetPose) {
         actions.add(new ParallelAction(
                         drive.actionBuilder(currentPose)
                                 .strafeToLinearHeading(

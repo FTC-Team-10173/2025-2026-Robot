@@ -21,8 +21,6 @@ public class Intake implements Subsystem {
     Motor intakeMotor;
     ServoEx feedGate;
     DriverControls controls;
-    double beginTs = -1;
-    
     double OPEN_ANGLE;
     double CLOSED_ANGLE;
 
@@ -114,14 +112,15 @@ public class Intake implements Subsystem {
     // feed for a certain time
     public Action feed(double power, double time) {
         return new Action() {
+            private double startTime = -1;
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
                 double t;
-                if (beginTs < 0) {
-                    beginTs = Actions.now();
+                if (startTime < 0) {
+                    startTime = Actions.now();
                     t = 0;
                 } else {
-                    t = Actions.now() - beginTs;
+                    t = Actions.now() - startTime;
                 }
 
                 // set intake and feeder power
@@ -132,7 +131,7 @@ public class Intake implements Subsystem {
                 if (t >= time) {
                     intakeMotor.set(0);
                     feedGate.turnToAngle(CLOSED_ANGLE);
-                    beginTs = -1;
+                    startTime = -1;
                     return false;
                 } else {
                     return true;
@@ -144,14 +143,15 @@ public class Intake implements Subsystem {
     // feed after a delay
     public Action feedDelay(double power, double delay) {
         return new Action() {
+            private double startTime = -1;
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
                 double t;
-                if (beginTs < 0) {
-                    beginTs = Actions.now();
+                if (startTime < 0) {
+                    startTime = Actions.now();
                     t = 0;
                 } else {
-                    t = Actions.now() - beginTs;
+                    t = Actions.now() - startTime;
                 }
 
                 // start feeding after delay
@@ -159,7 +159,7 @@ public class Intake implements Subsystem {
                     // set intake and feeder power
                     intakeMotor.set(power);
                     feedGate.turnToAngle(OPEN_ANGLE);
-                    beginTs = -1;
+                    startTime = -1;
                     return false;
                 } else {
                     return true;
@@ -171,7 +171,6 @@ public class Intake implements Subsystem {
     // feed indefinitely
     public Action feed(double power) {
         return new Action() {
-
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
                 // set intake and feeder power
@@ -186,14 +185,15 @@ public class Intake implements Subsystem {
     // intake for a certain time
     public Action intake(double power, double delay) {
         return new Action() {
+            private double startTime = -1;
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
                 double t;
-                if (beginTs < 0) {
-                    beginTs = Actions.now();
+                if (startTime < 0) {
+                    startTime = Actions.now();
                     t = 0;
                 } else {
-                    t = Actions.now() - beginTs;
+                    t = Actions.now() - startTime;
                 }
 
                 // set intake and feeder power
@@ -201,7 +201,7 @@ public class Intake implements Subsystem {
                 feedGate.turnToAngle(CLOSED_ANGLE);
 
                 if (t >= delay) {
-                    beginTs = -1;
+                    startTime = -1;
                     return false;
                 } else {
                     return true;

@@ -12,10 +12,13 @@ public final class RedClose extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-        Pose2d startPose = new Pose2d(-54, -48, Math.toRadians(225));
+        Pose2d startPose = Constants.StartingPoses.RED_CLOSE;
         Pose2d RED_CLOSE = Constants.ShootingPoses.RED_CLOSE;
+        Pose2d PARK = Constants.ParkingPoses.RED_CLOSE;
 
         double CLOSE_POWER = Constants.ShootingPower.CLOSE;
+
+        double FEED_TIME = Constants.Intake.FEED_TIME_SEC;
 
         AutoBuilder autoBuilder = new AutoBuilder(
                 hardwareMap,
@@ -29,14 +32,14 @@ public final class RedClose extends LinearOpMode {
         if (isStopRequested()) return;
 
         autoBuilder
-                .moveAndShoot(CLOSE_POWER, 3, RED_CLOSE)
+                .moveAndShoot(CLOSE_POWER, FEED_TIME, RED_CLOSE)
                 .alignWithArtifactsDeferred()
                 .straightIntake()
-                .moveAndShoot(CLOSE_POWER, 3, RED_CLOSE)
+                .moveAndShoot(CLOSE_POWER, FEED_TIME, RED_CLOSE)
                 .alignWithArtifactsDeferred()
                 .straightIntake()
-                .moveAndShoot(CLOSE_POWER, 3, RED_CLOSE)
-                .moveToPose(new Pose2d(-60, 12, Math.toRadians(270)))
+                .moveAndShoot(CLOSE_POWER, FEED_TIME, RED_CLOSE)
+                .moveToPose(PARK)
                 .run();
 
         autoBuilder.stop();

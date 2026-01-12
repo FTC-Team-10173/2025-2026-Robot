@@ -12,10 +12,13 @@ public final class RedFar extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-        Pose2d startPose = new Pose2d(-54, -48, Math.toRadians(225));
+        Pose2d startPose = Constants.StartingPoses.RED_FAR;
         Pose2d RED_FAR = Constants.ShootingPoses.RED_FAR;
+        Pose2d PARK = Constants.ParkingPoses.RED_FAR;
 
         double FAR_POWER = Constants.ShootingPower.FAR;
+
+        double FEED_TIME = Constants.Intake.FEED_TIME_SEC;
 
         AutoBuilder autoBuilder = new AutoBuilder(
                 hardwareMap,
@@ -29,14 +32,14 @@ public final class RedFar extends LinearOpMode {
         if (isStopRequested()) return;
 
         autoBuilder
-                .moveAndShoot(FAR_POWER, 3, RED_FAR)
+                .moveAndShoot(FAR_POWER, FEED_TIME, RED_FAR)
                 .alignWithArtifactsDeferred()
                 .straightIntake()
-                .moveAndShoot(FAR_POWER, 3, RED_FAR)
+                .moveAndShoot(FAR_POWER, FEED_TIME, RED_FAR)
                 .alignWithArtifactsDeferred()
                 .straightIntake()
-                .moveAndShoot(FAR_POWER, 3, RED_FAR)
-                .moveToPose(new Pose2d(60, 36, Math.toRadians(270)))
+                .moveAndShoot(FAR_POWER, FEED_TIME, RED_FAR)
+                .moveToPose(PARK)
                 .run();
 
         autoBuilder.stop();
