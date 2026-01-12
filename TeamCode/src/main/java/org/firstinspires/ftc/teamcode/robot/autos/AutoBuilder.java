@@ -62,7 +62,7 @@ public class AutoBuilder {
     private final Robot robot;
     private final Alliance alliance;
 
-    private Pose2d currentPose;
+    private Pose2d startPose;
 
     private final List<Action> actions = new ArrayList<>();
     private final List<Integer> availableMotifs = new ArrayList<>(List.of(21, 22, 23));
@@ -81,7 +81,7 @@ public class AutoBuilder {
         this.robot = new Robot(hardwareMap, new RobotState());
         this.alliance = alliance;
         this.side = side;
-        this.currentPose = startPose;
+        this.startPose = startPose;
 
         drive.localizer.setPose(startPose);
     }
@@ -89,20 +89,35 @@ public class AutoBuilder {
     /* Shooter Actions */
 
     public AutoBuilder moveAndShoot(double power, double feedTime, Pose2d targetPose) {
-        actions.add(new ParallelAction(
-                        drive.actionBuilder(currentPose)
-                                .strafeToLinearHeading(
-                                        new Vector2d(targetPose.position.x, targetPose.position.y),
-                                        targetPose.heading.toDouble()
-                                )
-                                .build(),
-                        robot.shooter.spinUp(power, 1.0)
-                )
-        );
+        actions.add(new Action() {
+
+            private Action inner = null;
+
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+
+                // Build ONCE
+                if (inner == null) {
+
+                    Pose2d currentPose = drive.localizer.getPose();
+
+                    inner = new ParallelAction(
+                            drive.actionBuilder(currentPose)
+                                    .strafeToLinearHeading(
+                                            new Vector2d(targetPose.position.x, targetPose.position.y),
+                                            targetPose.heading.toDouble()
+                                    )
+                                    .build(),
+                            robot.shooter.spinUp(power, 1.0)
+                    );
+                }
+
+                return inner.run(packet);
+            }
+        });
 
         actions.add(robot.intake.feed(1, feedTime));
 
-        currentPose = targetPose;
         return this;
     }
 
@@ -118,18 +133,32 @@ public class AutoBuilder {
 
         actions.add(robot.intake.intake(1));
 
-        actions.add(
-                drive.actionBuilder(currentPose)
-                        .strafeToLinearHeading(
-                                new Vector2d(currentPose.position.x, y),
-                                currentPose.heading.toDouble()
-                        )
-                        .build()
-        );
+        actions.add(new Action() {
+
+            private Action inner = null;
+
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+
+                // Build ONCE
+                if (inner == null) {
+
+                    Pose2d currentPose = drive.localizer.getPose();
+
+                    inner = drive.actionBuilder(currentPose)
+                            .strafeToLinearHeading(
+                                    new Vector2d(currentPose.position.x, y),
+                                    currentPose.heading.toDouble()
+                            )
+                            .build();
+                }
+
+                return inner.run(packet);
+            }
+        });
 
         actions.add(robot.intake.intake(0));
 
-        currentPose = new Pose2d(currentPose.position.x, y, currentPose.heading.toDouble());
         return this;
     }
 
@@ -137,14 +166,31 @@ public class AutoBuilder {
 
     public AutoBuilder moveToMotif(Pose2d shootPose) {
         int readHeading = side.getHeading();
-        readHeading = (alliance == AutoBuilder.Alliance.BLUE) ? (180 - readHeading) : (180 + readHeading);
+        int finalReadHeading = (alliance == AutoBuilder.Alliance.BLUE) ? (180 - readHeading) : (180 + readHeading);
 
-        actions.add(new ParallelAction(
-                drive.actionBuilder(currentPose)
-                        .strafeToLinearHeading(new Vector2d(shootPose.position.x, shootPose.position.y), Math.toRadians(readHeading))
-                        .build(),
-                readMotif()
-        ));
+        actions.add(new Action() {
+            private Action inner = null;
+
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+
+                // Build ONCE
+                if (inner == null) {
+
+                    Pose2d currentPose = drive.localizer.getPose();
+
+                    inner = new ParallelAction(
+                            drive.actionBuilder(currentPose)
+                                    .strafeToLinearHeading(new Vector2d(shootPose.position.x, shootPose.position.y), Math.toRadians(finalReadHeading))
+                                    .build(),
+                            readMotif()
+                    );
+                }
+
+                return inner.run(packet);
+            }
+        });
+
         return this;
     }
 
@@ -167,9 +213,73 @@ public class AutoBuilder {
         };
     }
 
+    /* Gate Actions */
+
+    public AutoBuilder openGate(Pose2d gatePose) {
+        actions.add(robot.intake.intake(1));
+
+        double offsetY = (alliance == AutoBuilder.Alliance.BLUE) ? 6 : -6;
+
+        actions.add(new Action() {
+            private Action inner = null;
+
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+
+                // Build ONCE
+                if (inner == null) {
+
+                    Pose2d currentPose = drive.localizer.getPose();
+
+                    inner = drive.actionBuilder(currentPose)
+                            .strafeToLinearHeading(new Vector2d(gatePose.position.x, gatePose.position.y + offsetY), Math.toRadians(gatePose.heading.toDouble()))
+                            .strafeToLinearHeading(new Vector2d(gatePose.position.x, gatePose.position.y), Math.toRadians(gatePose.heading.toDouble()))
+                            .build();
+                }
+
+                return inner.run(packet);
+            }
+        });
+
+        actions.add(wait(0.5));
+
+        return this;
+    }
+
+    public AutoBuilder intakeGate(Pose2d gatePose, double intakeTime) {
+        actions.add(robot.intake.intake(1));
+
+        double offsetY = (alliance == AutoBuilder.Alliance.BLUE) ? 6 : -6;
+
+        actions.add(new Action() {
+            private Action inner = null;
+
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+
+                // Build ONCE
+                if (inner == null) {
+
+                    Pose2d currentPose = drive.localizer.getPose();
+
+                    inner = drive.actionBuilder(currentPose)
+                            .strafeToLinearHeading(new Vector2d(gatePose.position.x, gatePose.position.y + offsetY), Math.toRadians(gatePose.heading.toDouble()))
+                            .strafeToLinearHeading(new Vector2d(gatePose.position.x, gatePose.position.y), Math.toRadians(gatePose.heading.toDouble()))
+                            .build();
+                }
+
+                return inner.run(packet);
+            }
+        });
+
+        actions.add(robot.intake.intake(1, intakeTime));
+
+        return this;
+    }
+
     /* Movement Actions */
 
-    public AutoBuilder alignWithArtifactsDeferred() {
+    public AutoBuilder alignWithArtifacts() {
         actions.add(new Action() {
 
             private Action inner = null;
@@ -209,14 +319,14 @@ public class AutoBuilder {
                             (alliance == Alliance.BLUE) ? 270 : 90
                     );
 
+                    Pose2d currentPose = drive.localizer.getPose();
+
                     inner = drive.actionBuilder(currentPose)
                             .strafeToLinearHeading(
                                     new Vector2d(x, y),
                                     heading
                             )
                             .build();
-
-                    currentPose = new Pose2d(x, y, heading);
                 }
 
                 return inner.run(packet);
@@ -227,15 +337,51 @@ public class AutoBuilder {
     }
 
     public AutoBuilder moveToPose(Pose2d targetPose) {
-        actions.add(
-                drive.actionBuilder(currentPose)
-                        .strafeToLinearHeading(
-                                new Vector2d(targetPose.position.x, targetPose.position.y),
-                                targetPose.heading.toDouble()
-                        )
-                        .build()
-        );
+        actions.add(new Action() {
+            private Action inner = null;
+
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+
+                // Build ONCE
+                if (inner == null) {
+
+                    Pose2d currentPose = drive.localizer.getPose();
+
+                    inner = drive.actionBuilder(currentPose)
+                            .strafeToLinearHeading(
+                                    new Vector2d(targetPose.position.x, targetPose.position.y),
+                                    targetPose.heading.toDouble()
+                            )
+                            .build();
+                }
+
+                return inner.run(packet);
+            }
+        });
+
         return this;
+    }
+
+    /* Utility */
+
+    public Action wait(double time) {
+        return new Action() {
+            private double startTime = -1;
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                double t;
+                if (startTime < 0) {
+                    startTime = com.acmerobotics.roadrunner.Actions.now();
+                    t = 0;
+                } else {
+                    t = com.acmerobotics.roadrunner.Actions.now() - startTime;
+                }
+
+                // stop after time has elapsed
+                return !(t >= time);
+            }
+        };
     }
 
     /* Finalization */

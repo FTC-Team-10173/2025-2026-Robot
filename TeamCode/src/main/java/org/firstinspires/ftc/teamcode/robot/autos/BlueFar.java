@@ -27,10 +27,10 @@ public final class BlueFar extends LinearOpMode {
                 AutoBuilder.Side.FAR
         )
                 .moveAndShoot(FAR_POWER, FEED_TIME, BLUE_FAR)
-                .alignWithArtifactsDeferred()
+                .alignWithArtifacts()
                 .straightIntake()
                 .moveAndShoot(FAR_POWER, FEED_TIME, BLUE_FAR)
-                .alignWithArtifactsDeferred()
+                .alignWithArtifacts()
                 .straightIntake()
                 .moveAndShoot(FAR_POWER, FEED_TIME, BLUE_FAR)
                 .moveToPose(PARK);

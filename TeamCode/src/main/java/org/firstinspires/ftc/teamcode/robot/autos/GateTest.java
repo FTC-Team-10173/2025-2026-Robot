@@ -6,15 +6,16 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.robot.Constants;
 
-@Autonomous(name = "Test Auto", group = "2025-2026")
-public final class Test extends LinearOpMode {
+@Autonomous(name = "GateTest Auto", group = "2025-2026")
+public final class GateTest extends LinearOpMode {
 
     @Override
     public void runOpMode() {
 
         Pose2d startPose = Constants.StartingPoses.BLUE_CLOSE;
         Pose2d BLUE_CLOSE = Constants.ShootingPoses.BLUE_CLOSE;
-        Pose2d PARK = Constants.ParkingPoses.BLUE_CLOSE;
+        Pose2d OPEN_GATE = Constants.GatePoses.BLUE_OPEN;
+        Pose2d INTAKE_GATE = Constants.GatePoses.BLUE_INTAKE;
 
         double CLOSE_POWER = Constants.ShootingPower.CLOSE;
 
@@ -27,17 +28,9 @@ public final class Test extends LinearOpMode {
                 AutoBuilder.Side.CLOSE
         )
                 .moveAndShoot(CLOSE_POWER, FEED_TIME, BLUE_CLOSE)
-                .moveToMotif(BLUE_CLOSE)
-                .alignWithArtifactsDeferred()
-                .straightIntake()
+                .intakeGate(INTAKE_GATE, FEED_TIME)
                 .moveAndShoot(CLOSE_POWER, FEED_TIME, BLUE_CLOSE)
-                .alignWithArtifactsDeferred()
-                .straightIntake()
-                .moveAndShoot(CLOSE_POWER, FEED_TIME, BLUE_CLOSE)
-                .alignWithArtifactsDeferred()
-                .straightIntake()
-                .moveAndShoot(CLOSE_POWER, FEED_TIME, BLUE_CLOSE)
-                .moveToPose(PARK);
+                .openGate(OPEN_GATE);
 
         waitForStart();
 

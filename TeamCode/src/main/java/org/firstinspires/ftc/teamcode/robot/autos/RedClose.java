@@ -27,10 +27,10 @@ public final class RedClose extends LinearOpMode {
                 AutoBuilder.Side.CLOSE
         )
                 .moveAndShoot(CLOSE_POWER, FEED_TIME, RED_CLOSE)
-                .alignWithArtifactsDeferred()
+                .alignWithArtifacts()
                 .straightIntake()
                 .moveAndShoot(CLOSE_POWER, FEED_TIME, RED_CLOSE)
-                .alignWithArtifactsDeferred()
+                .alignWithArtifacts()
                 .straightIntake()
                 .moveAndShoot(CLOSE_POWER, FEED_TIME, RED_CLOSE)
                 .moveToPose(PARK);

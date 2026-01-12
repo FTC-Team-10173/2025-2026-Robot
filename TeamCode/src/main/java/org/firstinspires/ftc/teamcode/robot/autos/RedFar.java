@@ -27,10 +27,10 @@ public final class RedFar extends LinearOpMode {
                 AutoBuilder.Side.FAR
         )
                 .moveAndShoot(FAR_POWER, FEED_TIME, RED_FAR)
-                .alignWithArtifactsDeferred()
+                .alignWithArtifacts()
                 .straightIntake()
                 .moveAndShoot(FAR_POWER, FEED_TIME, RED_FAR)
-                .alignWithArtifactsDeferred()
+                .alignWithArtifacts()
                 .straightIntake()
                 .moveAndShoot(FAR_POWER, FEED_TIME, RED_FAR)
                 .moveToPose(PARK);

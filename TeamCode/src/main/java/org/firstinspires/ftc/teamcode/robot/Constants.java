@@ -39,6 +39,14 @@ public final class Constants {
         public static final Pose2d RED_FAR = new Pose2d(60, 36, Math.toRadians(270));
     }
 
+    public static class GatePoses {
+        public static final Pose2d BLUE_OPEN = new Pose2d(0, -54, Math.toRadians(270));
+        public static final Pose2d BLUE_INTAKE = new Pose2d(6, -60, Math.toRadians(225));
+        public static final Pose2d RED_OPEN = new Pose2d(0, 54, Math.toRadians(90));
+        public static final Pose2d RED_INTAKE = new Pose2d(6, 60, Math.toRadians(135));
+
+    }
+
     public static class Gate {
         public static final double MIN_ANGLE = 0;
         public static final double MAX_ANGLE = 1800;

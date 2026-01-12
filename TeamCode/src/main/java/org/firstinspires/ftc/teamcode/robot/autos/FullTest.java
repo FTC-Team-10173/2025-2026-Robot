@@ -6,8 +6,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.robot.Constants;
 
-@Autonomous(name = "Blue Close", group = "2025-2026")
-public final class BlueClose extends LinearOpMode {
+@Autonomous(name = "FullTest Auto", group = "2025-2026")
+public final class FullTest extends LinearOpMode {
 
     @Override
     public void runOpMode() {
@@ -26,6 +26,10 @@ public final class BlueClose extends LinearOpMode {
                 AutoBuilder.Alliance.BLUE,
                 AutoBuilder.Side.CLOSE
         )
+                .moveAndShoot(CLOSE_POWER, FEED_TIME, BLUE_CLOSE)
+                .moveToMotif(BLUE_CLOSE)
+                .alignWithArtifacts()
+                .straightIntake()
                 .moveAndShoot(CLOSE_POWER, FEED_TIME, BLUE_CLOSE)
                 .alignWithArtifacts()
                 .straightIntake()
