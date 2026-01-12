@@ -70,6 +70,7 @@ public class AutoBuilder {
     private int motifID = -1;
 
     /* Constructor */
+
     public AutoBuilder(
             HardwareMap hardwareMap,
             Pose2d startPose,
@@ -86,6 +87,7 @@ public class AutoBuilder {
     }
 
     /* Shooter Actions */
+
     public AutoBuilder moveAndShoot(double power, double feedTime, Pose2d targetPose) {
         actions.add(new ParallelAction(
                         drive.actionBuilder(currentPose)
@@ -110,6 +112,7 @@ public class AutoBuilder {
     }
 
     /* Intake Actions */
+
     public AutoBuilder straightIntake() {
         double y = (alliance == Alliance.BLUE) ? -55 : 55;
 
@@ -131,6 +134,7 @@ public class AutoBuilder {
     }
 
     /* Motif Actions */
+
     public AutoBuilder moveToMotif(Pose2d shootPose) {
         int readHeading = side.getHeading();
         readHeading = (alliance == AutoBuilder.Alliance.BLUE) ? (180 - readHeading) : (180 + readHeading);
