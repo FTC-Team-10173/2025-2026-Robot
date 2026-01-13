@@ -24,6 +24,9 @@ public class Intake implements Subsystem {
     double OPEN_ANGLE;
     double CLOSED_ANGLE;
 
+    private final ElapsedTime timer = new ElapsedTime();
+    private boolean timed = false;
+
     // TeleOp constructor
     public Intake(HardwareMap hardwareMap, DriverControls controls) {
         // initialize motor
@@ -85,7 +88,7 @@ public class Intake implements Subsystem {
         intakeMotor.set(0);
     }
 
-    public void updateTelemetry(Telemetry telemetry) {
+    public void updateTelemetry(Telemetry telemetry, TelemetryPacket packet) {
         telemetry.addLine();
         telemetry.addData(getName() + " Intake Power", "%.2f", intakeMotor.get());
         telemetry.addData(getName() + " Gate Angle", "%.2f", feedGate.getAngle(AngleUnit.DEGREES));
@@ -95,15 +98,21 @@ public class Intake implements Subsystem {
     // set intake and feeder power
     public void setPower(double half, boolean full) {
         if (full) { // full intake
-            intakeMotor.set(1);
+            if (!timed) {timed = true; timer.reset();}
             feedGate.turnToAngle(OPEN_ANGLE);
+            if (timer.milliseconds() >= 800) {
+                intakeMotor.set(1);
+            }
         } else if (half > 0.1) { // bottom half intake (motor only)
+            timed = false;
             intakeMotor.set(half);
             feedGate.turnToAngle(CLOSED_ANGLE);
         } else if (half < -0.1) { // full outtake
+            timed = false;
             intakeMotor.set(half);
             feedGate.turnToAngle(CLOSED_ANGLE);
         } else { // stop
+            timed = false;
             intakeMotor.set(0);
             feedGate.turnToAngle(CLOSED_ANGLE);
         }

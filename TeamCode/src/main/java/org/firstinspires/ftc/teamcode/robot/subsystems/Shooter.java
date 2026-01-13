@@ -141,7 +141,7 @@ public class Shooter implements Subsystem {
 
     // add telemetry data for this subsystem
     @Override
-    public void updateTelemetry(Telemetry telemetry) {
+    public void updateTelemetry(Telemetry telemetry, TelemetryPacket packet) {
         telemetry.addLine();
         telemetry.addData(getName() + " Power", "%.2f", power);
         telemetry.addData(getName() + " Target", "%.0f", targetVel);

@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.robot.subsystems;
 
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.LLResultTypes.FiducialResult;
 import com.qualcomm.hardware.limelightvision.LLStatus;
@@ -116,16 +117,9 @@ public class Limelight implements Subsystem {
             return;
         }
 
-        for (FiducialResult fiducial : fiducials) {
-            int id = fiducial.getFiducialId(); // The ID number of the fiducial
-            if (id == 21 || id == 22 || id == 23) {
-                results.motifID = id;
-                break;
-            }
-        }
-
         // Use the best / closest fiducial
         FiducialResult fiducial = fiducials.get(0);
+        results.motifID = fiducial.getFiducialId();
         Pose3D robotToTag = fiducial.getRobotPoseTargetSpace();
 
         double x = robotToTag.getPosition().x;
@@ -151,7 +145,7 @@ public class Limelight implements Subsystem {
     }
 
     @Override
-    public void updateTelemetry(Telemetry telemetry) {
+    public void updateTelemetry(Telemetry telemetry, TelemetryPacket packet) {
         telemetry.addLine(); // Separator from other data
         telemetry.addData(getName() + " State", currentState);
 

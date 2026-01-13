@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.robot.subsystems;
 
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 /**
@@ -35,7 +37,7 @@ public interface Subsystem {
      *
      * @param telemetry The telemetry object to add data to
      */
-    default void updateTelemetry(Telemetry telemetry) {
+    default void updateTelemetry(Telemetry telemetry, TelemetryPacket packet) {
         // Default: do nothing
     }
 

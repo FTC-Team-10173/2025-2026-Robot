@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.robot.subsystems;
 
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.PoseVelocity2d;
 import com.acmerobotics.roadrunner.Vector2d;
@@ -8,6 +9,7 @@ import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.Roadrunner.MecanumDrive;
 import org.firstinspires.ftc.teamcode.robot.Constants;
@@ -80,7 +82,7 @@ public class Drive implements Subsystem {
         if (controls.lockDrivePressed()) {
             Results results = limelight.results;
             if (results.hasTarget) { // if the limelight sees a tag
-                lock(-limelight.results.tx);
+                lock(-results.tx);
             }
         }
 
@@ -102,7 +104,7 @@ public class Drive implements Subsystem {
         drive.setDrivePowers(new PoseVelocity2d(new Vector2d(0, 0), 0));
     }
 
-    public void updateTelemetry(org.firstinspires.ftc.robotcore.external.Telemetry telemetry) {
+    public void updateTelemetry(Telemetry telemetry, TelemetryPacket packet) {
         Pose2d pose = getPose();
         double heading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
         telemetry.addLine();
@@ -117,10 +119,15 @@ public class Drive implements Subsystem {
 
     // set drive powers based on field-centric controls
     public void setDrivePowers(GamepadEx driver, boolean lock) {
+
+        double leftY = Math.abs(driver.getLeftY()) > Constants.Drive.DEADZONE ? driver.getLeftY() : 0;
+        double leftX = Math.abs(driver.getLeftX()) > Constants.Drive.DEADZONE ? -driver.getLeftX() : 0;
+        double rightX = Math.abs(driver.getRightX()) > Constants.Drive.DEADZONE ? -driver.getRightX() : 0;
+
         // get robot-centric input from gamepad
         Vector2d input = new Vector2d(
-            driver.getLeftY(),
-            -driver.getLeftX()
+                leftY,
+                leftX // This is fine trust
         );
 
         // get robot heading from imu

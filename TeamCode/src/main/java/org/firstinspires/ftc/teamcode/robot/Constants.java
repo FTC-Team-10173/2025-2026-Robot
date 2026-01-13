@@ -11,6 +11,7 @@ public final class Constants {
         public static final double HEADING_KP = 0.02;
         public static final double HEADING_KI = 0.0;
         public static final double HEADING_KD = 0.0;
+        public static final double DEADZONE = 0.1;
     }
 
     public static class StartingPoses {
@@ -74,8 +75,8 @@ public final class Constants {
 
     public static class Shooter {
         // Shooter velocity control constants
-        public static final double SCALE = 800;
-        public static final double INTERCEPT = 85;
+        public static final double SCALE = 1000;
+        public static final double INTERCEPT = 120;
         public static final double MAX_RPM = 2400;
         public static final double VELOCITY_TOLERANCE = 20;
 

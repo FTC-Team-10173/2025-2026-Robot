@@ -10,6 +10,8 @@ public class RobotContainer {
     public final Robot robot;
     public RobotState robotState;
 
+    private int loopCount = 0;
+
     public RobotContainer(HardwareMap hardwareMap, GamepadEx driverGamepad) {
         controls = new DriverControls(driverGamepad);
         robotState = new RobotState(controls);
@@ -33,7 +35,9 @@ public class RobotContainer {
         robot.periodicAll();
         robotState.periodic();
 
-        updateTelemetry(telemetry);
+        if (loopCount++ % 10 == 0) {
+            updateTelemetry(telemetry);
+        }
     }
 
     private void updateTelemetry(Telemetry telemetry) {

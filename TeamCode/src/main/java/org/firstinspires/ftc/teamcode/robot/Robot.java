@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.robot;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
@@ -11,6 +13,7 @@ import org.firstinspires.ftc.teamcode.robot.subsystems.LED;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Shooter;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Subsystem;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Limelight;
+import org.firstinspires.ftc.teamcode.robot.subsystems.TimedSubsystem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,9 +26,14 @@ public class Robot {
     public final Limelight limelight;
     private final List<Subsystem> allSubsystems;
     private final IMU imu;
+    private final FtcDashboard dashboard;
+    private final TelemetryPacket packet;
 
     // TeleOp constructor
     public Robot(HardwareMap hardwareMap, RobotState robotState, DriverControls controls) {
+        dashboard = FtcDashboard.getInstance();
+        packet = new TelemetryPacket();
+
         // initialize imu
         imu = hardwareMap.get(IMU.class, "imu");
         IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
@@ -42,20 +50,23 @@ public class Robot {
 
         // Preferable telemetry order
         allSubsystems = new ArrayList<>();
-        allSubsystems.add(drive);
-        allSubsystems.add(shooter);
-        allSubsystems.add(limelight);
-        allSubsystems.add(intake);
-        allSubsystems.add(led);
+        allSubsystems.add(new TimedSubsystem(drive));
+        allSubsystems.add(new TimedSubsystem(shooter));
+        allSubsystems.add(new TimedSubsystem(limelight));
+        allSubsystems.add(new TimedSubsystem(intake));
+        allSubsystems.add(new TimedSubsystem(led));
     }
 
     // Autonomous constructor
     public Robot(HardwareMap hardwareMap, RobotState robotState) {
+        dashboard = FtcDashboard.getInstance();
+        packet = new TelemetryPacket();
+
         // initialize imu
         imu = hardwareMap.get(IMU.class, "imu");
         IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
                 RevHubOrientationOnRobot.LogoFacingDirection.LEFT,
-                RevHubOrientationOnRobot.UsbFacingDirection.UP
+                RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD
         ));
         imu.initialize(parameters);
 
@@ -88,8 +99,9 @@ public class Robot {
 
     public void telemetryUpdateAll(Telemetry telemetry) {
         for (Subsystem subsystem : allSubsystems) {
-            subsystem.updateTelemetry(telemetry);
+            subsystem.updateTelemetry(telemetry, packet);
         }
+        dashboard.sendTelemetryPacket(packet);
     }
 
     public boolean areAllSubsystemsHealthy() {

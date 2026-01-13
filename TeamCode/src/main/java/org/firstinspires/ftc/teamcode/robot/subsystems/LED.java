@@ -70,7 +70,7 @@ public class LED implements Subsystem {
         return prism != null && indicator != null;
     }
 
-    public void updateTelemetry(Telemetry telemetry) {
+    public void updateTelemetry(Telemetry telemetry, TelemetryPacket packet) {
         telemetry.addLine();
         telemetry.addData(getName() + " LED count", "%d", prism.getNumberOfLEDs());
         telemetry.addData(getName() + " FPS", "%d", prism.getCurrentFPS());
