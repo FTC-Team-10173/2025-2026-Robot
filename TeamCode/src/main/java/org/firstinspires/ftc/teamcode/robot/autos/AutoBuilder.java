@@ -93,6 +93,7 @@ public class AutoBuilder {
                 // Build ONCE
                 if (inner == null) {
 
+                    // get current pose from localizer
                     Pose2d currentPose = drive.localizer.getPose();
 
                     inner = new ParallelAction(
