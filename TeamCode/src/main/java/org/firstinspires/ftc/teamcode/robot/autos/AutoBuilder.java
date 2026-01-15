@@ -103,7 +103,8 @@ public class AutoBuilder {
                                             targetPose.heading.toDouble()
                                     )
                                     .build(),
-                            robot.shooter.spinUp(power, 1.0)
+                            robot.shooter.spinUp(power, 1.0),
+                            robot.intake.open()
                     );
                 }
 
@@ -407,6 +408,99 @@ public class AutoBuilder {
                 return inner.run(packet);
             }
         });
+
+        return this;
+    }
+
+    public AutoBuilder intakeLoading() {
+        actions.add(new Action() {
+            private Action inner = null;
+
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+
+                // Build ONCE
+                if (inner == null) {
+
+                    double y = (alliance == Alliance.BLUE) ? -66 : 66;
+                    double heading = Math.toRadians(
+                            (alliance == Alliance.BLUE) ? 345 : 15
+                    );
+
+                    Pose2d currentPose = drive.localizer.getPose();
+
+                    inner = drive.actionBuilder(currentPose)
+                                .strafeToLinearHeading(
+                                        new Vector2d(48, y),
+                                        heading
+                                )
+                                .build();
+                }
+
+                return inner.run(packet);
+            }
+        });
+
+        actions.add(robot.intake.intake(1));
+
+        actions.add(new Action() {
+            private Action inner = null;
+
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+
+                // Build ONCE
+                if (inner == null) {
+
+                    double y = (alliance == Alliance.BLUE) ? -66 : 66;
+                    double heading = Math.toRadians(
+                            (alliance == Alliance.BLUE) ? 345 : 15
+                    );
+
+                    Pose2d currentPose = drive.localizer.getPose();
+
+                    inner = drive.actionBuilder(currentPose)
+                                .strafeToLinearHeading(
+                                        new Vector2d(66, y),
+                                        heading
+                                )
+                                .build();
+                }
+
+                return inner.run(packet);
+            }
+        });
+
+        actions.add(new Action() {
+            private Action inner = null;
+
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+
+                // Build ONCE
+                if (inner == null) {
+
+                    double y = (alliance == Alliance.BLUE) ? -66 : 66;
+                    double heading = Math.toRadians(
+                            (alliance == Alliance.BLUE) ? 270 : 90
+                    );
+
+                    Pose2d currentPose = drive.localizer.getPose();
+
+                    inner = drive.actionBuilder(currentPose)
+                            .strafeToLinearHeading(
+                                    new Vector2d(66, y),
+                                    heading
+                            )
+                            .build();
+                }
+
+                return inner.run(packet);
+            }
+        });
+
+        actions.add(wait(0.5));
+        actions.add(robot.intake.intake(0));
 
         return this;
     }

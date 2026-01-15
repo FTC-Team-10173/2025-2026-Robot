@@ -6,16 +6,18 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.robot.Constants;
 
-@Autonomous(name = "Blue Far", group = "2025-2026")
-public final class BlueFar extends LinearOpMode {
+@Autonomous(name = "Blue Close To Far", group = "2025-2026")
+public final class BlueCloseToFar extends LinearOpMode {
 
     @Override
     public void runOpMode() {
 
-        Pose2d startPose = Constants.StartingPoses.BLUE_FAR;
+        Pose2d startPose = Constants.StartingPoses.BLUE_CLOSE;
+        Pose2d BLUE_CLOSE = Constants.ShootingPoses.BLUE_CLOSE;
         Pose2d BLUE_FAR = Constants.ShootingPoses.BLUE_FAR;
         Pose2d PARK = Constants.ParkingPoses.BLUE_FAR;
 
+        double CLOSE_POWER = Constants.ShootingPower.CLOSE;
         double FAR_POWER = Constants.ShootingPower.FAR;
 
         double FEED_TIME = Constants.Intake.FEED_TIME_SEC;
@@ -24,13 +26,17 @@ public final class BlueFar extends LinearOpMode {
                 hardwareMap,
                 startPose,
                 AutoBuilder.Alliance.BLUE,
-                AutoBuilder.Side.FAR
+                AutoBuilder.Side.CLOSE
         )
-                .moveAndShoot(FAR_POWER, FEED_TIME, BLUE_FAR)
+                .moveAndShoot(CLOSE_POWER, FEED_TIME, BLUE_CLOSE)
                 .alignWithArtifacts()
                 .straightIntake()
-                .moveAndShoot(FAR_POWER, FEED_TIME, BLUE_FAR)
-                .intakeLoading()
+                .moveAndShoot(CLOSE_POWER, FEED_TIME, BLUE_CLOSE)
+                .alignWithArtifacts()
+                .straightIntake()
+                .moveAndShoot(CLOSE_POWER, FEED_TIME, BLUE_CLOSE)
+                .alignWithArtifacts()
+                .straightIntake()
                 .moveAndShoot(FAR_POWER, FEED_TIME, BLUE_FAR)
                 .moveToPose(PARK);
 

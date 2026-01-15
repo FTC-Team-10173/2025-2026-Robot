@@ -6,15 +6,15 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.robot.Constants;
 
-@Autonomous(name = "FullTest Auto", group = "2025-2026")
-public final class FullTest extends LinearOpMode {
+@Autonomous(name = "Red Full Close", group = "2025-2026")
+public final class RedFullClose extends LinearOpMode {
 
     @Override
     public void runOpMode() {
 
-        Pose2d startPose = Constants.StartingPoses.BLUE_CLOSE;
-        Pose2d BLUE_CLOSE = Constants.ShootingPoses.BLUE_CLOSE;
-        Pose2d PARK = Constants.ParkingPoses.BLUE_CLOSE;
+        Pose2d startPose = Constants.StartingPoses.RED_CLOSE;
+        Pose2d RED_CLOSE = Constants.ShootingPoses.RED_CLOSE;
+        Pose2d PARK = Constants.ParkingPoses.RED_CLOSE;
 
         double CLOSE_POWER = Constants.ShootingPower.CLOSE;
 
@@ -26,17 +26,16 @@ public final class FullTest extends LinearOpMode {
                 AutoBuilder.Alliance.BLUE,
                 AutoBuilder.Side.CLOSE
         )
-                .moveAndShoot(CLOSE_POWER, FEED_TIME, BLUE_CLOSE)
-                .moveToMotif(BLUE_CLOSE)
-                .alignWithArtifacts(true)
-                .straightIntake(true)
-                .moveAndShoot(CLOSE_POWER, FEED_TIME, BLUE_CLOSE)
+                .moveAndShoot(CLOSE_POWER, FEED_TIME, RED_CLOSE)
                 .alignWithArtifacts()
                 .straightIntake()
-                .moveAndShoot(CLOSE_POWER, FEED_TIME, BLUE_CLOSE)
+                .moveAndShoot(CLOSE_POWER, FEED_TIME, RED_CLOSE)
                 .alignWithArtifacts()
                 .straightIntake()
-                .moveAndShoot(CLOSE_POWER, FEED_TIME, BLUE_CLOSE)
+                .moveAndShoot(CLOSE_POWER, FEED_TIME, RED_CLOSE)
+                .alignWithArtifacts()
+                .straightIntake()
+                .moveAndShoot(CLOSE_POWER, FEED_TIME, RED_CLOSE)
                 .moveToPose(PARK);
 
         waitForStart();

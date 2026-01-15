@@ -16,21 +16,21 @@ public final class Constants {
 
     public static class StartingPoses {
         public static Pose2d BLUE_CLOSE = new Pose2d(-54, -48, Math.toRadians(225));
-        public static Pose2d BLUE_FAR = new Pose2d(-54, -48, Math.toRadians(225));
+        public static Pose2d BLUE_FAR = new Pose2d(64, -16, Math.toRadians(180));
         public static Pose2d RED_CLOSE = new Pose2d(-54, 48, Math.toRadians(135));
-        public static Pose2d RED_FAR = new Pose2d(-54, 48, Math.toRadians(135));
+        public static Pose2d RED_FAR = new Pose2d(64, 16, Math.toRadians(180));
     }
 
     public static class ShootingPoses {
         public static final Pose2d BLUE_CLOSE = new Pose2d(-18, -18, Math.toRadians(225));
         public static final Pose2d RED_CLOSE = new Pose2d(-18, 18, Math.toRadians(135));
-        public static final Pose2d BLUE_FAR = new Pose2d(54, -16, Math.toRadians(204));
-        public static final Pose2d RED_FAR = new Pose2d(54, 16, Math.toRadians(156));
+        public static final Pose2d BLUE_FAR = new Pose2d(54, -16, Math.toRadians(203));
+        public static final Pose2d RED_FAR = new Pose2d(54, 16, Math.toRadians(157));
     }
 
     public static class ShootingPower {
-        public static final double CLOSE = 0.40;
-        public static final double FAR = 0.475;
+        public static final double CLOSE = 0.37;
+        public static final double FAR = 0.46;
     }
 
     public static class ParkingPoses {
@@ -92,7 +92,7 @@ public final class Constants {
     public static class Intake {
         public static final double INTAKE_POWER = 1.0;
         public static final double OUTTAKE_POWER = -0.6;
-        public static final double FEED_TIME_SEC = 3.0;
+        public static final double FEED_TIME_SEC = 1.5;
     }
 
     public static class Vision {

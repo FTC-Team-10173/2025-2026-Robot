@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.robot.autos.reference;
+package org.firstinspires.ftc.teamcode.robot.RedCloseToFar.reference;
 
 import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;

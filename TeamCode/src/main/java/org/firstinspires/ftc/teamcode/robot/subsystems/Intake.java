@@ -191,6 +191,28 @@ public class Intake implements Subsystem {
         };
     }
 
+    public Action open() {
+        return new Action() {
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                feedGate.turnToAngle(OPEN_ANGLE);
+
+                return false;
+            }
+        };
+    }
+
+    public Action close() {
+        return new Action() {
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                feedGate.turnToAngle(CLOSED_ANGLE);
+
+                return false;
+            }
+        };
+    }
+
     // intake for a certain time
     public Action intake(double power, double delay) {
         return new Action() {
