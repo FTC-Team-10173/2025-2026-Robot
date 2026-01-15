@@ -9,6 +9,7 @@ import com.acmerobotics.roadrunner.PoseVelocity2d;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.arcrobotics.ftclib.controller.PIDController;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
+import com.arcrobotics.ftclib.geometry.Translation2d;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 
@@ -176,7 +177,7 @@ public class Drive implements Subsystem {
         imu.resetYaw();
     }
 
-    public Action estimate() {
+    public Action estimatePose() {
         return new Action() {
 
             @Override
@@ -185,19 +186,31 @@ public class Drive implements Subsystem {
                 Limelight.Botpose botpose = limelight.getBotpose();
 
                 if (botpose != null && botpose.result.isValid() && botpose.result.getStaleness() < 30) {
-                    // update drive pose estimate
-                    Pose2d currentPose = drive.localizer.getPose();
-                    Pose2d llPose = new Pose2d(
-                            botpose.x,
-                            botpose.y,
-                            currentPose.heading.toDouble()
+                    // update localizer pose with estimate
+                    drive.localizer.setPose(
+                            getPoseEstimation(botpose)
                     );
-                    drive.localizer.setPose(llPose);
                 }
 
 
                 return false;
             }
         };
+    }
+
+    @NonNull
+    private Pose2d getPoseEstimation(Limelight.Botpose botpose) {
+        Pose2d currentPose = drive.localizer.getPose();
+
+        Translation2d newPose = new Translation2d(
+                (botpose.x * 0.1) + (currentPose.position.x * 0.9),
+                (botpose.y * 0.1) + (currentPose.position.y * 0.9)
+        );
+
+        return new Pose2d(
+                newPose.getX(),
+                newPose.getY(),
+                currentPose.heading.toDouble()
+        );
     }
 }
