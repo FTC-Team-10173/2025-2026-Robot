@@ -11,7 +11,6 @@ import com.qualcomm.robotcore.hardware.IMU;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
-
 import java.util.List;
 
 public class Limelight implements Subsystem {
@@ -26,7 +25,6 @@ public class Limelight implements Subsystem {
     private LLStatus llStatus;
 
     public final Results results;
-    public final Botpose botpose;
 
     public enum CameraState {
         IDLE,
@@ -47,10 +45,10 @@ public class Limelight implements Subsystem {
     }
 
     /** Bot pose based on vision */
-    public static class Botpose { // TODO: use botpose for localization verification
+    public static class Botpose {
         public double x;
         public double y;
-        public LLResult result; // TODO: use getStaleness() method in localization verification
+        public LLResult result;
     }
 
     // Constructor
@@ -66,7 +64,6 @@ public class Limelight implements Subsystem {
 
         currentState = CameraState.IDLE;
         results = new Results();
-        botpose = new Botpose();
     }
 
     /** Fluent pipeline switch */
@@ -95,18 +92,42 @@ public class Limelight implements Subsystem {
             return;
         }
 
-        updateBotpose(result);
         updateResults(result);
     }
 
-    public void updateBotpose(LLResult result) {
-        Pose3D botpose_mt2 = result.getBotpose_MT2();
-        if (botpose_mt2 != null) {
-            botpose.x = botpose_mt2.getPosition().x;
-            botpose.y = botpose_mt2.getPosition().y;
+//    public Botpose getBotpose() {
+//        LLResult result = results.result;
+//        Pose3D botpose_mt2 = result.getBotpose_MT2();
+//        Botpose botpose = new Botpose();
+//
+//        if (botpose_mt2 != null) {
+//            botpose.x = botpose_mt2.getPosition().x;
+//            botpose.y = botpose_mt2.getPosition().y;
+//            botpose.result = result;
+//
+//            return botpose;
+//        }
+//
+//        return botpose;
+//    }
 
-            botpose.result = result;
+    public Botpose getBotpose() {
+        LLResult result = results.result;
+        Botpose botpose = new Botpose();
+
+        if (result != null && result.isValid()) {
+            Pose3D botpose_mt = result.getBotpose();
+
+            if (botpose_mt != null) {
+                botpose.x = botpose_mt.getPosition().x;
+                botpose.y = botpose_mt.getPosition().y;
+                botpose.result = result;
+
+                return botpose;
+            }
         }
+
+        return botpose;
     }
 
     public void updateResults(LLResult result) {
@@ -157,11 +178,13 @@ public class Limelight implements Subsystem {
             telemetry.addData(getName() + " TEMP", "%.1f", llStatus.getTemp());
         }
 
+        Botpose botpose = getBotpose();
+
         if (botpose.result != null) {
             telemetry.addData(getName() + "Pose X", "%.1f", botpose.x);
             telemetry.addData(getName() + "Pose Y", "%.1f", botpose.y);
             long staleness = botpose.result.getStaleness();
-            if (staleness < 100) {
+            if (staleness < 30) {
                 telemetry.addData(getName() + " Pose Staleness", "FRESH " + staleness + "ms");
             } else {
                 telemetry.addData(getName() + " Pose Staleness", "STALE " + staleness + "ms");
@@ -175,7 +198,7 @@ public class Limelight implements Subsystem {
             telemetry.addData(getName() + " ty", "%.2f", results.ty);
             telemetry.addData(getName() + " ta", "%.2f", results.ta);
             long staleness = botpose.result.getStaleness();
-            if (staleness < 100) {
+            if (staleness < 30) {
                 telemetry.addData(getName() + " Tag Staleness", "FRESH " + staleness + "ms");
             } else {
                 telemetry.addData(getName() + " Tag Staleness", "STALE " + staleness + "ms");

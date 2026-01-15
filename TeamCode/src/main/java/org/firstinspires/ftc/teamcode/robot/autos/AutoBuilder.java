@@ -73,8 +73,8 @@ public class AutoBuilder {
             Alliance alliance,
             Side side
     ) {
-        this.drive = new MecanumDrive(hardwareMap, startPose);
-        this.robot = new Robot(hardwareMap, new RobotState());
+        this.robot = new Robot(hardwareMap, new RobotState(), startPose);
+        this.drive = robot.drive.drive;
         this.alliance = alliance;
         this.side = side;
         drive.localizer.setPose(startPose);
@@ -559,7 +559,8 @@ public class AutoBuilder {
         return new RaceAction(
                 new SequentialAction(actions),
                 robot.shooter.maintainVelocity(),
-                robot.led.updateLEDs()
+                robot.led.updateLEDs(),
+                robot.drive.estimatePose()
         );
     }
 

@@ -1,6 +1,9 @@
 package org.firstinspires.ftc.teamcode.robot.subsystems;
 
+import androidx.annotation.NonNull;
+
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.PoseVelocity2d;
 import com.acmerobotics.roadrunner.Vector2d;
@@ -19,7 +22,7 @@ import org.firstinspires.ftc.teamcode.robot.subsystems.Limelight.Results;
 
 public class Drive implements Subsystem {
 
-    MecanumDrive drive;
+    public MecanumDrive drive;
     DriverControls controls;
     Limelight limelight;
     double lock_turn;
@@ -50,9 +53,9 @@ public class Drive implements Subsystem {
     }
 
     // Autonomous constructor
-    public Drive(HardwareMap hardwareMap, Limelight limelight, IMU imu) {
+    public Drive(HardwareMap hardwareMap, Limelight limelight, IMU imu, Pose2d startPose) {
         // initialize drive with starting pose at origin
-        drive = new MecanumDrive(hardwareMap, new Pose2d(0, 0, 0));
+        drive = new MecanumDrive(hardwareMap, startPose);
 
         // store imu
         this.imu = imu;
@@ -171,5 +174,30 @@ public class Drive implements Subsystem {
     // reset yaw to zero
     public void resetYaw() {
         imu.resetYaw();
+    }
+
+    public Action estimate() {
+        return new Action() {
+
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                // get limelight botpose
+                Limelight.Botpose botpose = limelight.getBotpose();
+
+                if (botpose != null && botpose.result.isValid() && botpose.result.getStaleness() < 30) {
+                    // update drive pose estimate
+                    Pose2d currentPose = drive.localizer.getPose();
+                    Pose2d llPose = new Pose2d(
+                            botpose.x,
+                            botpose.y,
+                            currentPose.heading.toDouble()
+                    );
+                    drive.localizer.setPose(llPose);
+                }
+
+
+                return false;
+            }
+        };
     }
 }

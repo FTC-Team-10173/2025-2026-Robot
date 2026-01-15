@@ -2,11 +2,13 @@ package org.firstinspires.ftc.teamcode.robot;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.acmerobotics.roadrunner.Pose2d;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Drive;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.robot.subsystems.LED;
@@ -58,7 +60,7 @@ public class Robot {
     }
 
     // Autonomous constructor
-    public Robot(HardwareMap hardwareMap, RobotState robotState) {
+    public Robot(HardwareMap hardwareMap, RobotState robotState, Pose2d startPose) {
         dashboard = FtcDashboard.getInstance();
         packet = new TelemetryPacket();
 
@@ -74,7 +76,7 @@ public class Robot {
         limelight = new Limelight(hardwareMap, imu).setPipeline(0);
         shooter = new Shooter(hardwareMap, robotState, limelight);
         intake = new Intake(hardwareMap);
-        drive = new Drive(hardwareMap, limelight, imu);
+        drive = new Drive(hardwareMap, limelight, imu, startPose);
 
         // Preferable telemetry order
         allSubsystems = new ArrayList<>();
