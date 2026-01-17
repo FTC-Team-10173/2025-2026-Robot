@@ -26,7 +26,7 @@ public class Shooter implements Subsystem {
     DriverControls controls;
     RobotState robotState;
     Limelight limelight;
-    public Double power = 0.5;
+    public Double power = 0.37;
     public double targetVel = 1200;
 
     // TeleOp constructor
@@ -180,8 +180,11 @@ public class Shooter implements Subsystem {
     public void setPower(double tag_distance) {
         if (tag_distance != -1) {
             // power formula derived from testing
-            power = Math.sqrt(tag_distance + Constants.Shooter.INTERCEPT)
-                    / Math.sqrt(Constants.Shooter.SCALE + Constants.Shooter.INTERCEPT);
+//            power = Math.sqrt(tag_distance + Constants.Shooter.INTERCEPT)
+//                    / Math.sqrt(Constants.Shooter.SCALE + Constants.Shooter.INTERCEPT);
+
+            power = (Constants.Shooter.SLOPE * tag_distance) + Constants.Shooter.INTERCEPT;
+            power = (power > (Constants.ShootingPower.FAR + 0.03)) ? Constants.ShootingPower.FAR : power;
 
             // update target velocity
             targetVel = Constants.Shooter.MAX_RPM * power;

@@ -14,7 +14,7 @@ public final class BlueFullClose extends LinearOpMode {
 
         Pose2d startPose = Constants.StartingPoses.BLUE_CLOSE;
         Pose2d BLUE_CLOSE = Constants.ShootingPoses.BLUE_CLOSE;
-        Pose2d PARK = Constants.ParkingPoses.BLUE_FAR;
+        Pose2d PARK = Constants.ParkingPoses.BLUE_CLOSE;
 
         double CLOSE_POWER = Constants.ShootingPower.CLOSE;
 

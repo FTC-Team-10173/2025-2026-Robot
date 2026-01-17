@@ -183,6 +183,7 @@ public class Drive implements Subsystem {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
                 // get limelight botpose
+                limelight.periodic();
                 Limelight.Botpose botpose = limelight.getBotpose();
 
                 if (botpose != null && botpose.result.isValid() && botpose.result.getStaleness() < 30) {

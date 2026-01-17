@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.robot.subsystems;
 
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.arcrobotics.ftclib.geometry.Translation2d;
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.LLResultTypes.FiducialResult;
 import com.qualcomm.hardware.limelightvision.LLStatus;
@@ -95,40 +96,27 @@ public class Limelight implements Subsystem {
         updateResults(result);
     }
 
-//    public Botpose getBotpose() {
-//        LLResult result = results.result;
-//        Pose3D botpose_mt2 = result.getBotpose_MT2();
-//        Botpose botpose = new Botpose();
-//
-//        if (botpose_mt2 != null) {
-//            botpose.x = botpose_mt2.getPosition().x;
-//            botpose.y = botpose_mt2.getPosition().y;
-//            botpose.result = result;
-//
-//            return botpose;
-//        }
-//
-//        return botpose;
-//    }
-
     public Botpose getBotpose() {
-        LLResult result = results.result;
         Botpose botpose = new Botpose();
 
-        if (result != null && result.isValid()) {
-            Pose3D botpose_mt = result.getBotpose();
+        LLResult result = results.result;
 
-            if (botpose_mt != null) {
-                botpose.x = botpose_mt.getPosition().x;
-                botpose.y = botpose_mt.getPosition().y;
-                botpose.result = result;
-
-                return botpose;
-            }
+        if (result == null || !result.isValid()) {
+            return botpose;
         }
+
+        Pose3D pose = result.getBotpose();
+        if (pose == null) {
+            return botpose;
+        }
+
+        botpose.x = pose.getPosition().x;
+        botpose.y = pose.getPosition().y;
+        botpose.result = result;
 
         return botpose;
     }
+
 
     public void updateResults(LLResult result) {
         List<FiducialResult> fiducials = result.getFiducialResults();
@@ -138,17 +126,30 @@ public class Limelight implements Subsystem {
             return;
         }
 
-        // Use the best / closest fiducial
-        FiducialResult fiducial = fiducials.get(0);
-        results.motifID = fiducial.getFiducialId();
-        Pose3D robotToTag = fiducial.getRobotPoseTargetSpace();
+        FiducialResult validFiducial = null;
 
-        double x = robotToTag.getPosition().x;
-        double y = robotToTag.getPosition().y;
-        double z = robotToTag.getPosition().z;
+        // Use the best / closest fiducial
+        for (FiducialResult fiducial : fiducials) {
+            if (fiducial.getFiducialId() == 20 || fiducial.getFiducialId() == 24) {
+                validFiducial = fiducial;
+                break;
+            }
+        }
+
+        if (validFiducial == null) {
+            return;
+        }
+
+        results.motifID = validFiducial.getFiducialId();
+        Pose3D robotToTag = validFiducial.getRobotPoseTargetSpace();
+
+        Translation2d poseToTag = new Translation2d(
+                robotToTag.getPosition().x,
+                robotToTag.getPosition().y
+        );
 
         // distance to tag
-        results.distanceMeters = Math.sqrt(x * x + y * y + z * z);
+        results.distanceMeters = poseToTag.getNorm();
 
         // update auxiliary data
         results.result = result;
@@ -156,9 +157,9 @@ public class Limelight implements Subsystem {
         currentState = CameraState.TARGETING;
 
         // yaw error to tag
-        results.tx = fiducial.getTargetXDegrees();
-        results.ty = fiducial.getTargetYDegrees();
-        results.ta = fiducial.getTargetArea();
+        results.tx = validFiducial.getTargetXDegrees();
+        results.ty = validFiducial.getTargetYDegrees();
+        results.ta = validFiducial.getTargetArea();
     }
 
     public int getMotifID() {

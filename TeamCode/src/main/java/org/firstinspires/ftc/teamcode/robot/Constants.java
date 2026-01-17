@@ -22,15 +22,15 @@ public final class Constants {
     }
 
     public static class ShootingPoses {
-        public static final Pose2d BLUE_CLOSE = new Pose2d(-18, -18, Math.toRadians(225));
-        public static final Pose2d RED_CLOSE = new Pose2d(-18, 18, Math.toRadians(135));
-        public static final Pose2d BLUE_FAR = new Pose2d(54, -16, Math.toRadians(203));
-        public static final Pose2d RED_FAR = new Pose2d(54, 16, Math.toRadians(157));
+        public static final Pose2d BLUE_CLOSE = new Pose2d(-18, -18, Math.toRadians(225)); // 46.86149806
+        public static final Pose2d RED_CLOSE = new Pose2d(-18, 18, Math.toRadians(135)); // 0.001368206908*46.86149806
+        public static final Pose2d BLUE_FAR = new Pose2d(54, -16, Math.toRadians(203.5)); // 112.6410227
+        public static final Pose2d RED_FAR = new Pose2d(54, 16, Math.toRadians(156.5)); // 112.6410227
     }
 
-    public static class ShootingPower {
-        public static final double CLOSE = 0.37;
-        public static final double FAR = 0.46;
+    public static class ShootingPower { // 0.001368206908
+        public static final double CLOSE = 0.375;
+        public static final double FAR = 0.47;
     }
 
     public static class ParkingPoses {
@@ -51,7 +51,7 @@ public final class Constants {
     public static class Gate {
         public static final double MIN_ANGLE = 0;
         public static final double MAX_ANGLE = 1800;
-        public static double OPEN_ANGLE = 1494;
+        public static double OPEN_ANGLE = 1525;
         public static double CLOSED_ANGLE = 1674;
 
         static {
@@ -75,8 +75,10 @@ public final class Constants {
 
     public static class Shooter {
         // Shooter velocity control constants
-        public static final double SCALE = 1000;
-        public static final double INTERCEPT = 120;
+//        public static final double SCALE = 1000;
+//        public static final double INTERCEPT = 120;
+        public static final double SLOPE = 0.002868206908;
+        public static final double INTERCEPT = 0.3238837746;
         public static final double MAX_RPM = 2400;
         public static final double VELOCITY_TOLERANCE = 20;
 
