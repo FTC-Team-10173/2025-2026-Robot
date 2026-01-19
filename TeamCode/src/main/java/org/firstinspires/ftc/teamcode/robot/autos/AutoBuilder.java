@@ -158,7 +158,7 @@ public class AutoBuilder {
         return this;
     }
 
-    public AutoBuilder straightIntake(boolean usingMotif) {
+    public AutoBuilder straightIntake(boolean returnToStart) {
         double y = (alliance == Alliance.BLUE) ? -55 : 55;
 
         actions.add(robot.intake.intake(1));
@@ -390,6 +390,50 @@ public class AutoBuilder {
                     availableMotifs.remove(Integer.valueOf(selected));
 
                     double x = IntakePose.fromId(selected).getX();
+                    double y = (alliance == Alliance.BLUE) ? -18 : 18;
+                    double heading = Math.toRadians(
+                            (alliance == Alliance.BLUE) ? 270 : 90
+                    );
+
+                    Pose2d currentPose = drive.localizer.getPose();
+
+                    inner = drive.actionBuilder(currentPose)
+                            .strafeToLinearHeading(
+                                    new Vector2d(x, y),
+                                    heading
+                            )
+                            .build();
+                }
+
+                return inner.run(packet);
+            }
+        });
+
+        return this;
+    }
+
+    public AutoBuilder alignWithArtifacts(int motifID) {
+        actions.add(new Action() {
+
+            private Action inner = null;
+
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+
+                // Build ONCE
+                if (inner == null) {
+
+                    int selected;
+
+                    if (availableMotifs.isEmpty()) {
+                        throw new IllegalStateException("No motifs remaining");
+                    }
+
+                    packet.put("Align", "aligning with motif " + motifID);
+
+                    availableMotifs.remove(Integer.valueOf(motifID));
+
+                    double x = IntakePose.fromId(motifID).getX();
                     double y = (alliance == Alliance.BLUE) ? -18 : 18;
                     double heading = Math.toRadians(
                             (alliance == Alliance.BLUE) ? 270 : 90

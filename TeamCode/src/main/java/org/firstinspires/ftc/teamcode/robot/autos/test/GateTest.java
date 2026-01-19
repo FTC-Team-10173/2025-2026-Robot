@@ -17,8 +17,8 @@ public final class GateTest extends LinearOpMode {
 
         Pose2d startPose = Constants.StartingPoses.BLUE_CLOSE;
         Pose2d BLUE_CLOSE = Constants.ShootingPoses.BLUE_CLOSE;
-        Pose2d OPEN_GATE = Constants.GatePoses.BLUE_OPEN;
         Pose2d INTAKE_GATE = Constants.GatePoses.BLUE_INTAKE;
+        Pose2d PARK = Constants.ParkingPoses.BLUE_CLOSE;
 
         double CLOSE_POWER = Constants.ShootingPower.CLOSE;
 
@@ -31,9 +31,18 @@ public final class GateTest extends LinearOpMode {
                 AutoBuilder.Side.CLOSE
         )
                 .moveAndShoot(CLOSE_POWER, FEED_TIME, BLUE_CLOSE)
+                .alignWithArtifacts(22)
+                .straightIntake(true)
+                .moveAndShoot(CLOSE_POWER, FEED_TIME, BLUE_CLOSE)
                 .intakeGate(INTAKE_GATE, FEED_TIME)
                 .moveAndShoot(CLOSE_POWER, FEED_TIME, BLUE_CLOSE)
-                .openGate(OPEN_GATE);
+                .alignWithArtifacts()
+                .straightIntake()
+                .moveAndShoot(CLOSE_POWER, FEED_TIME, BLUE_CLOSE)
+                .alignWithArtifacts()
+                .straightIntake()
+                .moveAndShoot(CLOSE_POWER, FEED_TIME, BLUE_CLOSE)
+                .moveToPose(PARK);
 
         waitForStart();
 
