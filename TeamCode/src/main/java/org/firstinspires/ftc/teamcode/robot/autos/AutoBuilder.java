@@ -559,8 +559,8 @@ public class AutoBuilder {
         return new RaceAction(
                 new SequentialAction(actions),
                 robot.shooter.maintainVelocity(),
-                robot.led.updateLEDs(),
-                robot.drive.estimatePose()
+                robot.led.updateLEDs()
+//                robot.drive.estimatePose()
         );
     }
 

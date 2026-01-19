@@ -204,8 +204,8 @@ public class Drive implements Subsystem {
         Pose2d currentPose = drive.localizer.getPose();
 
         Translation2d newPose = new Translation2d(
-                (botpose.x * 0.1) + (currentPose.position.x * 0.9),
-                (botpose.y * 0.1) + (currentPose.position.y * 0.9)
+                (botpose.x * 0.1 * 39.37) + (currentPose.position.x * 0.9),
+                (botpose.y * 0.1 * 39.37) + (currentPose.position.y * 0.9)
         );
 
         return new Pose2d(

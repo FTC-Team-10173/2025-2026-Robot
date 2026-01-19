@@ -34,10 +34,10 @@ public final class Constants {
     }
 
     public static class ParkingPoses {
-        public static final Pose2d BLUE_CLOSE = new Pose2d(-60, -12, Math.toRadians(90));
-        public static final Pose2d RED_CLOSE = new Pose2d(-60, 12, Math.toRadians(270));
-        public static final Pose2d BLUE_FAR = new Pose2d(60, -36, Math.toRadians(90));
-        public static final Pose2d RED_FAR = new Pose2d(60, 36, Math.toRadians(270));
+        public static final Pose2d BLUE_CLOSE = new Pose2d(-60, -12, Math.toRadians(270));
+        public static final Pose2d RED_CLOSE = new Pose2d(-60, 12, Math.toRadians(90));
+        public static final Pose2d BLUE_FAR = new Pose2d(60, -36, Math.toRadians(270));
+        public static final Pose2d RED_FAR = new Pose2d(60, 36, Math.toRadians(90));
     }
 
     public static class GatePoses {
@@ -77,8 +77,8 @@ public final class Constants {
         // Shooter velocity control constants
 //        public static final double SCALE = 1000;
 //        public static final double INTERCEPT = 120;
-        public static final double SLOPE = 0.002868206908;
-        public static final double INTERCEPT = 0.3238837746;
+        public static final double SLOPE = 0.002;
+        public static final double INTERCEPT = 0.319;
         public static final double MAX_RPM = 2400;
         public static final double VELOCITY_TOLERANCE = 20;
 

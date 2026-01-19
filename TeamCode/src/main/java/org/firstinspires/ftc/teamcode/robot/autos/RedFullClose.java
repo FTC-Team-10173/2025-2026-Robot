@@ -23,7 +23,7 @@ public final class RedFullClose extends LinearOpMode {
         AutoBuilder autoBuilder = new AutoBuilder(
                 hardwareMap,
                 startPose,
-                AutoBuilder.Alliance.BLUE,
+                AutoBuilder.Alliance.RED,
                 AutoBuilder.Side.CLOSE
         )
                 .moveAndShoot(CLOSE_POWER, FEED_TIME, RED_CLOSE)
