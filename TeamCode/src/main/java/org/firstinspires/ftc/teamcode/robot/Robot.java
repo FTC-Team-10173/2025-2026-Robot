@@ -134,4 +134,28 @@ public class Robot {
         }
         return unhealthySubsystems;
     }
+
+    public static class SubsystemStatus {
+        public String name;
+        public boolean isHealthy;
+        public double lastPeriodicTime;
+
+        public SubsystemStatus(String name, boolean isHealthy, double lastPeriodicTime) {
+            this.name = name;
+            this.isHealthy = isHealthy;
+            this.lastPeriodicTime = lastPeriodicTime;
+        }
+    }
+
+    public List<SubsystemStatus> getSubsystemStatuses() {
+        List<SubsystemStatus> statuses = new ArrayList<>();
+        for (Subsystem subsystem : allSubsystems) {
+            double lastTime = 0;
+            if (subsystem instanceof TimedSubsystem) {
+                lastTime = ((TimedSubsystem) subsystem).getLastPeriodicTime();
+            }
+            statuses.add(new SubsystemStatus(subsystem.getName(), subsystem.isHealthy(), lastTime));
+        }
+        return statuses;
+    }
 }

@@ -57,4 +57,8 @@ public class TimedSubsystem implements Subsystem{
     public boolean isHealthy() {
         return wrapped.isHealthy();
     }
+
+    public double getLastPeriodicTime () {
+        return lastPeriodicTime;
+    }
 }

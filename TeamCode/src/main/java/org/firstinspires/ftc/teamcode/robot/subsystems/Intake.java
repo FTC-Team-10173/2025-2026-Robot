@@ -80,6 +80,10 @@ public class Intake implements Subsystem {
         );
     }
 
+    public double getGateAngle() {
+        return feedGate.getAngle(AngleUnit.DEGREES);
+    }
+
     public boolean isHealthy() {
         return intakeMotor != null && feedGate != null;
     }
