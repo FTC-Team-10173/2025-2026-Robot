@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.robot.logging;
+package org.firstinspires.ftc.teamcode.robot;
 
 import com.qualcomm.robotcore.util.RobotLog;
 import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
@@ -48,12 +48,10 @@ public class Logger {
         this.matchName = matchName;
         this.startTime = System.currentTimeMillis();
 
-        // Create log file
         String timestamp = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss", Locale.US)
                 .format(new Date());
         String filename = matchName + "_" + timestamp + ".json";
 
-        // Save to external storage so you can pull it via ADB
         File logDir = new File(AppUtil.FIRST_FOLDER, "logs");
         if (!logDir.exists()) {
             logDir.mkdirs();
