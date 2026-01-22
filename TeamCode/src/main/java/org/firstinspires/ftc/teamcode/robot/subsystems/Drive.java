@@ -19,6 +19,7 @@ import org.firstinspires.ftc.teamcode.Roadrunner.MecanumDrive;
 import org.firstinspires.ftc.teamcode.robot.Constants;
 import org.firstinspires.ftc.teamcode.robot.DriverControls;
 
+import org.firstinspires.ftc.teamcode.robot.Logger;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Limelight.Results;
 
 public class Drive implements Subsystem {
@@ -108,7 +109,7 @@ public class Drive implements Subsystem {
         drive.setDrivePowers(new PoseVelocity2d(new Vector2d(0, 0), 0));
     }
 
-    public void updateTelemetry(Telemetry telemetry, TelemetryPacket packet) {
+    public void updateTelemetry(Telemetry telemetry, TelemetryPacket packet, Logger logger) {
         Pose2d pose = getPose();
         double heading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
         telemetry.addLine();
@@ -119,6 +120,11 @@ public class Drive implements Subsystem {
         telemetry.addData(getName() + " IMU (Degrees)", "%.2f", Math.toDegrees(heading));
         telemetry.addData(getName() + " IMU (Radians)", "%.2f", heading);
         telemetry.addData(getName() + " Healthy", isHealthy());
+
+        logger.put(getName() + " X (Inches)", pose.position.x);
+        logger.put(getName() + " Y (Inches)", pose.position.y);
+        logger.put(getName() + " Heading (Degrees)", Math.toDegrees(pose.heading.real));
+        logger.put(getName() + " Heading (Radians)", pose.heading.real);
     }
 
     // set drive powers based on field-centric controls

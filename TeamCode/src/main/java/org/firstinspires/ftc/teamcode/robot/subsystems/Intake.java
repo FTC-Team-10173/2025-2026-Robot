@@ -15,6 +15,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.robot.Constants;
 import org.firstinspires.ftc.teamcode.robot.DriverControls;
+import org.firstinspires.ftc.teamcode.robot.Logger;
 
 public class Intake implements Subsystem {
 
@@ -92,11 +93,14 @@ public class Intake implements Subsystem {
         intakeMotor.set(0);
     }
 
-    public void updateTelemetry(Telemetry telemetry, TelemetryPacket packet) {
+    public void updateTelemetry(Telemetry telemetry, TelemetryPacket packet, Logger logger) {
         telemetry.addLine();
         telemetry.addData(getName() + " Intake Power", "%.2f", intakeMotor.get());
         telemetry.addData(getName() + " Gate Angle", "%.2f", feedGate.getAngle(AngleUnit.DEGREES));
         telemetry.addData(getName() + " Healthy", isHealthy());
+
+        logger.put(getName() + " Intake Power", intakeMotor.get());
+        logger.put(getName() + " Gate Angle", feedGate.getAngle(AngleUnit.DEGREES));
     }
 
     // set intake and feeder power

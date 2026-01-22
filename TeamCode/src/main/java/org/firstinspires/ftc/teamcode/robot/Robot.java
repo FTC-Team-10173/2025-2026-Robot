@@ -99,9 +99,9 @@ public class Robot {
         }
     }
 
-    public void telemetryUpdateAll(Telemetry telemetry) {
+    public void telemetryUpdateAll(Telemetry telemetry, Logger logger) {
         for (Subsystem subsystem : allSubsystems) {
-            subsystem.updateTelemetry(telemetry, packet);
+            subsystem.updateTelemetry(telemetry, packet, logger);
         }
         dashboard.sendTelemetryPacket(packet);
     }

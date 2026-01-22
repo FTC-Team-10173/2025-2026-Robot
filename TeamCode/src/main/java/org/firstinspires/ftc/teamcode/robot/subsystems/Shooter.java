@@ -18,6 +18,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.robot.Constants;
 import org.firstinspires.ftc.teamcode.robot.DriverControls;
+import org.firstinspires.ftc.teamcode.robot.Logger;
 import org.firstinspires.ftc.teamcode.robot.RobotState;
 
 public class Shooter implements Subsystem {
@@ -141,7 +142,7 @@ public class Shooter implements Subsystem {
 
     // add telemetry data for this subsystem
     @Override
-    public void updateTelemetry(Telemetry telemetry, TelemetryPacket packet) {
+    public void updateTelemetry(Telemetry telemetry, TelemetryPacket packet, Logger logger) {
         telemetry.addLine();
         telemetry.addData(getName() + " Power", "%.2f", power);
         telemetry.addData(getName() + " Target", "%.0f", targetVel);
@@ -149,6 +150,12 @@ public class Shooter implements Subsystem {
         telemetry.addData(getName() + " Hood Angle", "%.0f", hood.getAngle(AngleUnit.DEGREES));
         telemetry.addData(getName() + " Ready", robotState.shooterReady);
         telemetry.addData(getName() + " Healthy", isHealthy());
+
+        logger.put(getName() + " Power", power);
+        logger.put(getName() + " Target", targetVel);
+        logger.put(getName() + " Current", flywheel.getVelocity());
+        logger.put(getName() + " Hood Angle", hood.getAngle(AngleUnit.DEGREES));
+        logger.put(getName() + " Ready", robotState.shooterReady);
     }
 
     // check if shooter is healthy (motors responding correctly)

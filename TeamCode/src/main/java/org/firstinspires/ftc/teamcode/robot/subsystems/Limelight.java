@@ -12,6 +12,8 @@ import com.qualcomm.robotcore.hardware.IMU;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
+import org.firstinspires.ftc.teamcode.robot.Logger;
+
 import java.util.List;
 
 public class Limelight implements Subsystem {
@@ -167,7 +169,7 @@ public class Limelight implements Subsystem {
     }
 
     @Override
-    public void updateTelemetry(Telemetry telemetry, TelemetryPacket packet) {
+    public void updateTelemetry(Telemetry telemetry, TelemetryPacket packet, Logger logger) {
         telemetry.addLine(); // Separator from other data
         telemetry.addData(getName() + " State", currentState);
 
@@ -177,6 +179,12 @@ public class Limelight implements Subsystem {
             telemetry.addData(getName() + " RAM", "%.1f", llStatus.getRam());
             telemetry.addData(getName() + " CPU", "%.1f", llStatus.getCpu());
             telemetry.addData(getName() + " TEMP", "%.1f", llStatus.getTemp());
+
+            logger.put(getName() + " Pipeline", llStatus.getPipelineIndex());
+            logger.put(getName() + " FPS", llStatus.getFps());
+            logger.put(getName() + " RAM", llStatus.getRam());
+            logger.put(getName() + " CPU", llStatus.getCpu());
+            logger.put(getName() + " TEMP", llStatus.getTemp());
         }
 
         Botpose botpose = getBotpose();
@@ -198,12 +206,22 @@ public class Limelight implements Subsystem {
             telemetry.addData(getName() + " tx", "%.2f", results.tx);
             telemetry.addData(getName() + " ty", "%.2f", results.ty);
             telemetry.addData(getName() + " ta", "%.2f", results.ta);
+
+            logger.put(getName() + " Tag Distance (m)", results.distanceMeters);
+            logger.put(getName() + " Tag Distance (in)", results.distanceMeters * 39.37);
+            logger.put(getName() + " tx", results.tx);
+            logger.put(getName() + " ty", results.ty);
+            logger.put(getName() + " ta", results.ta);
+
             long staleness = botpose.result.getStaleness();
             if (staleness < 30) {
                 telemetry.addData(getName() + " Tag Staleness", "FRESH " + staleness + "ms");
             } else {
                 telemetry.addData(getName() + " Tag Staleness", "STALE " + staleness + "ms");
             }
+
+            logger.put(getName() + " Tag Staleness", staleness);
+
             telemetry.addData(getName() + " Healthy", isHealthy());
         } else {
             telemetry.addLine("No AprilTags detected");

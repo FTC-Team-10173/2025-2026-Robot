@@ -4,6 +4,7 @@ import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.robot.Logger;
 
 public class TimedSubsystem implements Subsystem{
     private final Subsystem wrapped;
@@ -40,12 +41,16 @@ public class TimedSubsystem implements Subsystem{
     }
 
     @Override
-    public void updateTelemetry(Telemetry telemetry, TelemetryPacket packet) {
-        wrapped.updateTelemetry(telemetry, packet);
+    public void updateTelemetry(Telemetry telemetry, TelemetryPacket packet, Logger logger) {
+        wrapped.updateTelemetry(telemetry, packet, logger);
 
         packet.put(getName() + " Last", lastPeriodicTime);
         packet.put(getName() + " Avg", avgPeriodicTime);
         packet.put(getName() + " Max", maxPeriodicTime);
+
+        logger.put(getName() + " Last", lastPeriodicTime);
+        logger.put(getName() + " Avg", avgPeriodicTime);
+        logger.put(getName() + " Max", maxPeriodicTime);
     }
 
     @Override

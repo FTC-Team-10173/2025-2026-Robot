@@ -29,8 +29,6 @@ public class RobotState {
      * Update the current robot state based on control inputs
      */
     public void periodic() {
-        State previousState = currentState;
-
         // Determine new state based on driver inputs and shooter status
         if (controls.spinShooterPressed()) {
             if (shooterReady) {
@@ -45,49 +43,21 @@ public class RobotState {
         } else {
             currentState = State.IDLE;
         }
-
-        // Handle state transitions (if needed in future)
-        if (previousState != currentState) {
-            onStateChange(previousState, currentState);
-        }
     }
 
-    /**
-     * Get the current robot state
-     */
     public State get() {
         return currentState;
     }
 
-    /**
-     * Manually set the robot state
-     */
     public void set(State state) {
         if (currentState != state) {
-            State previousState = currentState;
             currentState = state;
-            onStateChange(previousState, state);
         }
     }
-
-    /**
-     * Check if robot is in a specific state
-     */
     public boolean is(State state) {
         return currentState == state;
     }
 
-    /**
-     * Called whenever the state changes
-     * Can be used to trigger one-time actions on state transitions
-     */
-    private void onStateChange(State from, State to) {
-        // Currently no special transition logic
-    }
-
-    /**
-     * String representation of the current state
-     */
     @NonNull
     @Override
     public String toString() {
