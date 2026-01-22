@@ -1,13 +1,10 @@
 package org.firstinspires.ftc.teamcode.robot;
 
-import com.acmerobotics.roadrunner.Pose2d;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-
-import java.util.List;
 
 public class RobotContainer {
     public final DriverControls controls;
@@ -15,7 +12,6 @@ public class RobotContainer {
     public RobotState robotState;
     public VoltageSensor voltageSensor;
     private int loopCount = 0;
-    private final long startTime;
     Logger logger;
 
     public RobotContainer(HardwareMap hardwareMap, GamepadEx driverGamepad) {
@@ -26,8 +22,6 @@ public class RobotContainer {
         voltageSensor = hardwareMap.get(VoltageSensor.class, "Control Hub");
 
         String matchName = "TeleOp_" + System.currentTimeMillis();
-
-        startTime = System.currentTimeMillis();
 
         logger = new Logger(matchName);
     }

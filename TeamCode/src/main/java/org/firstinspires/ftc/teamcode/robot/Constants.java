@@ -68,11 +68,6 @@ public final class Constants {
         }
     }
 
-    public static class Hood {
-        public static final double MIN_ANGLE = 0;
-        public static final double MAX_ANGLE = 1;
-    }
-
     public static class Shooter {
         // Shooter velocity control constants
 //        public static final double SCALE = 1000;

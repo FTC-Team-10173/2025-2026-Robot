@@ -19,8 +19,7 @@ import java.util.List;
 public class Limelight implements Subsystem {
 
     private final Limelight3A limelight;
-    private final IMU imu; // Currently unused but may incorporate for more accurate localization
-    private double yawOffset;
+    private final IMU imu;
 
     private CameraState currentState;
     private int desiredPipeline;

@@ -25,9 +25,6 @@ public class RobotState {
         this.currentState = State.IDLE;
     }
 
-    /**
-     * Update the current robot state based on control inputs
-     */
     public void periodic() {
         // Determine new state based on driver inputs and shooter status
         if (controls.spinShooterPressed()) {
