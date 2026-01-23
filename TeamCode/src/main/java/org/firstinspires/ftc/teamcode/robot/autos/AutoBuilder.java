@@ -1,5 +1,9 @@
 package org.firstinspires.ftc.teamcode.robot.autos;
 
+import static org.firstinspires.ftc.teamcode.robot.Constants.BlackBoard;
+import static org.firstinspires.ftc.teamcode.robot.Constants.Keys.ALLIANCE;
+import static org.firstinspires.ftc.teamcode.robot.Constants.Keys.POSE;
+
 import androidx.annotation.NonNull;
 
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
@@ -78,6 +82,7 @@ public class AutoBuilder {
         this.alliance = alliance;
         this.side = side;
         drive.localizer.setPose(startPose);
+        BlackBoard.put(ALLIANCE, alliance);
     }
 
     /* Shooter Actions */
@@ -597,13 +602,25 @@ public class AutoBuilder {
         };
     }
 
+    public Action savePose() {
+        return new Action() {
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                BlackBoard.put(POSE, drive.localizer.getPose());
+
+                return true;
+            }
+        };
+    }
+
     /* Finalization */
 
     public Action build() {
         return new RaceAction(
                 new SequentialAction(actions),
                 robot.shooter.maintainVelocity(),
-                robot.led.updateLEDs()
+                robot.led.updateLEDs(),
+                savePose()
 //                robot.drive.estimatePose()
         );
     }

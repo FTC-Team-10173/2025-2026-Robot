@@ -13,8 +13,9 @@ public class RobotContainer {
     public VoltageSensor voltageSensor;
     private int loopCount = 0;
     Logger logger;
+    Telemetry telemetry;
 
-    public RobotContainer(HardwareMap hardwareMap, GamepadEx driverGamepad) {
+    public RobotContainer(HardwareMap hardwareMap, GamepadEx driverGamepad, Telemetry telemetry) {
         controls = new DriverControls(driverGamepad);
         robotState = new RobotState(controls);
         robot = new Robot(hardwareMap, robotState, controls);
@@ -24,9 +25,11 @@ public class RobotContainer {
         String matchName = "TeleOp_" + System.currentTimeMillis();
 
         logger = new Logger(matchName);
+
+        this.telemetry = telemetry;
     }
 
-    public void periodic(Telemetry telemetry) {
+    public void periodic() {
         controls.driver.readButtons();
 
         robot.periodicAll();
@@ -38,7 +41,7 @@ public class RobotContainer {
     }
 
     private void updateTelemetry(Telemetry telemetry) {
-        telemetry.addData("State", robotState.toString());
+        telemetry.addData("State", robotState.toString();
         logger.put("Robot State", robotState.toString());
 
         logger.put("Voltage", voltageSensor.getVoltage());

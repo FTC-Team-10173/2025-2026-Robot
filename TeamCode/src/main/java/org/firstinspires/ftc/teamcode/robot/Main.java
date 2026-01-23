@@ -11,11 +11,11 @@ public class Main extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        container = new RobotContainer(hardwareMap, new GamepadEx(gamepad1));
+        container = new RobotContainer(hardwareMap, new GamepadEx(gamepad1), telemetry);
         waitForStart();
 
         while (opModeIsActive()) {
-            container.periodic(telemetry);
+            container.periodic();
             telemetry.update();
         }
 

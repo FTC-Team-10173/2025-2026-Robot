@@ -1,5 +1,8 @@
 package org.firstinspires.ftc.teamcode.robot.subsystems;
 
+import static org.firstinspires.ftc.teamcode.robot.Constants.BlackBoard;
+import static org.firstinspires.ftc.teamcode.robot.Constants.Keys.POSE;
+
 import androidx.annotation.NonNull;
 
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
@@ -35,7 +38,7 @@ public class Drive implements Subsystem {
     // TeleOp constructor
     public Drive(HardwareMap hardwareMap, DriverControls controls, Limelight limelight, IMU imu) {
         // initialize drive with starting pose at origin
-        drive = new MecanumDrive(hardwareMap, new Pose2d(0, 0, 0));
+        drive = new MecanumDrive(hardwareMap, (Pose2d) BlackBoard.get(POSE));
 
         // store driver controls
         this.controls = controls;
@@ -64,13 +67,6 @@ public class Drive implements Subsystem {
 
         // store limelight
         this.limelight = limelight;
-
-        // initialize pid controller for heading lock
-        pid = new PIDController(
-                Constants.Drive.HEADING_KP,
-                Constants.Drive.HEADING_KI,
-                Constants.Drive.HEADING_KD
-        );
     }
 
     // periodic method to be called in main loop

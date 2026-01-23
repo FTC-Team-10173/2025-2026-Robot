@@ -4,6 +4,8 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.Vector2d;
 
+import java.util.HashMap;
+
 @Config
 public final class Constants {
     public static class Drive {
@@ -100,5 +102,12 @@ public final class Constants {
         // AprilTag IDs
         public static final int BLUE_GOAL_ID = 20;
         public static final int RED_GOAL_ID = 24;
+    }
+
+    public static HashMap<String, Object> BlackBoard = new HashMap<>();
+
+    public static class Keys {
+        public static final String POSE = "pose";
+        public static final String ALLIANCE = "alliance";
     }
 }
