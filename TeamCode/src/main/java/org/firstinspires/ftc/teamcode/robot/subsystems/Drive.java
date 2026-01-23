@@ -190,30 +190,12 @@ public class Drive implements Subsystem {
 
                 if (botpose != null && botpose.result.isValid() && botpose.result.getStaleness() < 30) {
                     // update localizer pose with estimate
-                    drive.localizer.setPose(
-                            getPoseEstimation(botpose)
-                    );
+                    drive.localizer.estimateLL(botpose);
                 }
 
 
                 return false;
             }
         };
-    }
-
-    @NonNull
-    private Pose2d getPoseEstimation(Limelight.Botpose botpose) {
-        Pose2d currentPose = drive.localizer.getPose();
-
-        Translation2d newPose = new Translation2d(
-                (botpose.x * 0.1 * 39.37) + (currentPose.position.x * 0.9),
-                (botpose.y * 0.1 * 39.37) + (currentPose.position.y * 0.9)
-        );
-
-        return new Pose2d(
-                newPose.getX(),
-                newPose.getY(),
-                currentPose.heading.toDouble()
-        );
     }
 }
