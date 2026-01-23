@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.robot;
 
-import androidx.annotation.NonNull;
-
 public class RobotState {
     public enum State {
         IDLE,
@@ -11,51 +9,49 @@ public class RobotState {
         ALIGNING
     }
 
-    private State currentState;
-    DriverControls controls;
+    private State currentState = State.IDLE;
+    private boolean shooterReady = false;
+    private boolean shooterRunning = false;
+    private boolean intakeRunning = false;
 
-    public Boolean shooterReady = false;
+    public RobotState() {}
 
-    public RobotState(DriverControls controls) {
-        this.currentState = State.IDLE;
-        this.controls = controls;
-    }
-
-    public RobotState() {
-        this.currentState = State.IDLE;
-    }
-
-    public void periodic() {
-        // Determine new state based on driver inputs and shooter status
-        if (controls.spinShooterPressed()) {
-            if (shooterReady) {
-                currentState = State.SHOOTING_READY;
-            } else {
-                currentState = State.SPINNING_UP;
-            }
-        } else if (controls.intakePower() > 0.1 || controls.fullIntakePressed()) {
-            currentState = State.INTAKING;
-        } else if (controls.lockDrivePressed()) {
-            currentState = State.ALIGNING;
-        } else {
-            currentState = State.IDLE;
-        }
+    public void set(State state) {
+        this.currentState = state;
     }
 
     public State get() {
         return currentState;
     }
 
-    public void set(State state) {
-        if (currentState != state) {
-            currentState = state;
-        }
-    }
     public boolean is(State state) {
         return currentState == state;
     }
 
-    @NonNull
+    public void setShooterReady(boolean ready) {
+        this.shooterReady = ready;
+    }
+
+    public boolean isShooterReady() {
+        return shooterReady;
+    }
+
+    public void setShooterRunning(boolean running) {
+        this.shooterRunning = running;
+    }
+
+    public boolean isShooterRunning() {
+        return shooterRunning;
+    }
+
+    public void setIntakeRunning(boolean running) {
+        this.intakeRunning = running;
+    }
+
+    public boolean isIntakeRunning() {
+        return intakeRunning;
+    }
+
     @Override
     public String toString() {
         return currentState.toString();

@@ -1,201 +1,133 @@
 package org.firstinspires.ftc.teamcode.robot.subsystems;
 
-import static org.firstinspires.ftc.teamcode.robot.Constants.BlackBoard;
-import static org.firstinspires.ftc.teamcode.robot.Constants.Keys.POSE;
-
-import androidx.annotation.NonNull;
-
-import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
-import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.PoseVelocity2d;
 import com.acmerobotics.roadrunner.Vector2d;
+import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.controller.PIDController;
-import com.arcrobotics.ftclib.gamepad.GamepadEx;
-import com.arcrobotics.ftclib.geometry.Translation2d;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.teamcode.Roadrunner.Localizer;
 import org.firstinspires.ftc.teamcode.Roadrunner.MecanumDrive;
 import org.firstinspires.ftc.teamcode.robot.Constants;
-import org.firstinspires.ftc.teamcode.robot.DriverControls;
-
 import org.firstinspires.ftc.teamcode.robot.Logger;
-import org.firstinspires.ftc.teamcode.robot.subsystems.Limelight.Results;
 
-public class Drive implements Subsystem {
+public class Drive extends SubsystemBase {
+    public final MecanumDrive drive;
+    private final IMU imu;
+    private final PIDController headingPID;
 
-    public MecanumDrive drive;
-    DriverControls controls;
-    Limelight limelight;
-    double lock_turn;
-    PIDController pid;
-    IMU imu;
-    private boolean lastYawReset = false;
+    private double leftY = 0;
+    private double leftX = 0;
+    private double rightX = 0;
+    private boolean useHeadingLock = false;
+    private double headingLockError = 0;
 
-    // TeleOp constructor
-    public Drive(HardwareMap hardwareMap, DriverControls controls, Limelight limelight, IMU imu) {
-        // initialize drive with starting pose at origin
-        drive = new MecanumDrive(hardwareMap, (Pose2d) BlackBoard.get(POSE));
+    public Drive(HardwareMap hardwareMap) {
+        imu = hardwareMap.get(IMU.class, "imu");
 
-        // store driver controls
-        this.controls = controls;
+        Pose2d startPose = new Pose2d(0, 0, 0);
+        if (Constants.BlackBoard.containsKey(Constants.Keys.POSE)) {
+            startPose = (Pose2d) Constants.BlackBoard.get(Constants.Keys.POSE);
+        }
 
-        // store imu
-        this.imu = imu;
+        drive = new MecanumDrive(hardwareMap, startPose);
 
-        // store limelight
-        this.limelight = limelight;
-
-        // initialize pid controller for heading lock
-        pid = new PIDController(
+        headingPID = new PIDController(
                 Constants.Drive.HEADING_KP,
                 Constants.Drive.HEADING_KI,
                 Constants.Drive.HEADING_KD
         );
     }
 
-    // Autonomous constructor
-    public Drive(HardwareMap hardwareMap, Limelight limelight, IMU imu, Pose2d startPose) {
-        // initialize drive with starting pose at origin
-        drive = new MecanumDrive(hardwareMap, startPose);
-
-        // store imu
-        this.imu = imu;
-
-        // store limelight
-        this.limelight = limelight;
-    }
-
-    // periodic method to be called in main loop
+    @Override
     public void periodic() {
-        boolean yawReset = controls.yawResetPressed();
-
-        // reset yaw
-        if (yawReset && !lastYawReset) {
-            resetYaw();
-        }
-        lastYawReset = yawReset;
-
-        // update heading lock
-        if (controls.lockDrivePressed()) {
-            Results results = limelight.results;
-            if (results.hasTarget) { // if the limelight sees a tag
-                lock(-results.tx);
-            }
-        }
-
-        // set drive powers based on driver controls
-        setDrivePowers(
-                controls.driver,
-                controls.lockDrivePressed()
-        );
-
-        // update drive pose estimate
-        drive.updatePoseEstimate();
-    }
-
-    public boolean isHealthy() {
-        return drive != null;
-    }
-
-    public void stop() {
-        drive.setDrivePowers(new PoseVelocity2d(new Vector2d(0, 0), 0));
-    }
-
-    public void updateTelemetry(Telemetry telemetry, TelemetryPacket packet, Logger logger) {
-        Pose2d pose = getPose();
-        double heading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
-        telemetry.addLine();
-        telemetry.addData(getName() + " X (Inches)", "%.2f", pose.position.x);
-        telemetry.addData(getName() + " Y (Inches)", "%.2f", pose.position.y);
-        telemetry.addData(getName() + " Heading (Degrees)", "%.2f", Math.toDegrees(pose.heading.real));
-        telemetry.addData(getName() + " Heading (Radians)", "%.2f", pose.heading.real);
-        telemetry.addData(getName() + " IMU (Degrees)", "%.2f", Math.toDegrees(heading));
-        telemetry.addData(getName() + " IMU (Radians)", "%.2f", heading);
-        telemetry.addData(getName() + " Healthy", isHealthy());
-
-        logger.put(getName() + " X (Inches)", pose.position.x);
-        logger.put(getName() + " Y (Inches)", pose.position.y);
-        logger.put(getName() + " Heading (Degrees)", Math.toDegrees(pose.heading.real));
-        logger.put(getName() + " Heading (Radians)", pose.heading.real);
-    }
-
-    // set drive powers based on field-centric controls
-    public void setDrivePowers(GamepadEx driver, boolean lock) {
-
-        double leftY = Math.abs(driver.getLeftY()) > Constants.Drive.DEADZONE ? driver.getLeftY() : 0;
-        double leftX = Math.abs(driver.getLeftX()) > Constants.Drive.DEADZONE ? -driver.getLeftX() : 0;
-        double rightX = Math.abs(driver.getRightX()) > Constants.Drive.DEADZONE ? -driver.getRightX() : 0;
-
-        // get robot-centric input from gamepad
-        Vector2d input = new Vector2d(
-                leftY,
-                leftX // This is fine trust
-        );
-
-        // get robot heading from imu
-        double heading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
-
-        // convert to field-centric input
+        // Field-centric drive calculations
+        double heading = getHeadingRadians();
         double cos = Math.cos(heading);
         double sin = Math.sin(heading);
 
-        // rotate input vector by -heading
-        double fieldX = input.x * cos + input.y * sin;
-        double fieldY = input.y * cos - input.x * sin;
+        // Rotate input vector by -heading
+        double fieldX = leftY * cos + leftX * sin;
+        double fieldY = leftX * cos - leftY * sin;
 
-        // create field-centric vector
         Vector2d fieldCentricInput = new Vector2d(fieldX, fieldY);
 
-        // set drive powers
-        if(lock) { // heading lock
-            drive.setDrivePowers(new PoseVelocity2d(
-                    fieldCentricInput,
-                    lock_turn // use pid output for turn power
-            ));
-        } else { // normal driving
-            drive.setDrivePowers(new PoseVelocity2d(
-                    fieldCentricInput,
-                    -driver.getRightX()
-            ));
+        // Calculate turn power
+        double turnPower;
+        if (useHeadingLock) {
+            turnPower = -headingPID.calculate(headingLockError);
+        } else {
+            turnPower = -rightX;
         }
+
+        // Apply deadzone
+        if (Math.abs(turnPower) < Constants.Drive.DEADZONE) {
+            turnPower = 0;
+        }
+
+        drive.setDrivePowers(new PoseVelocity2d(fieldCentricInput, turnPower));
+        drive.updatePoseEstimate();
     }
 
-    // lock heading using pid controller
-    public void lock(double error) {
-        lock_turn = -pid.calculate(error);
+    public void setDriveInputs(double leftY, double leftX, double rightX) {
+        this.leftY = applyDeadzone(leftY);
+        this.leftX = applyDeadzone(leftX);
+        this.rightX = applyDeadzone(rightX);
     }
 
-    // get current pose
-    public Pose2d getPose() {
-        return drive.localizer.getPose();
+    public void setHeadingLock(boolean enabled, double targetError) {
+        this.useHeadingLock = enabled;
+        this.headingLockError = targetError;
     }
 
-    // reset yaw to zero
     public void resetYaw() {
         imu.resetYaw();
     }
 
-    public Action estimatePose() {
-        return new Action() {
+    public double getHeadingRadians() {
+        return imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
+    }
 
-            @Override
-            public boolean run(@NonNull TelemetryPacket packet) {
-                // get limelight botpose
-                limelight.periodic();
-                Limelight.Botpose botpose = limelight.getBotpose();
+    public double getHeadingDegrees() {
+        return imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
+    }
 
-                if (botpose != null && botpose.result.isValid() && botpose.result.getStaleness() < 30) {
-                    // update localizer pose with estimate
-                    drive.localizer.estimateLL(botpose);
-                }
+    public Pose2d getPose() {
+        return drive.localizer.getPose();
+    }
 
+    private double applyDeadzone(double value) {
+        return Math.abs(value) > Constants.Drive.DEADZONE ? value : 0;
+    }
 
-                return false;
-            }
-        };
+    public Localizer getLocalizer() {
+        return drive.localizer;
+    }
+
+    public boolean isHealthy() {
+        return drive != null && imu != null;
+    }
+
+    public void stop() {
+        setDriveInputs(0, 0, 0);
+    }
+
+    public void updateTelemetry(Telemetry telemetry, Logger logger) {
+        Pose2d pose = getPose();
+
+        telemetry.addData(getName() + " Healthy", isHealthy());
+        telemetry.addData(getName() + " X", pose.position.x);
+        telemetry.addData(getName() + " Y", pose.position.y);
+        telemetry.addData(getName() + " Heading", pose.heading.toDouble());
+        if (logger != null) {
+            logger.put(getName() + " Healthy", isHealthy());
+            logger.put(getName() + " X", pose.position.x);
+            logger.put(getName() + " Y", pose.position.y);
+            logger.put(getName() + " Heading", pose.heading.toDouble());
+        }
     }
 }

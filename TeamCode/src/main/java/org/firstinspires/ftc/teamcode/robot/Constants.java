@@ -89,8 +89,6 @@ public final class Constants {
     }
 
     public static class Intake {
-        public static final double INTAKE_POWER = 1.0;
-        public static final double OUTTAKE_POWER = -0.6;
         public static final double FEED_TIME_SEC = 1.3;
     }
 

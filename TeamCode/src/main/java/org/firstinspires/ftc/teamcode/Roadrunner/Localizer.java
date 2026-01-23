@@ -4,6 +4,7 @@ import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.PoseVelocity2d;
 import com.arcrobotics.ftclib.geometry.Translation2d;
 
+import org.firstinspires.ftc.teamcode.robot.autos.AutoBuilder;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Limelight;
 
 /**
@@ -40,4 +41,6 @@ public interface Localizer {
                 currentPose.heading.toDouble()
         ));
     }
+
+    double getGoalDistance(AutoBuilder.Alliance alliance);
 }

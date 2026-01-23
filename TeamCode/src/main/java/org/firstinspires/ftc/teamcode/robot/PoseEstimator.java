@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.teamcode.Roadrunner.Localizer;
 import org.firstinspires.ftc.teamcode.Roadrunner.OTOSLocalizer;
 import org.firstinspires.ftc.teamcode.Roadrunner.ThreeDeadWheelLocalizer;
+import org.firstinspires.ftc.teamcode.robot.autos.AutoBuilder;
 
 public class PoseEstimator implements Localizer {
 
@@ -52,5 +53,9 @@ public class PoseEstimator implements Localizer {
                 new Vector2d(x, y),
                 angVel
         );
+    }
+
+    public double getGoalDistance(AutoBuilder.Alliance alliance) {
+        return 0.0;
     }
 }

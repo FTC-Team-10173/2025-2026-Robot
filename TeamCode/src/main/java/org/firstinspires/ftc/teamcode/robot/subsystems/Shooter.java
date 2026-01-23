@@ -1,47 +1,30 @@
 package org.firstinspires.ftc.teamcode.robot.subsystems;
 
-import androidx.annotation.NonNull;
-
-import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
-import com.acmerobotics.roadrunner.Action;
-import com.qualcomm.robotcore.hardware.HardwareMap;
-
-import com.arcrobotics.ftclib.hardware.motors.MotorGroup;
+import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
+import com.arcrobotics.ftclib.hardware.motors.MotorGroup;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.robot.Constants;
-import org.firstinspires.ftc.teamcode.robot.DriverControls;
 import org.firstinspires.ftc.teamcode.robot.Logger;
-import org.firstinspires.ftc.teamcode.robot.RobotState;
 
-public class Shooter implements Subsystem {
-    public MotorGroup flywheel;
-    DriverControls controls;
-    RobotState robotState;
-    Limelight limelight;
-    public Double power = 0.37;
-    public double targetVel = 1200;
+public class Shooter extends SubsystemBase {
+    private final MotorGroup flywheel;
+    private double targetPower = 0;
+    private double targetVelocity = 0;
+    private boolean isRunning = false;
 
-    // TeleOp constructor
-    public Shooter(
-            HardwareMap hardwareMap,
-            DriverControls controls,
-            RobotState robotState,
-            Limelight limelight
-    ) {
-        // initialize motors as a motor group
+    public Shooter(HardwareMap hardwareMap) {
         flywheel = new MotorGroup(
                 new Motor(hardwareMap, "flywheel_left", Motor.GoBILDA.BARE),
                 new Motor(hardwareMap, "flywheel_right", Motor.GoBILDA.BARE)
         );
 
-        // configure motor settings
         flywheel.setInverted(false);
         flywheel.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
         flywheel.setRunMode(Motor.RunMode.VelocityControl);
 
-        // set PIDF and feedforward coefficients
         flywheel.setVeloCoefficients(
                 Constants.Shooter.kP,
                 Constants.Shooter.kI,
@@ -52,186 +35,73 @@ public class Shooter implements Subsystem {
                 Constants.Shooter.kV,
                 Constants.Shooter.kA
         );
-
-        // store driver controls
-        this.controls = controls;
-
-        // store robot state
-        this.robotState = robotState;
-
-        // store limelight
-        this.limelight = limelight;
     }
 
-    // Autonomous constructor
-    public Shooter(
-            HardwareMap hardwareMap,
-            RobotState robotState,
-            Limelight limelight
-    ) {
-        // initialize motors as a motor group
-        flywheel = new MotorGroup(
-                new Motor(hardwareMap, "flywheel_left", Motor.GoBILDA.BARE),
-                new Motor(hardwareMap, "flywheel_right", Motor.GoBILDA.BARE)
-        );
-
-        // configure motor settings
-        flywheel.setInverted(false);
-        flywheel.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
-        flywheel.setRunMode(Motor.RunMode.VelocityControl);
-
-        // set PIDF and feedforward coefficients
-        flywheel.setVeloCoefficients(
-                Constants.Shooter.kP,
-                Constants.Shooter.kI,
-                Constants.Shooter.kD
-        );
-        flywheel.setFeedforwardCoefficients(
-                Constants.Shooter.kS,
-                Constants.Shooter.kV,
-                Constants.Shooter.kA
-        );
-
-        // store robot state
-        this.robotState = robotState;
-
-        // store limelight
-        this.limelight = limelight;
-    }
-
-    // periodic method to be called in main loop
+    @Override
     public void periodic() {
-        // adjust power based on tag distance
-        setPower(limelight.results.distanceMeters * 39.37);
-
-        // set flywheel spin based on driver controls
-        spin(controls.spinShooterPressed());
-    }
-
-    // stop the subsystem safely
-    @Override
-    public void stop() {
-        flywheel.set(0);
-        robotState.shooterReady = false;
-    }
-
-    // add telemetry data for this subsystem
-    @Override
-    public void updateTelemetry(Telemetry telemetry, TelemetryPacket packet, Logger logger) {
-        telemetry.addLine();
-        telemetry.addData(getName() + " Power", "%.2f", power);
-        telemetry.addData(getName() + " Target", "%.0f", targetVel);
-        telemetry.addData(getName() + " Current", "%.0f", flywheel.getVelocity());
-        telemetry.addData(getName() + " Ready", robotState.shooterReady);
-        telemetry.addData(getName() + " Healthy", isHealthy());
-
-        logger.put(getName() + " Power", power);
-        logger.put(getName() + " Target", targetVel);
-        logger.put(getName() + " Current", flywheel.getVelocity());
-        logger.put(getName() + " Ready", robotState.shooterReady);
-    }
-
-    // check if shooter is healthy (motors responding correctly)
-    @Override
-    public boolean isHealthy() {
-        // Check if motors are connected and responding
-        // Could add more sophisticated health checks here
-        return flywheel != null;
-    }
-
-    // set flywheel power and update LED status
-    public void spin(boolean bumper) {
-        if (bumper) { // spin flywheel
-            // set flywheel power
-            flywheel.set(power);
-
-            // update shooter ready status
-            robotState.shooterReady = isReady();
+        if (isRunning) {
+            flywheel.set(targetPower);
         } else {
-            // stop flywheel
             flywheel.set(0);
-
-            // update shooter ready status
-            robotState.shooterReady = false;
         }
     }
 
-    // adjust power based on tag distance
-    public void setPower(double tag_distance) {
-        if (tag_distance != -1) {
-            // power formula derived from testing
-//            power = Math.sqrt(tag_distance + Constants.Shooter.INTERCEPT)
-//                    / Math.sqrt(Constants.Shooter.SCALE + Constants.Shooter.INTERCEPT);
-
-            power = (Constants.Shooter.SLOPE * tag_distance) + Constants.Shooter.INTERCEPT;
-            power = (power > (Constants.ShootingPower.FAR + 0.03)) ? Constants.ShootingPower.FAR : power;
-
-            // update target velocity
-            targetVel = Constants.Shooter.MAX_RPM * power;
-        }
+    public void setPower(double power) {
+        this.targetPower = power;
+        this.targetVelocity = Constants.Shooter.MAX_RPM * power;
     }
 
-    // check if shooter is at target speed and ready to fire
+    public void startFlywheel() {
+        isRunning = true;
+    }
+
+    public void stopFlywheel() {
+        isRunning = false;
+    }
+
+    public void stop() {
+        isRunning = false;
+    }
+
     public boolean isReady() {
-        return getVelocity() >= (targetVel - Constants.Shooter.VELOCITY_TOLERANCE);
+        return getVelocity() >= (targetVelocity - Constants.Shooter.VELOCITY_TOLERANCE);
     }
 
     public boolean isReady(double speedPercent) {
-        return getVelocity() >= ((targetVel - Constants.Shooter.VELOCITY_TOLERANCE) * speedPercent);
+        return getVelocity() >= (targetVelocity * speedPercent - Constants.Shooter.VELOCITY_TOLERANCE);
     }
 
-    // get current velocity
     public double getVelocity() {
         return flywheel.getVelocity();
     }
 
-    // maintain flywheel velocity and update LED status
-    public Action maintainVelocity() {
-        return new Action() {
-
-            @Override
-            public boolean run(@NonNull TelemetryPacket packet) {
-                // set flywheel power
-                flywheel.set(power);
-
-                // get current velocity
-                double vel = flywheel.getVelocity();
-                packet.put("shooterVelocity", vel);
-
-                if (targetVel != 0) {
-                    if (isReady()) {
-                        robotState.set(RobotState.State.SHOOTING_READY);
-                    }
-                    else {
-                        robotState.set(RobotState.State.SPINNING_UP);
-                    }
-                }
-                else {
-                    robotState.set(RobotState.State.IDLE);
-                }
-
-                // run indefinitely
-                return true;
-            }
-        };
+    public double getTargetPower() {
+        return targetPower;
     }
 
-    // spin up flywheel to target velocity
-    public Action spinUp(double newPower, double speedPercent) {
-        return new Action() {
+    public double getTargetVelocity() {
+        return targetVelocity;
+    }
 
-            @Override
-            public boolean run(@NonNull TelemetryPacket packet) {
-                // set new power
-                power = newPower;
+    public boolean isRunning() {
+        return isRunning;
+    }
 
-                // get current velocity and target velocity
-                double vel = flywheel.getVelocity();
-                targetVel = Constants.Shooter.MAX_RPM * newPower;
+    public boolean isHealthy() {
+        return flywheel != null;
+    }
 
-                // return true if still spinning up
-                return !isReady(speedPercent);
-            }
-        };
+    public void updateTelemetry(Telemetry telemetry, Logger logger) {
+        telemetry.addData(getName() + " Healthy", isHealthy());
+        telemetry.addData(getName() + " Velocity", getVelocity());
+        telemetry.addData(getName() + " Target", getTargetVelocity());
+        telemetry.addData(getName() + " Ready", isReady());
+
+        if (logger != null) {
+            logger.put(getName() + " Healthy", isHealthy());
+            logger.put(getName() + " Velocity", getVelocity());
+            logger.put(getName() + " Target", getTargetVelocity());
+            logger.put(getName() + " Ready", isReady());
+        }
     }
 }

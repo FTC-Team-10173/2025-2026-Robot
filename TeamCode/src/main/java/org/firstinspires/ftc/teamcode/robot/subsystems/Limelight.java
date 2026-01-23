@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.robot.subsystems;
 
-import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.geometry.Translation2d;
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.LLResultTypes.FiducialResult;
@@ -16,63 +16,21 @@ import org.firstinspires.ftc.teamcode.robot.Logger;
 
 import java.util.List;
 
-public class Limelight implements Subsystem {
-
+public class Limelight extends SubsystemBase {
     private final Limelight3A limelight;
     private final IMU imu;
 
-    private CameraState currentState;
-    private int desiredPipeline;
+    private int pipelineIndex = 0;
+    private final Results results = new Results();
+    private LLStatus status;
 
-    private LLStatus llStatus;
-
-    public final Results results;
-
-    public enum CameraState {
-        IDLE,
-        SEARCHING,
-        TARGETING,
-        STOPPED
-    }
-
-    /** Snapshot of vision outputs */
-    public static class Results {
-        public boolean hasTarget;
-        public double distanceMeters;
-        public double tx;
-        public double ty;
-        public double ta;
-        public int motifID;
-        public LLResult result;
-    }
-
-    /** Bot pose based on vision */
-    public static class Botpose {
-        public double x;
-        public double y;
-        public LLResult result;
-    }
-
-    // Constructor
-    public Limelight(HardwareMap hardwareMap, IMU imu) {
+    public Limelight(HardwareMap hardwareMap) {
         this.limelight = hardwareMap.get(Limelight3A.class, "limelight");
-        this.imu = imu;
+        this.imu = hardwareMap.get(IMU.class, "imu");
 
-        limelight.setPollRateHz(100); // update at 100 Hz (100 times per second)
-        limelight.start(); // start the limelight processing
-
-        desiredPipeline = 0;
-        limelight.pipelineSwitch(desiredPipeline);
-
-        currentState = CameraState.IDLE;
-        results = new Results();
-    }
-
-    /** Fluent pipeline switch */
-    public Limelight setPipeline(int pipelineIndex) {
-        desiredPipeline = pipelineIndex;
-        limelight.pipelineSwitch(pipelineIndex);
-        return this;
+        limelight.setPollRateHz(100);
+        limelight.start();
+        setPipeline(pipelineIndex);
     }
 
     @Override
@@ -81,160 +39,108 @@ public class Limelight implements Subsystem {
         limelight.updateRobotOrientation(robotYaw);
 
         LLResult result = limelight.getLatestResult();
-        llStatus = limelight.getStatus();
+        status = limelight.getStatus();
 
         if (result == null || !result.isValid()) {
-            currentState = CameraState.SEARCHING;
             results.hasTarget = false;
             return;
         }
 
-        if (result.getPipelineIndex() != desiredPipeline) {
-            currentState = CameraState.IDLE;
+        if (result.getPipelineIndex() != pipelineIndex) {
             return;
         }
 
         updateResults(result);
     }
 
-    public Botpose getBotpose() {
-        Botpose botpose = new Botpose();
-
-        LLResult result = results.result;
-
-        if (result == null || !result.isValid()) {
-            return botpose;
-        }
-
-        Pose3D pose = result.getBotpose();
-        if (pose == null) {
-            return botpose;
-        }
-
-        botpose.x = pose.getPosition().x;
-        botpose.y = pose.getPosition().y;
-        botpose.result = result;
-
-        return botpose;
+    public void setPipeline(int index) {
+        this.pipelineIndex = index;
+        limelight.pipelineSwitch(index);
     }
 
+    public int getPipeline() {
+        return pipelineIndex;
+    }
 
-    public void updateResults(LLResult result) {
+    private void updateResults(LLResult result) {
         List<FiducialResult> fiducials = result.getFiducialResults();
         if (fiducials.isEmpty()) {
-            currentState = CameraState.SEARCHING;
             results.hasTarget = false;
             return;
         }
 
-        FiducialResult validFiducial = null;
-
-        // Use the best / closest fiducial
+        FiducialResult bestFiducial = null;
         for (FiducialResult fiducial : fiducials) {
             if (fiducial.getFiducialId() == 20 || fiducial.getFiducialId() == 24) {
-                validFiducial = fiducial;
+                bestFiducial = fiducial;
                 break;
             }
         }
 
-        if (validFiducial == null) {
+        if (bestFiducial == null) {
+            results.hasTarget = false;
             return;
         }
 
-        results.motifID = validFiducial.getFiducialId();
-        Pose3D robotToTag = validFiducial.getRobotPoseTargetSpace();
+        results.motifID = bestFiducial.getFiducialId();
+        Pose3D robotToTag = bestFiducial.getRobotPoseTargetSpace();
 
         Translation2d poseToTag = new Translation2d(
                 robotToTag.getPosition().x,
                 robotToTag.getPosition().y
         );
 
-        // distance to tag
         results.distanceMeters = poseToTag.getNorm();
-
-        // update auxiliary data
         results.result = result;
         results.hasTarget = true;
-        currentState = CameraState.TARGETING;
+        results.tx = bestFiducial.getTargetXDegrees();
+        results.ty = bestFiducial.getTargetYDegrees();
+        results.ta = bestFiducial.getTargetArea();
+    }
 
-        // yaw error to tag
-        results.tx = validFiducial.getTargetXDegrees();
-        results.ty = validFiducial.getTargetYDegrees();
-        results.ta = validFiducial.getTargetArea();
+    public Results getResults() {
+        return results;
     }
 
     public int getMotifID() {
         return results.hasTarget ? results.motifID : -1;
     }
 
-    @Override
-    public void updateTelemetry(Telemetry telemetry, TelemetryPacket packet, Logger logger) {
-        telemetry.addLine(); // Separator from other data
-        telemetry.addData(getName() + " State", currentState);
-
-        if (llStatus != null) {
-            telemetry.addData(getName() + " Pipeline", "%d", llStatus.getPipelineIndex());
-            telemetry.addData(getName() + " FPS", "%.0f", llStatus.getFps());
-            telemetry.addData(getName() + " RAM", "%.1f", llStatus.getRam());
-            telemetry.addData(getName() + " CPU", "%.1f", llStatus.getCpu());
-            telemetry.addData(getName() + " TEMP", "%.1f", llStatus.getTemp());
-
-            logger.put(getName() + " Pipeline", llStatus.getPipelineIndex());
-            logger.put(getName() + " FPS", llStatus.getFps());
-            logger.put(getName() + " RAM", llStatus.getRam());
-            logger.put(getName() + " CPU", llStatus.getCpu());
-            logger.put(getName() + " TEMP", llStatus.getTemp());
-        }
-
-        Botpose botpose = getBotpose();
-
-        if (botpose.result != null) {
-            telemetry.addData(getName() + "Pose X", "%.1f", botpose.x);
-            telemetry.addData(getName() + "Pose Y", "%.1f", botpose.y);
-            long staleness = botpose.result.getStaleness();
-            if (staleness < 30) {
-                telemetry.addData(getName() + " Pose Staleness", "FRESH " + staleness + "ms");
-            } else {
-                telemetry.addData(getName() + " Pose Staleness", "STALE " + staleness + "ms");
-            }
-        }
-
-        if (results.hasTarget) {
-            telemetry.addData(getName() + " Tag Distance (m)", "%.2f", results.distanceMeters);
-            telemetry.addData(getName() + " Tag Distance (in)", "%.1f", results.distanceMeters * 39.37);
-            telemetry.addData(getName() + " tx", "%.2f", results.tx);
-            telemetry.addData(getName() + " ty", "%.2f", results.ty);
-            telemetry.addData(getName() + " ta", "%.2f", results.ta);
-
-            logger.put(getName() + " Tag Distance (m)", results.distanceMeters);
-            logger.put(getName() + " Tag Distance (in)", results.distanceMeters * 39.37);
-            logger.put(getName() + " tx", results.tx);
-            logger.put(getName() + " ty", results.ty);
-            logger.put(getName() + " ta", results.ta);
-
-            long staleness = botpose.result.getStaleness();
-            if (staleness < 30) {
-                telemetry.addData(getName() + " Tag Staleness", "FRESH " + staleness + "ms");
-            } else {
-                telemetry.addData(getName() + " Tag Staleness", "STALE " + staleness + "ms");
-            }
-
-            logger.put(getName() + " Tag Staleness", staleness);
-
-            telemetry.addData(getName() + " Healthy", isHealthy());
-        } else {
-            telemetry.addLine("No AprilTags detected");
-        }
+    public double getTargetDistance() {
+        return results.distanceMeters;
     }
 
-    @Override
     public boolean isHealthy() {
         return limelight.isConnected() && limelight.isRunning();
     }
 
-    @Override
     public void stop() {
         limelight.shutdown();
-        currentState = CameraState.STOPPED;
+    }
+
+    public void updateTelemetry(Telemetry telemetry, Logger logger) {
+        telemetry.addData(getName() + " Healthy", isHealthy());
+        telemetry.addData(getName() + " Has Target", results.hasTarget);
+        telemetry.addData(getName() + " Distance", results.distanceMeters);
+        telemetry.addData(getName() + " Distance (Inch)", results.distanceMeters * 39.37);
+        telemetry.addData(getName() + " TX", results.tx);
+
+        if (logger != null) {
+            logger.put(getName() + " Healthy", isHealthy());
+            logger.put(getName() + " Has Target", results.hasTarget);
+            logger.put(getName() + " Distance", results.distanceMeters);
+            logger.put(getName() + " Distance (Inch)", results.distanceMeters * 39.37);
+            logger.put(getName() + " TX", results.tx);
+        }
+    }
+
+    public static class Results {
+        public boolean hasTarget = false;
+        public double distanceMeters = 0;
+        public double tx = 0;
+        public double ty = 0;
+        public double ta = 0;
+        public int motifID = -1;
+        public LLResult result = null;
     }
 }
