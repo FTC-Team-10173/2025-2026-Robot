@@ -1,5 +1,10 @@
 package org.firstinspires.ftc.teamcode.robot.subsystems;
 
+import androidx.annotation.NonNull;
+
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.acmerobotics.roadrunner.Action;
+import com.acmerobotics.roadrunner.ftc.Actions;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.hardware.ServoEx;
 import com.arcrobotics.ftclib.hardware.SimpleServo;
@@ -97,5 +102,102 @@ public class Intake extends SubsystemBase {
         if (logger != null) {
             logger.put(getName() + " Healthy", isHealthy());
         }
+    }
+
+    public class intake implements Action {
+        public intake(double power) {
+            closeGate();
+            setPower(power);
+        }
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            return false;
+        }
+    }
+
+    public Action intake(double power) {
+        return new intake(power);
+    }
+
+    public class intakeTime implements Action {
+        private final double time;
+        private double startTime;
+        public intakeTime(double power, double time) {
+            closeGate();
+            setPower(power);
+            this.time = time;
+            this.startTime = -1;
+        }
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            double t;
+            if (startTime < 0) {
+                startTime = System.nanoTime();
+                t = 0;
+            } else {
+                t = System.nanoTime() - startTime;
+            }
+
+            // stop after time has elapsed
+            if (t >= time) {
+                stopIntake();
+                return false;
+            }
+            return true;
+        }
+    }
+
+    public Action intake(double power, double time) {
+        return new intakeTime(power, time);
+    }
+
+    public class feed implements Action {
+        private final double time;
+        private double startTime;
+        public feed(double power, double time) {
+            openGate();
+            setPower(power);
+            this.time = time;
+            this.startTime = -1;
+        }
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            double t;
+            if (startTime < 0) {
+                startTime = System.nanoTime();
+                t = 0;
+            } else {
+                t = System.nanoTime() - startTime;
+            }
+
+            // stop after time has elapsed
+            if (t >= time) {
+                stopIntake();
+                return false;
+            }
+            return true;
+        }
+    }
+
+    public Action feed(double power, double time) {
+        return new feed(power, time);
+    }
+
+    public class open implements Action {
+        public open() {
+            openGate();
+        }
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            return false;
+        }
+    }
+
+    public Action open() {
+        return new open();
     }
 }

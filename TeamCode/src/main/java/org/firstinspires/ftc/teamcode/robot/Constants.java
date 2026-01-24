@@ -2,8 +2,8 @@ package org.firstinspires.ftc.teamcode.robot;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.Pose2d;
-import com.acmerobotics.roadrunner.Vector2d;
-
+import com.arcrobotics.ftclib.geometry.Translation2d;
+import org.firstinspires.ftc.teamcode.robot.autos.AutoBuilder.Alliance;
 import java.util.HashMap;
 
 @Config
@@ -28,6 +28,15 @@ public final class Constants {
         public static final Pose2d RED_CLOSE = new Pose2d(-18, 18, Math.toRadians(135)); // 0.001368206908*46.86149806
         public static final Pose2d BLUE_FAR = new Pose2d(54, -16, Math.toRadians(203.5)); // 112.6410227
         public static final Pose2d RED_FAR = new Pose2d(54, 16, Math.toRadians(156.5)); // 112.6410227
+    }
+
+    public static class GoalPoses {
+        public static final Translation2d BLUE = new Translation2d(-72, -72);
+        public static final Translation2d RED = new Translation2d(-72, 72);
+
+        public static Translation2d get(Alliance alliance) {
+            return alliance == Alliance.BLUE ? BLUE : RED;
+        }
     }
 
     public static class ShootingPower { // 0.001368206908

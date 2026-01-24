@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.robot.subsystems;
 
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.acmerobotics.roadrunner.Action;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -7,6 +9,9 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Prism.GoBildaPrismDriver;
 import static org.firstinspires.ftc.teamcode.Prism.Color.*;
+
+import androidx.annotation.NonNull;
+
 import org.firstinspires.ftc.teamcode.Prism.PrismAnimations;
 import org.firstinspires.ftc.teamcode.robot.Logger;
 
@@ -97,5 +102,18 @@ public class LED extends SubsystemBase {
         PWMColor(double pmw) {
             this.pmw = pmw;
         }
+    }
+
+    public class updateIndicatorAction implements Action {
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            updateIndicator();
+
+            return true;
+        }
+    }
+
+    public Action updateIndicatorAction() {
+        return new updateIndicatorAction();
     }
 }

@@ -1,5 +1,9 @@
 package org.firstinspires.ftc.teamcode.robot.subsystems;
 
+import androidx.annotation.NonNull;
+
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.acmerobotics.roadrunner.Action;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorGroup;
@@ -103,5 +107,51 @@ public class Shooter extends SubsystemBase {
             logger.put(getName() + " Target", getTargetVelocity());
             logger.put(getName() + " Ready", isReady());
         }
+    }
+
+    public class maintainVelocity implements Action {
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+
+            if (isRunning) {
+                flywheel.set(targetPower);
+            } else {
+                flywheel.set(0);
+            }
+
+            return true;
+        }
+    }
+
+    public Action maintainVelocity() {
+        return new maintainVelocity();
+    }
+
+    public class startShooter implements Action {
+        public startShooter() {
+            isRunning = true;
+        }
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            return !isReady();
+        }
+    }
+
+    public Action startShooter() {
+        return new startShooter();
+    }
+
+    public class stopShooter implements Action {
+        public stopShooter() {
+            isRunning = false;
+        }
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            return false;
+        }
+    }
+
+    public Action stopShooter() {
+        return new stopShooter();
     }
 }
