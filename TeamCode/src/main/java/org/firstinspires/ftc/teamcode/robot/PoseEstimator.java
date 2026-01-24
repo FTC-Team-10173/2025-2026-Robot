@@ -45,9 +45,9 @@ public class PoseEstimator implements Localizer {
         PoseVelocity2d otosVelPose = otosLocalizer.update();
 
         // Simple average of the two poses
-        double x = (tdwVelPose.linearVel.x + tdwVelPose.linearVel.x) / 2.0;
-        double y = (tdwVelPose.linearVel.y + tdwVelPose.linearVel.y) / 2.0;
-        double angVel = (otosVelPose.angVel + otosVelPose.angVel) / 2.0;
+        double x = (tdwVelPose.linearVel.x + otosVelPose.linearVel.x) / 2.0;
+        double y = (tdwVelPose.linearVel.y + otosVelPose.linearVel.y) / 2.0;
+        double angVel = (tdwVelPose.angVel + otosVelPose.angVel) / 2.0;
 
         return new PoseVelocity2d(
                 new Vector2d(x, y),

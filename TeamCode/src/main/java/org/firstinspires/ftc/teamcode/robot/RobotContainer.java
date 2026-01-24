@@ -45,7 +45,7 @@ public class RobotContainer {
         controls = new DriverControls(driverGamepad);
 
         // Initialize alliance
-        this.alliance =Constants.BlackBoard.containsKey(Constants.Keys.ALLIANCE) ?
+        this.alliance = !Constants.BlackBoard.containsKey(Constants.Keys.ALLIANCE) ?
                 Alliance.BLUE :
                 (Alliance) Constants.BlackBoard.get(Constants.Keys.ALLIANCE);
 
