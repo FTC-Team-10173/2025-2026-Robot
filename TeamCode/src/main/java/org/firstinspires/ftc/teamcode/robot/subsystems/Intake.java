@@ -23,7 +23,7 @@ public class Intake extends SubsystemBase {
     public Intake(HardwareMap hardwareMap) {
         intakeMotor = new Motor(hardwareMap, "intake", Motor.GoBILDA.RPM_435);
         intakeMotor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
-        intakeMotor.setInverted(true);
+        intakeMotor.setInverted(false);
 
         openAngle = Constants.Gate.OPEN_ANGLE;
         closedAngle = Constants.Gate.CLOSED_ANGLE;

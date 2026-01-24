@@ -54,8 +54,4 @@ public class PoseEstimator implements Localizer {
                 angVel
         );
     }
-
-    public double getGoalDistance(AutoBuilder.Alliance alliance) {
-        return 0.0;
-    }
 }

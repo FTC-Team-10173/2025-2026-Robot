@@ -107,7 +107,7 @@ public class Limelight extends SubsystemBase {
     }
 
     public double getTargetDistance() {
-        return results.distanceMeters;
+        return results.distanceMeters * 39.37;
     }
 
     public boolean isHealthy() {

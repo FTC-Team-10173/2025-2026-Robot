@@ -4,18 +4,14 @@ import com.arcrobotics.ftclib.command.CommandBase;
 
 import org.firstinspires.ftc.teamcode.robot.RobotContainer.DriverInputs;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Drive;
-import org.firstinspires.ftc.teamcode.robot.subsystems.Limelight;
-
 import java.util.function.Supplier;
 
-public class HeadingLockCommand extends CommandBase {
+public class DefaultDrive extends CommandBase {
     private final Drive drive;
-    private final Limelight limelight;
     private final Supplier<DriverInputs> driveSupplier;
 
-    public HeadingLockCommand(Drive drive, Limelight limelight, Supplier<DriverInputs> driveSupplier) {
+    public DefaultDrive(Drive drive, Supplier<DriverInputs> driveSupplier) {
         this.drive = drive;
-        this.limelight = limelight;
         this.driveSupplier = driveSupplier;
 
         addRequirements(drive);
@@ -23,17 +19,6 @@ public class HeadingLockCommand extends CommandBase {
 
     @Override
     public void execute() {
-        Limelight.Results results = limelight.getResults();
-
-        if (results.hasTarget) {
-            // Use tx (horizontal angle error) to align
-            double targetError = results.tx;
-            drive.setHeadingLock(true, targetError);
-        } else {
-            // No target, disable heading lock
-            drive.setHeadingLock(false, 0);
-        }
-
         DriverInputs driveInputs = driveSupplier.get();
 
         drive.setDriveInputs(
@@ -45,6 +30,6 @@ public class HeadingLockCommand extends CommandBase {
 
     @Override
     public void end(boolean interrupted) {
-        drive.setHeadingLock(false, 0);
+        drive.setDriveInputs(0, 0, 0);
     }
 }
