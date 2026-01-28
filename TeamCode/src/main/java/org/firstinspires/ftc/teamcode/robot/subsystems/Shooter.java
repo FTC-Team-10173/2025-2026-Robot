@@ -18,6 +18,7 @@ public class Shooter extends SubsystemBase {
     private double targetPower = 0;
     private double targetVelocity = 0;
     private boolean isRunning = false;
+    public double testPower = 0.400;
 
     public Shooter(HardwareMap hardwareMap) {
         flywheel = new MotorGroup(
@@ -44,7 +45,7 @@ public class Shooter extends SubsystemBase {
     @Override
     public void periodic() {
         if (isRunning) {
-            flywheel.set(targetPower);
+            flywheel.set(testPower);
         } else {
             flywheel.set(0);
         }
@@ -95,10 +96,15 @@ public class Shooter extends SubsystemBase {
         return flywheel != null;
     }
 
+    public void changeTestPower(double change) {
+        testPower += change;
+    }
+
     public void updateTelemetry(Telemetry telemetry, Logger logger) {
         telemetry.addData(getName() + " Healthy", isHealthy());
         telemetry.addData(getName() + " Velocity", getVelocity());
         telemetry.addData(getName() + " Target", getTargetVelocity());
+        telemetry.addData(getName() + " Test Power", testPower);
         telemetry.addData(getName() + " Ready", isReady());
 
         if (logger != null) {
@@ -109,49 +115,40 @@ public class Shooter extends SubsystemBase {
         }
     }
 
-    public class maintainVelocity implements Action {
-        @Override
-        public boolean run(@NonNull TelemetryPacket packet) {
-
-            if (isRunning) {
-                flywheel.set(targetPower);
-            } else {
-                flywheel.set(0);
-            }
-
-            return true;
-        }
-    }
-
     public Action maintainVelocity() {
-        return new maintainVelocity();
-    }
+        return new Action() {
+            @Override
+            public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+                if (isRunning) {
+                    flywheel.set(targetPower);
+                } else {
+                    flywheel.set(0);
+                }
 
-    public class startShooter implements Action {
-        public startShooter() {
-            isRunning = true;
-        }
-        @Override
-        public boolean run(@NonNull TelemetryPacket packet) {
-            return !isReady();
-        }
+                return true;
+            }
+        };
     }
 
     public Action startShooter() {
-        return new startShooter();
-    }
+        return new Action() {
+            @Override
+            public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+                isRunning = true;
 
-    public class stopShooter implements Action {
-        public stopShooter() {
-            isRunning = false;
-        }
-        @Override
-        public boolean run(@NonNull TelemetryPacket packet) {
-            return false;
-        }
+                return !isReady();
+            }
+        };
     }
 
     public Action stopShooter() {
-        return new stopShooter();
+        return new Action() {
+            @Override
+            public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+                isRunning = false;
+
+                return false;
+            }
+        };
     }
 }

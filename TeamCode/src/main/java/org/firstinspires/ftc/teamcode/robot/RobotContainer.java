@@ -86,6 +86,14 @@ public class RobotContainer {
         controls.lockDriveTrigger.whileActiveOnce(
                 new HeadingLockCommand(drive, limelight, this::getDriveInputs)
         );
+
+        controls.upPower.whileActiveOnce(
+                new PowerChange(shooter, () -> .005)
+        );
+
+        controls.downPower.whileActiveOnce(
+                new PowerChange(shooter, () -> -.005)
+        );
     }
 
     private void registerDefaultCommands() {

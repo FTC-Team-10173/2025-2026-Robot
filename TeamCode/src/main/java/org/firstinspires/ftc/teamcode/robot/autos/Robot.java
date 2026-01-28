@@ -48,19 +48,16 @@ public class Robot {
         limelight.setPipeline(0);
     }
 
-    public class setPower implements Action {
-        public setPower(Pose2d robotPose) {
-            double power = calculateShooterPower(robotPose, alliance);
-            shooter.setPower(power);
-        }
-        @Override
-        public boolean run(@NonNull TelemetryPacket packet) {
-            return false;
-        }
-    }
-
     public Action setPower(Pose2d robotPose) {
-        return new setPower(robotPose);
+        return new Action() {
+            @Override
+            public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+                double power = calculateShooterPower(robotPose, alliance);
+                shooter.setPower(power);
+
+                return false;
+            }
+        };
     }
 
     private double calculateShooterPower(Pose2d robotPose, Alliance alliance) {

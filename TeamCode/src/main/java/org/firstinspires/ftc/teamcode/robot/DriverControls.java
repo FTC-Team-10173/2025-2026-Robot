@@ -15,6 +15,9 @@ public class DriverControls {
     public final GamepadButton yawResetButton;    // Y button for yaw reset
     public final GamepadButton lockDriveButton;   // X button for heading lock
 
+    public final GamepadButton upButton;
+    public final GamepadButton downButton;
+
     // Triggers
     public final Trigger shootTrigger;
     public final Trigger intakeTrigger;
@@ -22,6 +25,8 @@ public class DriverControls {
     public final Trigger outtakeTrigger;
     public final Trigger yawResetTrigger;
     public final Trigger lockDriveTrigger;
+    public final Trigger upPower;
+    public final Trigger downPower;
 
     public DriverControls(GamepadEx driver) {
         this.driver = driver;
@@ -32,6 +37,9 @@ public class DriverControls {
         yawResetButton = driver.getGamepadButton(GamepadKeys.Button.BACK);
         lockDriveButton = driver.getGamepadButton(GamepadKeys.Button.A);
 
+        upButton = driver.getGamepadButton(GamepadKeys.Button.DPAD_UP);
+        downButton = driver.getGamepadButton(GamepadKeys.Button.DPAD_DOWN);
+
         // Create triggers
         shootTrigger = new Trigger(shootButton::get);
         fullIntakeTrigger = new Trigger(fullIntakeButton::get);
@@ -39,6 +47,9 @@ public class DriverControls {
         outtakeTrigger = new Trigger(() -> getLeftTrigger() > 0.1);
         yawResetTrigger = new Trigger(yawResetButton::get);
         lockDriveTrigger = new Trigger(lockDriveButton::get);
+
+        upPower = new Trigger(upButton::get);
+        downPower = new Trigger(downButton::get);
     }
 
     public double getRightTrigger() {

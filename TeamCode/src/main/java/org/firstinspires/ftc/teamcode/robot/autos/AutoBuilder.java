@@ -603,10 +603,10 @@ public class AutoBuilder {
             public boolean run(@NonNull TelemetryPacket packet) {
                 double t;
                 if (startTime < 0) {
-                    startTime = System.nanoTime();
+                    startTime = com.acmerobotics.roadrunner.Actions.now();
                     t = 0;
                 } else {
-                    t = System.nanoTime() - startTime;
+                    t = com.acmerobotics.roadrunner.Actions.now() - startTime;
                 }
 
                 // stop after time has elapsed

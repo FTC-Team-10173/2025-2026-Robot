@@ -104,16 +104,14 @@ public class LED extends SubsystemBase {
         }
     }
 
-    public class updateIndicatorAction implements Action {
-        @Override
-        public boolean run(@NonNull TelemetryPacket packet) {
-            updateIndicator();
-
-            return true;
-        }
-    }
-
     public Action updateIndicatorAction() {
-        return new updateIndicatorAction();
+        return new Action() {
+            @Override
+            public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+                updateIndicator();
+
+                return true;
+            }
+        };
     }
 }
