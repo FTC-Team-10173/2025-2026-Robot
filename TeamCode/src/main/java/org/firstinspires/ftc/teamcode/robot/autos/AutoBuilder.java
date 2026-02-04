@@ -130,7 +130,7 @@ public class AutoBuilder {
             }
         });
 
-        actions.add(intake.feed(1, feedTime));
+        actions.add(intake.feed(1.0, feedTime));
 
         return this;
     }
@@ -633,8 +633,8 @@ public class AutoBuilder {
                 new SequentialAction(actions),
                 shooter.maintainVelocity(),
                 led.updateIndicatorAction(),
+                robot.estimatePose(),
                 savePose()
-//                robot.drive.estimatePose()
         );
     }
 

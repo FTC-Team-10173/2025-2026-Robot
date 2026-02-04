@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.robot;
 
+import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
@@ -17,6 +18,7 @@ public class Main extends LinearOpMode {
             robotContainer.periodic();
         }
 
-        robotContainer.stop();
+        robotContainer.getLogger().save();
+        CommandScheduler.getInstance().reset();
     }
 }

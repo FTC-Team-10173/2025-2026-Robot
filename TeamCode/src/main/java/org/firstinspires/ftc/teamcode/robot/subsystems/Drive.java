@@ -19,12 +19,12 @@ public class Drive extends SubsystemBase {
     public final MecanumDrive drive;
     private final IMU imu;
     private final PIDController headingPID;
-
     private double leftY = 0;
     private double leftX = 0;
     private double rightX = 0;
     private boolean useHeadingLock = false;
     private double headingLockError = 0;
+    private double turnPower;
 
     public Drive(HardwareMap hardwareMap) {
         imu = hardwareMap.get(IMU.class, "imu");
@@ -41,6 +41,8 @@ public class Drive extends SubsystemBase {
                 Constants.Drive.HEADING_KI,
                 Constants.Drive.HEADING_KD
         );
+
+        turnPower = 0;
     }
 
     @Override
@@ -57,7 +59,6 @@ public class Drive extends SubsystemBase {
         Vector2d fieldCentricInput = new Vector2d(fieldX, fieldY);
 
         // Calculate turn power
-        double turnPower;
         if (useHeadingLock) {
             turnPower = -headingPID.calculate(headingLockError);
         } else {
@@ -65,7 +66,7 @@ public class Drive extends SubsystemBase {
         }
 
         // Apply deadzone
-        if (Math.abs(turnPower) < Constants.Drive.DEADZONE) {
+        if (Math.abs(turnPower) < Constants.Drive.DEADZONE && !useHeadingLock) {
             turnPower = 0;
         }
 
@@ -123,6 +124,8 @@ public class Drive extends SubsystemBase {
         telemetry.addData(getName() + " X", pose.position.x);
         telemetry.addData(getName() + " Y", pose.position.y);
         telemetry.addData(getName() + " Heading", pose.heading.toDouble());
+        telemetry.addData(getName() + " Turn Power", turnPower);
+        telemetry.addData(getName() + " Heading Error", headingLockError);
         if (logger != null) {
             logger.put(getName() + " Healthy", isHealthy());
             logger.put(getName() + " X", pose.position.x);

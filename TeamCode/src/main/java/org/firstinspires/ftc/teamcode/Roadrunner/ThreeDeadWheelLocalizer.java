@@ -13,18 +13,21 @@ import com.acmerobotics.roadrunner.ftc.FlightRecorder;
 import com.acmerobotics.roadrunner.ftc.OverflowEncoder;
 import com.acmerobotics.roadrunner.ftc.PositionVelocityPair;
 import com.acmerobotics.roadrunner.ftc.RawEncoder;
+import com.arcrobotics.ftclib.geometry.Translation2d;
+import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 import org.firstinspires.ftc.teamcode.messages.ThreeDeadWheelInputsMessage;
 
 @Config
 public final class ThreeDeadWheelLocalizer implements Localizer {
     public static class Params {
-        public double par0YTicks = -2565.2717570911973; // y position of the first parallel encoder (in tick units)
-        public double par1YTicks = 2406.1085572435827; // y position of the second parallel encoder (in tick units)
-        public double perpXTicks = -1802.1259434899646; // x position of the perpendicular encoder (in tick units)
+        public double par0YTicks = -2503.9029780485457; // y position of the first parallel encoder (in tick units)
+        public double par1YTicks = 2456.4507767973378; // y position of the second parallel encoder (in tick units)
+        public double perpXTicks = -1773.5233019594993; // x position of the perpendicular encoder (in tick units)
     }
 
     public static Params PARAMS = new Params();
@@ -36,6 +39,7 @@ public final class ThreeDeadWheelLocalizer implements Localizer {
     private int lastPar0Pos, lastPar1Pos, lastPerpPos;
     private boolean initialized;
     private Pose2d pose;
+    public LLResult result = null;
 
     public ThreeDeadWheelLocalizer(HardwareMap hardwareMap, double inPerTick, Pose2d initialPose) {
         // TODO: make sure your config has **motors** with these names (or change them)
@@ -66,6 +70,22 @@ public final class ThreeDeadWheelLocalizer implements Localizer {
 
     @Override
     public Pose2d getPose() {
+        if (result != null) {
+            if (result.getStaleness() <= 20) {
+                Pose3D botpose = result.getBotpose();
+
+                Translation2d llPose = new Translation2d(
+                        botpose.getPosition().x * 39.37,
+                        botpose.getPosition().y * 39.37
+                );
+
+                return new Pose2d(
+                        (pose.position.x * 0.9) + (llPose.getX() * 0.1),
+                        (pose.position.y * 0.9) + (llPose.getY() * 0.1),
+                        pose.heading.toDouble()
+                );
+            }
+        }
         return pose;
     }
 
@@ -114,5 +134,10 @@ public final class ThreeDeadWheelLocalizer implements Localizer {
 
         pose = pose.plus(twist.value());
         return twist.velocity().value();
+    }
+
+    @Override
+    public void addLimelight(LLResult result) {
+        this.result = result;
     }
 }

@@ -18,7 +18,6 @@ public class Shooter extends SubsystemBase {
     private double targetPower = 0;
     private double targetVelocity = 0;
     private boolean isRunning = false;
-    public double testPower = 0.400;
 
     public Shooter(HardwareMap hardwareMap) {
         flywheel = new MotorGroup(
@@ -45,7 +44,7 @@ public class Shooter extends SubsystemBase {
     @Override
     public void periodic() {
         if (isRunning) {
-            flywheel.set(testPower);
+            flywheel.set(targetPower);
         } else {
             flywheel.set(0);
         }
@@ -96,15 +95,10 @@ public class Shooter extends SubsystemBase {
         return flywheel != null;
     }
 
-    public void changeTestPower(double change) {
-        testPower += change;
-    }
-
     public void updateTelemetry(Telemetry telemetry, Logger logger) {
         telemetry.addData(getName() + " Healthy", isHealthy());
         telemetry.addData(getName() + " Velocity", getVelocity());
         telemetry.addData(getName() + " Target", getTargetVelocity());
-        telemetry.addData(getName() + " Test Power", testPower);
         telemetry.addData(getName() + " Ready", isReady());
 
         if (logger != null) {

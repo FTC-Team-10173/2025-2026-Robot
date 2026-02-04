@@ -14,6 +14,8 @@ public class DefaultDrive extends CommandBase {
         this.drive = drive;
         this.driveSupplier = driveSupplier;
 
+        drive.setHeadingLock(false, 0);
+
         addRequirements(drive);
     }
 

@@ -4,7 +4,6 @@ import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.geometry.Translation2d;
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.LLResultTypes.FiducialResult;
-import com.qualcomm.hardware.limelightvision.LLStatus;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
@@ -22,7 +21,6 @@ public class Limelight extends SubsystemBase {
 
     private int pipelineIndex = 0;
     private final Results results = new Results();
-    private LLStatus status;
 
     public Limelight(HardwareMap hardwareMap) {
         this.limelight = hardwareMap.get(Limelight3A.class, "limelight");
@@ -39,7 +37,6 @@ public class Limelight extends SubsystemBase {
         limelight.updateRobotOrientation(robotYaw);
 
         LLResult result = limelight.getLatestResult();
-        status = limelight.getStatus();
 
         if (result == null || !result.isValid()) {
             results.hasTarget = false;
@@ -124,6 +121,15 @@ public class Limelight extends SubsystemBase {
         telemetry.addData(getName() + " Distance", results.distanceMeters);
         telemetry.addData(getName() + " Distance (Inch)", results.distanceMeters * 39.37);
         telemetry.addData(getName() + " TX", results.tx);
+
+        LLResult result = results.result;
+
+        if (result != null && result.isValid()) {
+            Pose3D botpose = result.getBotpose();
+
+            telemetry.addData(getName() + " X", botpose.getPosition().x * 39.37);
+            telemetry.addData(getName() + " Y", botpose.getPosition().y * 39.37);
+        }
 
         if (logger != null) {
             logger.put(getName() + " Healthy", isHealthy());

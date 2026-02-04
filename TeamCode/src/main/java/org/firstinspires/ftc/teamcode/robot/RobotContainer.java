@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.robot;
 
-import com.acmerobotics.roadrunner.Pose2d;
 import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -10,7 +9,6 @@ import org.firstinspires.ftc.teamcode.robot.commands.*;
 import org.firstinspires.ftc.teamcode.robot.subsystems.*;
 
 public class RobotContainer {
-    private final HardwareMap hardwareMap;
     private final Telemetry telemetry;
     private final Logger logger;
 
@@ -28,7 +26,6 @@ public class RobotContainer {
     private final Alliance alliance;
 
     public RobotContainer(HardwareMap hardwareMap, GamepadEx driverGamepad, Telemetry telemetry) {
-        this.hardwareMap = hardwareMap;
         this.telemetry = telemetry;
         this.logger = new Logger("TeleOp_" + System.currentTimeMillis());
 
@@ -58,23 +55,30 @@ public class RobotContainer {
 
     private void configureBindings() {
         // Shoot command - Left Bumper
-        controls.shootTrigger.whileActiveOnce(
-                new ShootCommand(shooter, this::calculateShooterPower)
+        controls.shootTrigger
+                .whileActiveOnce(
+                new ShootCommand(shooter, drive::getPose, alliance, ShooterMath::getShooterPower)
+        )
+                .whileActiveContinuous(// Open gate when at 50% target speed - Left Bumper
+                new OpenGateCommand(shooter, intake)
         );
 
         // Full Intake - Right Bumper
         controls.fullIntakeTrigger.whileActiveOnce(
-                new IntakeCommand(intake, () -> 1.0, () -> true)
+                new IntakeCommand(intake, () -> 1.0, () -> true),
+                false
         );
 
         // Half Intake - Right Trigger
         controls.intakeTrigger.whileActiveOnce(
-                new IntakeCommand(intake, () -> 1.0, () -> false)
+                new IntakeCommand(intake, () -> 1.0, () -> false),
+                false
         );
 
         // Outtake - Left Trigger
         controls.outtakeTrigger.whileActiveOnce(
-                new IntakeCommand(intake, () -> -1.0, () -> false)
+                new IntakeCommand(intake, () -> -1.0, () -> false),
+                false
         );
 
         // Yaw Reset - Back button
@@ -84,15 +88,8 @@ public class RobotContainer {
 
         // Heading Lock - A button
         controls.lockDriveTrigger.whileActiveOnce(
-                new HeadingLockCommand(drive, limelight, this::getDriveInputs)
-        );
-
-        controls.upPower.whileActiveOnce(
-                new PowerChange(shooter, () -> .005)
-        );
-
-        controls.downPower.whileActiveOnce(
-                new PowerChange(shooter, () -> -.005)
+                new HeadingLockCommand(drive, alliance, drive::getPose, ShooterMath::getGoalError, this::getDriveInputs),
+                false
         );
     }
 
@@ -104,6 +101,20 @@ public class RobotContainer {
                         this::getDriveInputs
                 )
         );
+
+        // Set default intake command
+        intake.setDefaultCommand(
+                new DefaultIntake(
+                        intake
+                )
+        );
+
+        // Set default limelight command
+        limelight.setDefaultCommand(
+                new DefaultLimelight(
+                        limelight, drive.getLocalizer()
+                )
+        );
     }
 
     private DriverInputs getDriveInputs() {
@@ -112,15 +123,6 @@ public class RobotContainer {
                 -controls.driver.getLeftX(),
                 controls.driver.getRightX()
         );
-    }
-
-    private double calculateShooterPower() {
-        // Calculate based on distance to target
-        double distance = limelight.getTargetDistance();
-        if (distance > 0) {
-            return (Constants.Shooter.SLOPE * distance) + Constants.Shooter.INTERCEPT;
-        }
-        return Constants.ShootingPower.CLOSE; // Default
     }
 
     public void periodic() {
@@ -177,6 +179,7 @@ public class RobotContainer {
     public Intake getIntake() { return intake; }
     public LED getLed() { return led; }
     public Limelight getLimelight() { return limelight; }
+    public Logger getLogger() { return logger; }
 
     public static class DriverInputs {
         public double LeftY;
