@@ -18,7 +18,7 @@ public class Main extends LinearOpMode {
             robotContainer.periodic();
         }
 
-        robotContainer.getLogger().save();
-        CommandScheduler.getInstance().reset();
+//        robotContainer.getLogger().save();
+//        CommandScheduler.getInstance().reset();
     }
 }

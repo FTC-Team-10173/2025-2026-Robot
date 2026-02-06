@@ -14,6 +14,8 @@ public class DriverControls {
     public final GamepadButton fullIntakeButton;  // Right Bumper for full intake
     public final GamepadButton yawResetButton;    // Y button for yaw reset
     public final GamepadButton lockDriveButton;   // X button for heading lock
+    public final GamepadButton turretPos;
+    public final GamepadButton turretNeg;
 
     // Triggers
     public final Trigger shootTrigger;
@@ -22,6 +24,8 @@ public class DriverControls {
     public final Trigger outtakeTrigger;
     public final Trigger yawResetTrigger;
     public final Trigger lockDriveTrigger;
+    public final Trigger turretPosTrigger;
+    public final Trigger turretNegTrigger;
 
     public DriverControls(GamepadEx driver) {
         this.driver = driver;
@@ -31,6 +35,8 @@ public class DriverControls {
         fullIntakeButton = driver.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER);
         yawResetButton = driver.getGamepadButton(GamepadKeys.Button.BACK);
         lockDriveButton = driver.getGamepadButton(GamepadKeys.Button.A);
+        turretPos = driver.getGamepadButton(GamepadKeys.Button.DPAD_UP);
+        turretNeg = driver.getGamepadButton(GamepadKeys.Button.DPAD_DOWN);
 
         // Create triggers
         shootTrigger = new Trigger(shootButton::get);
@@ -39,6 +45,8 @@ public class DriverControls {
         outtakeTrigger = new Trigger(() -> getLeftTrigger() > 0.1);
         yawResetTrigger = new Trigger(yawResetButton::get);
         lockDriveTrigger = new Trigger(lockDriveButton::get);
+        turretPosTrigger = new Trigger(turretPos::get);
+        turretNegTrigger = new Trigger(turretNeg::get);
     }
 
     public double getRightTrigger() {

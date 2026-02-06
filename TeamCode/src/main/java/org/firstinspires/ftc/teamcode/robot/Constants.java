@@ -11,7 +11,7 @@ public final class Constants {
     @Config
     public static class Drive {
         // PID constants for heading lock
-        public static final double HEADING_KP = 0.25;
+        public static final double HEADING_KP = 0.65;
         public static final double HEADING_KI = 0.0;
         public static final double HEADING_KD = 0.0;
         public static final double DEADZONE = 0.1;
@@ -85,6 +85,15 @@ public final class Constants {
                 throw new IllegalStateException("OPEN_ANGLE out of range");
             }
         }
+    }
+
+    @Config
+    public static class Turret {
+        public static final double RANGE_MIN_ANGLE = 0;
+        public static final double RANGE_MAX_ANGLE = 300;
+        public static final double MIN_ANGLE = 0;
+        public static final double MAX_ANGLE = 300;
+        public static final double GEAR_RATIO = (double) 3 / 8;
     }
 
     @Config

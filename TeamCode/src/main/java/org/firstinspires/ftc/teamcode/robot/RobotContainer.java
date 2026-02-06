@@ -18,6 +18,7 @@ public class RobotContainer {
     private final Intake intake;
     private final LED led;
     private final Limelight limelight;
+    private final Turret turret;
 
     // Controls
     private final DriverControls controls;
@@ -35,6 +36,7 @@ public class RobotContainer {
         intake = new Intake(hardwareMap);
         led = new LED(hardwareMap);
         drive = new Drive(hardwareMap);
+        turret = new Turret(hardwareMap);
 
         limelight.setPipeline(0);
 
@@ -91,6 +93,14 @@ public class RobotContainer {
                 new HeadingLockCommand(drive, alliance, drive::getPose, ShooterMath::getGoalError, this::getDriveInputs),
                 false
         );
+
+        controls.turretPosTrigger.whileActiveOnce(
+                new TestTurret(turret, () -> 30)
+        );
+
+        controls.turretNegTrigger.whileActiveOnce(
+                new TestTurret(turret, () -> -30)
+        );
     }
 
     private void registerDefaultCommands() {
@@ -113,6 +123,12 @@ public class RobotContainer {
         limelight.setDefaultCommand(
                 new DefaultLimelight(
                         limelight, drive.getLocalizer()
+                )
+        );
+
+        turret.setDefaultCommand(
+                new DefaultTurret(
+                        turret, alliance, ShooterMath::getTurretTarget, drive::getPose
                 )
         );
     }
@@ -157,6 +173,7 @@ public class RobotContainer {
         intake.updateTelemetry(telemetry, logger);
         led.updateTelemetry(telemetry, logger);
         limelight.updateTelemetry(telemetry, logger);
+        turret.updateTelemetry(telemetry, logger);
 
         telemetry.update();
     }
@@ -169,6 +186,7 @@ public class RobotContainer {
         intake.stop();
         led.stop();
         limelight.stop();
+        turret.stop();
 
         logger.save();
     }

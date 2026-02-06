@@ -494,7 +494,7 @@ public class AutoBuilder {
                     inner = drive.actionBuilder(currentPose)
                                 .strafeToLinearHeading(
                                         new Vector2d(48, y),
-                                        heading
+                                        0
                                 )
                                 .build();
                 }
@@ -524,7 +524,7 @@ public class AutoBuilder {
                     inner = drive.actionBuilder(currentPose)
                                 .strafeToLinearHeading(
                                         new Vector2d(66, y),
-                                        heading
+                                        0
                                 )
                                 .build();
                 }
