@@ -93,14 +93,6 @@ public class RobotContainer {
                 new HeadingLockCommand(drive, alliance, drive::getPose, ShooterMath::getGoalError, this::getDriveInputs),
                 false
         );
-
-        controls.turretPosTrigger.whileActiveOnce(
-                new TestTurret(turret, () -> 30)
-        );
-
-        controls.turretNegTrigger.whileActiveOnce(
-                new TestTurret(turret, () -> -30)
-        );
     }
 
     private void registerDefaultCommands() {
