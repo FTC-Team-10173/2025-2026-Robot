@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode.robot;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.arcrobotics.ftclib.geometry.Translation2d;
-import org.firstinspires.ftc.teamcode.robot.autos.AutoBuilder.Alliance;
 import java.util.HashMap;
 
 @Config
@@ -138,4 +137,7 @@ public final class Constants {
         public static final String POSE = "pose";
         public static final String ALLIANCE = "alliance";
     }
+
+    @Config
+    public enum Alliance { RED, BLUE }
 }

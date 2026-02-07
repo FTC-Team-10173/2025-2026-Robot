@@ -6,8 +6,17 @@ import com.arcrobotics.ftclib.geometry.Translation2d;
 import org.firstinspires.ftc.robotcore.external.Const;
 import org.firstinspires.ftc.teamcode.robot.autos.AutoBuilder;
 
+/**
+ * Utility class for math related to the shooter, turret, and scoring
+ */
 public final class ShooterMath {
-    static double getShooterPower(Pose2d pose, AutoBuilder.Alliance alliance) {
+    /**
+     *
+     * @param pose The robot's current pose
+     * @param alliance The robot's alliance (Blue or Red)
+     * @return The power (from 0 to 1) that the shooter needs to spin up to
+     */
+    static double getShooterPower(Pose2d pose, Constants.Alliance alliance) {
         Translation2d translationalPose = new Translation2d(
                 pose.position.x,
                 pose.position.y
@@ -25,7 +34,13 @@ public final class ShooterMath {
         return 0.42;
     }
 
-    static double getGoalError(Pose2d pose, AutoBuilder.Alliance alliance) {
+    /**
+     *
+     * @param pose The robot's current pose
+     * @param alliance The robot's alliance (Blue or Red)
+     * @return The error (in degrees) the robot is from the goal
+     */
+    static double getGoalError(Pose2d pose, Constants.Alliance alliance) {
         Translation2d goalPose = Constants.GoalPoses.get(alliance);
 
         double xDiff = goalPose.getX() - pose.position.x;
@@ -40,7 +55,14 @@ public final class ShooterMath {
         return error;
     }
 
-    static double getTurretTarget(Pose2d pose, AutoBuilder.Alliance alliance) {
+    /**
+     * The servos' ranges need to be configured in Constants.java
+     *
+     * @param pose The robot's current pose
+     * @param alliance The robot's alliance (Blue or Red)
+     * @return The angle (in degrees) the servos need to turn to
+     */
+    static double getTurretTarget(Pose2d pose, Constants.Alliance alliance) {
         double range = (Constants.Turret.MAX_ANGLE - Constants.Turret.MIN_ANGLE) * Constants.Turret.GEAR_RATIO;
 
         double error = getGoalError(pose, alliance);

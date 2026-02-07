@@ -10,14 +10,17 @@ public class Main extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
+        // create instance of robot container class
         RobotContainer robotContainer = new RobotContainer(hardwareMap, new GamepadEx(gamepad1), telemetry);
 
         waitForStart();
 
         while (opModeIsActive()) {
+            // call central loop
             robotContainer.periodic();
         }
 
+        // Causing slowed stops and unnecessary restarts
 //        robotContainer.getLogger().save();
 //        CommandScheduler.getInstance().reset();
     }

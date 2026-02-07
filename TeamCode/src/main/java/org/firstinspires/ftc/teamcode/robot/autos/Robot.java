@@ -29,10 +29,10 @@ public class Robot {
     private final Limelight limelight;
 
     // BlackBoard
-    private final Alliance alliance;
+    private final Constants.Alliance alliance;
     private final Pose2d startPose;
 
-    public Robot(HardwareMap hardwareMap, Alliance alliance, Pose2d startPose) {
+    public Robot(HardwareMap hardwareMap, Constants.Alliance alliance, Pose2d startPose) {
         this.hardwareMap = hardwareMap;
 
         this.alliance = alliance;
@@ -63,7 +63,7 @@ public class Robot {
         };
     }
 
-    private double calculateShooterPower(Pose2d robotPose, Alliance alliance) {
+    private double calculateShooterPower(Pose2d robotPose, Constants.Alliance alliance) {
         Translation2d GoalPose = Constants.GoalPoses.get(alliance);
 
         double distance = Math.hypot(
@@ -110,7 +110,7 @@ public class Robot {
             final Localizer poseEstimator = drive.getLocalizer();
             @Override
             public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-                LLResult result = limelight.getResults().result;
+                LLResult result = limelight.getResults();
 
                 if (result != null && result.isValid()) {
                     poseEstimator.addLimelight(result);

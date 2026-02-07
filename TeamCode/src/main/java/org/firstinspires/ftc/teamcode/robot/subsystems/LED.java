@@ -46,6 +46,7 @@ public class LED extends SubsystemBase {
         updateIndicator();
     }
 
+    // updating leds
     private void updateIndicator() {
         switch (currentState) {
             case SHOOTING_READY:
@@ -90,6 +91,7 @@ public class LED extends SubsystemBase {
         SPINNING_UP
     }
 
+    // enumeration for simpler controls
     public enum PWMColor {
         PINK(0.722),
         YELLOW(0.388),
@@ -104,6 +106,7 @@ public class LED extends SubsystemBase {
         }
     }
 
+    // RoadRunner Action for maintaining led updates
     public Action updateIndicatorAction() {
         return new Action() {
             @Override

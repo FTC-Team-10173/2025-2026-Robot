@@ -36,6 +36,7 @@ public class Drive extends SubsystemBase {
 
         drive = new MecanumDrive(hardwareMap, startPose);
 
+        // Configure PID controller for turing robot
         headingPID = new PIDController(
                 Constants.Drive.HEADING_KP,
                 Constants.Drive.HEADING_KI,

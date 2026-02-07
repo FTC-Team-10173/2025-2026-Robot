@@ -9,6 +9,7 @@ import org.firstinspires.ftc.teamcode.robot.commands.*;
 import org.firstinspires.ftc.teamcode.robot.subsystems.*;
 
 public class RobotContainer {
+    // Utility
     private final Telemetry telemetry;
     private final Logger logger;
 
@@ -24,7 +25,7 @@ public class RobotContainer {
     private final DriverControls controls;
 
     // Alliance
-    private final Alliance alliance;
+    private final Constants.Alliance alliance;
 
     public RobotContainer(HardwareMap hardwareMap, GamepadEx driverGamepad, Telemetry telemetry) {
         this.telemetry = telemetry;
@@ -45,8 +46,8 @@ public class RobotContainer {
 
         // Initialize alliance
         this.alliance = !Constants.BlackBoard.containsKey(Constants.Keys.ALLIANCE) ?
-                Alliance.BLUE :
-                (Alliance) Constants.BlackBoard.get(Constants.Keys.ALLIANCE);
+                Constants.Alliance.BLUE :
+                (Constants.Alliance) Constants.BlackBoard.get(Constants.Keys.ALLIANCE);
 
         // Configure button bindings
         configureBindings();
@@ -96,7 +97,7 @@ public class RobotContainer {
     }
 
     private void registerDefaultCommands() {
-        // Set default drive command
+        // Set default drive command - driver controlled inputs
         drive.setDefaultCommand(
                 new DefaultDrive(
                         drive,
@@ -104,20 +105,21 @@ public class RobotContainer {
                 )
         );
 
-        // Set default intake command
+        // Set default intake command - stopping the intake
         intake.setDefaultCommand(
                 new DefaultIntake(
                         intake
                 )
         );
 
-        // Set default limelight command
+        // Set default limelight command - updating localization
         limelight.setDefaultCommand(
                 new DefaultLimelight(
                         limelight, drive.getLocalizer()
                 )
         );
 
+        // Set default turret command - face towards goal
         turret.setDefaultCommand(
                 new DefaultTurret(
                         turret, alliance, ShooterMath::getTurretTarget, drive::getPose
@@ -125,6 +127,9 @@ public class RobotContainer {
         );
     }
 
+    /**
+     * @return DriverInputs class with driver controlled inputs
+     */
     private DriverInputs getDriveInputs() {
         return new DriverInputs(
                 controls.driver.getLeftY(),
@@ -133,6 +138,9 @@ public class RobotContainer {
         );
     }
 
+    /**
+     * Central loop
+     */
     public void periodic() {
         // Read gamepad inputs
         controls.readButtons();
@@ -147,6 +155,9 @@ public class RobotContainer {
         updateTelemetry();
     }
 
+    /**
+     * Update robot state, and effectively update LEDs
+     */
     private void updateRobotState() {
         if (shooter.isRunning()) {
             if (shooter.isReady()) {
@@ -159,6 +170,9 @@ public class RobotContainer {
         }
     }
 
+    /**
+     * call telemetry updates
+     */
     private void updateTelemetry() {
         drive.updateTelemetry(telemetry, logger);
         shooter.updateTelemetry(telemetry, logger);
@@ -170,6 +184,9 @@ public class RobotContainer {
         telemetry.update();
     }
 
+    /**
+     * call subsystem stops
+     */
     public void stop() {
         CommandScheduler.getInstance().reset();
 

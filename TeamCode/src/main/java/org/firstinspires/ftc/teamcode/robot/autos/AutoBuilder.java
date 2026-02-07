@@ -17,6 +17,7 @@ import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.Roadrunner.MecanumDrive;
+import org.firstinspires.ftc.teamcode.robot.Constants;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.robot.subsystems.LED;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Limelight;
@@ -28,8 +29,6 @@ import java.util.List;
 public class AutoBuilder {
 
     /* Config */
-
-    public enum Alliance { RED, BLUE }
 
     public enum Side { CLOSE(11), FAR(11);
         private final int heading;
@@ -70,7 +69,7 @@ public class AutoBuilder {
     private final LED led;
     private final Limelight limelight;
 
-    private final Alliance alliance;
+    private final Constants.Alliance alliance;
     private final List<Action> actions = new ArrayList<>();
     private final List<Integer> availableMotifs = new ArrayList<>(List.of(21, 22, 23));
     private int motifID = -1;
@@ -80,7 +79,7 @@ public class AutoBuilder {
     public AutoBuilder(
             HardwareMap hardwareMap,
             Pose2d startPose,
-            Alliance alliance,
+            Constants.Alliance alliance,
             Side side
     ) {
         this.robot = new Robot(hardwareMap, alliance, startPose);
@@ -143,7 +142,7 @@ public class AutoBuilder {
     /* Intake Actions */
 
     public AutoBuilder straightIntake() {
-        double y = (alliance == Alliance.BLUE) ? -55 : 55;
+        double y = (alliance == Constants.Alliance.BLUE) ? -55 : 55;
 
         actions.add(intake.intake(1));
 
@@ -177,7 +176,7 @@ public class AutoBuilder {
     }
 
     public AutoBuilder straightIntake(boolean returnToStart) {
-        double y = (alliance == Alliance.BLUE) ? -55 : 55;
+        double y = (alliance == Constants.Alliance.BLUE) ? -55 : 55;
 
         actions.add(intake.intake(1));
 
@@ -224,63 +223,12 @@ public class AutoBuilder {
         return this;
     }
 
-    /* Motif Actions */
-
-    public AutoBuilder moveToMotif(Pose2d shootPose) {
-        int readHeading = side.getHeading();
-        int finalReadHeading = (alliance == AutoBuilder.Alliance.BLUE) ? (180 - readHeading) : (180 + readHeading);
-
-        actions.add(new Action() {
-            private Action inner = null;
-
-            @Override
-            public boolean run(@NonNull TelemetryPacket packet) {
-
-                // Build ONCE
-                if (inner == null) {
-
-                    Pose2d currentPose = drive.localizer.getPose();
-
-                    inner = new ParallelAction(
-                            drive.actionBuilder(currentPose)
-                                    .strafeToLinearHeading(new Vector2d(shootPose.position.x, shootPose.position.y), Math.toRadians(finalReadHeading))
-                                    .build(),
-                            readMotif()
-                    );
-                }
-
-                return inner.run(packet);
-            }
-        });
-
-        return this;
-    }
-
-    public Action readMotif() {
-        return new Action() {
-            @Override
-            public boolean run(@NonNull TelemetryPacket packet) {
-                limelight.periodic();
-                int detected = limelight.getMotifID();
-
-                if (detected != -1) {
-                    motifID = detected;
-                    packet.put("Motif", motifID);
-                    return false;
-                }
-
-                packet.put("Motif", "searching");
-                return true;
-            }
-        };
-    }
-
     /* Gate Actions */
 
     public AutoBuilder openGate(Pose2d gatePose) {
         actions.add(intake.intake(1));
 
-        double offsetY = (alliance == AutoBuilder.Alliance.BLUE) ? 6 : -6;
+        double offsetY = (alliance == Constants.Alliance.BLUE) ? 6 : -6;
 
         actions.add(new Action() {
             private Action inner = null;
@@ -311,7 +259,7 @@ public class AutoBuilder {
     public AutoBuilder intakeGate(Pose2d gatePose, double intakeTime) {
         actions.add(intake.intake(1));
 
-        double offsetY = (alliance == AutoBuilder.Alliance.BLUE) ? 6 : -6;
+        double offsetY = (alliance == Constants.Alliance.BLUE) ? 6 : -6;
 
         actions.add(new Action() {
             private Action inner = null;
@@ -367,9 +315,9 @@ public class AutoBuilder {
                     availableMotifs.remove(Integer.valueOf(selected));
 
                     double x = IntakePose.fromId(selected).getX();
-                    double y = (alliance == Alliance.BLUE) ? -18 : 18;
+                    double y = (alliance == Constants.Alliance.BLUE) ? -18 : 18;
                     double heading = Math.toRadians(
-                            (alliance == Alliance.BLUE) ? 270 : 90
+                            (alliance == Constants.Alliance.BLUE) ? 270 : 90
                     );
 
                     Pose2d currentPose = drive.localizer.getPose();
@@ -408,9 +356,9 @@ public class AutoBuilder {
                     availableMotifs.remove(Integer.valueOf(selected));
 
                     double x = IntakePose.fromId(selected).getX();
-                    double y = (alliance == Alliance.BLUE) ? -18 : 18;
+                    double y = (alliance == Constants.Alliance.BLUE) ? -18 : 18;
                     double heading = Math.toRadians(
-                            (alliance == Alliance.BLUE) ? 270 : 90
+                            (alliance == Constants.Alliance.BLUE) ? 270 : 90
                     );
 
                     Pose2d currentPose = drive.localizer.getPose();
@@ -452,9 +400,9 @@ public class AutoBuilder {
                     availableMotifs.remove(Integer.valueOf(motifID));
 
                     double x = IntakePose.fromId(motifID).getX();
-                    double y = (alliance == Alliance.BLUE) ? -18 : 18;
+                    double y = (alliance == Constants.Alliance.BLUE) ? -18 : 18;
                     double heading = Math.toRadians(
-                            (alliance == Alliance.BLUE) ? 270 : 90
+                            (alliance == Constants.Alliance.BLUE) ? 270 : 90
                     );
 
                     Pose2d currentPose = drive.localizer.getPose();
@@ -484,9 +432,9 @@ public class AutoBuilder {
                 // Build ONCE
                 if (inner == null) {
 
-                    double y = (alliance == Alliance.BLUE) ? -66 : 66;
+                    double y = (alliance == Constants.Alliance.BLUE) ? -66 : 66;
                     double heading = Math.toRadians(
-                            (alliance == Alliance.BLUE) ? 345 : 15
+                            (alliance == Constants.Alliance.BLUE) ? 345 : 15
                     );
 
                     Pose2d currentPose = drive.localizer.getPose();
@@ -514,9 +462,9 @@ public class AutoBuilder {
                 // Build ONCE
                 if (inner == null) {
 
-                    double y = (alliance == Alliance.BLUE) ? -66 : 66;
+                    double y = (alliance == Constants.Alliance.BLUE) ? -66 : 66;
                     double heading = Math.toRadians(
-                            (alliance == Alliance.BLUE) ? 345 : 15
+                            (alliance == Constants.Alliance.BLUE) ? 345 : 15
                     );
 
                     Pose2d currentPose = drive.localizer.getPose();
@@ -542,9 +490,9 @@ public class AutoBuilder {
                 // Build ONCE
                 if (inner == null) {
 
-                    double y = (alliance == Alliance.BLUE) ? -66 : 66;
+                    double y = (alliance == Constants.Alliance.BLUE) ? -66 : 66;
                     double heading = Math.toRadians(
-                            (alliance == Alliance.BLUE) ? 270 : 90
+                            (alliance == Constants.Alliance.BLUE) ? 270 : 90
                     );
 
                     Pose2d currentPose = drive.localizer.getPose();

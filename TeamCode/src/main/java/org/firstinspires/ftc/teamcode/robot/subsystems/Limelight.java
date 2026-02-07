@@ -20,7 +20,7 @@ public class Limelight extends SubsystemBase {
     private final IMU imu;
 
     private int pipelineIndex = 0;
-    private final Results results = new Results();
+    private LLResult result;
 
     public Limelight(HardwareMap hardwareMap) {
         this.limelight = hardwareMap.get(Limelight3A.class, "limelight");
@@ -33,13 +33,14 @@ public class Limelight extends SubsystemBase {
 
     @Override
     public void periodic() {
+        // update robotYaw for MT2
+        // TODO: Meta Tag 2 is not being used currently because yaw is not configured correctly
         double robotYaw = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
         limelight.updateRobotOrientation(robotYaw);
 
         LLResult result = limelight.getLatestResult();
 
         if (result == null || !result.isValid()) {
-            results.hasTarget = false;
             return;
         }
 
@@ -47,7 +48,7 @@ public class Limelight extends SubsystemBase {
             return;
         }
 
-        updateResults(result);
+        this.result = result;
     }
 
     public void setPipeline(int index) {
@@ -59,52 +60,8 @@ public class Limelight extends SubsystemBase {
         return pipelineIndex;
     }
 
-    private void updateResults(LLResult result) {
-        List<FiducialResult> fiducials = result.getFiducialResults();
-        if (fiducials.isEmpty()) {
-            results.hasTarget = false;
-            return;
-        }
-
-        FiducialResult bestFiducial = null;
-        for (FiducialResult fiducial : fiducials) {
-            if (fiducial.getFiducialId() == 20 || fiducial.getFiducialId() == 24) {
-                bestFiducial = fiducial;
-                break;
-            }
-        }
-
-        if (bestFiducial == null) {
-            results.hasTarget = false;
-            return;
-        }
-
-        results.motifID = bestFiducial.getFiducialId();
-        Pose3D robotToTag = bestFiducial.getRobotPoseTargetSpace();
-
-        Translation2d poseToTag = new Translation2d(
-                robotToTag.getPosition().x,
-                robotToTag.getPosition().y
-        );
-
-        results.distanceMeters = poseToTag.getNorm();
-        results.result = result;
-        results.hasTarget = true;
-        results.tx = bestFiducial.getTargetXDegrees();
-        results.ty = bestFiducial.getTargetYDegrees();
-        results.ta = bestFiducial.getTargetArea();
-    }
-
-    public Results getResults() {
-        return results;
-    }
-
-    public int getMotifID() {
-        return results.hasTarget ? results.motifID : -1;
-    }
-
-    public double getTargetDistance() {
-        return results.distanceMeters * 39.37;
+    public LLResult getResults() {
+        return result;
     }
 
     public boolean isHealthy() {
@@ -117,12 +74,6 @@ public class Limelight extends SubsystemBase {
 
     public void updateTelemetry(Telemetry telemetry, Logger logger) {
         telemetry.addData(getName() + " Healthy", isHealthy());
-        telemetry.addData(getName() + " Has Target", results.hasTarget);
-        telemetry.addData(getName() + " Distance", results.distanceMeters);
-        telemetry.addData(getName() + " Distance (Inch)", results.distanceMeters * 39.37);
-        telemetry.addData(getName() + " TX", results.tx);
-
-        LLResult result = results.result;
 
         if (result != null && result.isValid()) {
             Pose3D botpose = result.getBotpose();
@@ -133,20 +84,6 @@ public class Limelight extends SubsystemBase {
 
         if (logger != null) {
             logger.put(getName() + " Healthy", isHealthy());
-            logger.put(getName() + " Has Target", results.hasTarget);
-            logger.put(getName() + " Distance", results.distanceMeters);
-            logger.put(getName() + " Distance (Inch)", results.distanceMeters * 39.37);
-            logger.put(getName() + " TX", results.tx);
         }
-    }
-
-    public static class Results {
-        public boolean hasTarget = false;
-        public double distanceMeters = 0;
-        public double tx = 0;
-        public double ty = 0;
-        public double ta = 0;
-        public int motifID = -1;
-        public LLResult result = null;
     }
 }

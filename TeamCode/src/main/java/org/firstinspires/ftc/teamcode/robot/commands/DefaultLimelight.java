@@ -26,7 +26,7 @@ public class DefaultLimelight extends CommandBase {
 
     @Override
     public void execute() {
-         LLResult result = limelight.getResults().result;
+         LLResult result = limelight.getResults();
 
          if (result != null && result.isValid()) {
              poseEstimator.addLimelight(result);

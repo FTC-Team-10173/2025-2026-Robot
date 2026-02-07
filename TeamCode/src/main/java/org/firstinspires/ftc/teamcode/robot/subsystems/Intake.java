@@ -23,6 +23,7 @@ public class Intake extends SubsystemBase {
     private final double closedAngle;
 
     public Intake(HardwareMap hardwareMap) {
+        // configure motor
         intakeMotor = new Motor(hardwareMap, "intake", Motor.GoBILDA.RPM_435);
         intakeMotor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
         intakeMotor.setInverted(false);
@@ -30,6 +31,7 @@ public class Intake extends SubsystemBase {
         openAngle = Constants.Gate.OPEN_ANGLE;
         closedAngle = Constants.Gate.CLOSED_ANGLE;
 
+        // configure gate servo
         feedGate = new SimpleServo(
                 hardwareMap, "feedGate",
                 Constants.Gate.MIN_ANGLE,
@@ -91,6 +93,7 @@ public class Intake extends SubsystemBase {
         }
     }
 
+    // RoadRunner Action for setting intake power
     public Action intake(double power) {
         return new Action() {
             @Override
@@ -103,6 +106,7 @@ public class Intake extends SubsystemBase {
         };
     }
 
+    // RoadRunner Action for setting intake power for specified time
     public Action intake(double power, double time) {
         return new Action() {
             private double startTime = -1;
@@ -128,6 +132,7 @@ public class Intake extends SubsystemBase {
         };
     }
 
+    // RoadRunner Action for feeding artifacts for specified time
     public Action feed(double power, double time) {
         return new Action() {
             private double startTime = -1;
@@ -154,6 +159,7 @@ public class Intake extends SubsystemBase {
         };
     }
 
+    // RoadRunner Action for opening gate
     public Action open() {
         return new Action() {
             @Override
