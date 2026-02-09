@@ -3,9 +3,6 @@ package org.firstinspires.ftc.teamcode.robot;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.arcrobotics.ftclib.geometry.Translation2d;
 
-import org.firstinspires.ftc.robotcore.external.Const;
-import org.firstinspires.ftc.teamcode.robot.autos.AutoBuilder;
-
 /**
  * Utility class for math related to the shooter, turret, and scoring
  */

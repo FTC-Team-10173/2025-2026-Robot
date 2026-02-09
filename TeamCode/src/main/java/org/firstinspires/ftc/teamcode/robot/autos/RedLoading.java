@@ -23,7 +23,7 @@ public final class RedLoading extends LinearOpMode {
         AutoBuilder autoBuilder = new AutoBuilder(
                 hardwareMap,
                 startPose,
-                AutoBuilder.Alliance.RED,
+                Constants.Alliance.RED,
                 AutoBuilder.Side.FAR
         )
                 .moveAndShoot(FEED_TIME, RED_FAR)

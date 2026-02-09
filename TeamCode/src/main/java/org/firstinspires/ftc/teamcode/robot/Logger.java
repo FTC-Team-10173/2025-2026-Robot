@@ -3,10 +3,8 @@ package org.firstinspires.ftc.teamcode.robot;
 import com.qualcomm.robotcore.util.RobotLog;
 import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.io.*;
 import java.util.*;
 
 public class Logger {
@@ -65,8 +63,8 @@ public class Logger {
             writer.write("}\n");
 
             RobotLog.ii("Logger", "Saved " + dataPoints.size() + " data points");
-        } catch (IOException e) {
-            RobotLog.ee("Logger", "Failed to save log: " + e.getMessage());
+        } catch (IOException err) {
+            RobotLog.ee("Logger", "Failed to save log: " + err.getMessage());
         }
     }
 }

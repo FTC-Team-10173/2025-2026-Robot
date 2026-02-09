@@ -9,7 +9,6 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.robot.Constants;
 import org.firstinspires.ftc.teamcode.robot.Logger;
-import org.firstinspires.ftc.teamcode.robot.Main;
 
 public class Turret extends SubsystemBase {
     private final ServoEx turret0;

@@ -1,10 +1,7 @@
-// robot/DriverControls.java (fixed version)
 package org.firstinspires.ftc.teamcode.robot;
 
-import com.arcrobotics.ftclib.command.button.GamepadButton;
-import com.arcrobotics.ftclib.gamepad.GamepadEx;
-import com.arcrobotics.ftclib.gamepad.GamepadKeys;
-import com.arcrobotics.ftclib.command.button.Trigger;
+import com.arcrobotics.ftclib.command.button.*;
+import com.arcrobotics.ftclib.gamepad.*;
 
 public class DriverControls {
     public final GamepadEx driver;

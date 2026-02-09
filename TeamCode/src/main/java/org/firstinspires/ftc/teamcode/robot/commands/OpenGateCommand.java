@@ -4,7 +4,6 @@ import com.arcrobotics.ftclib.command.CommandBase;
 
 import org.firstinspires.ftc.teamcode.robot.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Shooter;
-import java.util.function.DoubleSupplier;
 
 public class OpenGateCommand extends CommandBase {
     private final Shooter shooter;

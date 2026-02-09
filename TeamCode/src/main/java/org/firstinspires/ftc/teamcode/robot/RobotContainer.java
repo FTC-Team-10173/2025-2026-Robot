@@ -1,11 +1,14 @@
 package org.firstinspires.ftc.teamcode.robot;
 
-import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.robot.autos.AutoBuilder.Alliance;
+
+// commands
 import org.firstinspires.ftc.teamcode.robot.commands.*;
+import com.arcrobotics.ftclib.command.CommandScheduler;
+
+// subsystems
 import org.firstinspires.ftc.teamcode.robot.subsystems.*;
 
 public class RobotContainer {

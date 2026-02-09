@@ -21,7 +21,7 @@ public final class BlueLoading extends LinearOpMode {
         AutoBuilder autoBuilder = new AutoBuilder(
                 hardwareMap,
                 startPose,
-                AutoBuilder.Alliance.BLUE,
+                Constants.Alliance.BLUE,
                 AutoBuilder.Side.FAR
         )
                 .moveAndShoot(FEED_TIME, BLUE_FAR)

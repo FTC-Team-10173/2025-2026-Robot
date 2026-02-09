@@ -22,7 +22,7 @@ public final class BlueCloseToFar extends LinearOpMode {
         AutoBuilder autoBuilder = new AutoBuilder(
                 hardwareMap,
                 startPose,
-                AutoBuilder.Alliance.BLUE,
+                Constants.Alliance.BLUE,
                 AutoBuilder.Side.CLOSE
         )
                 .moveAndShoot(FEED_TIME, BLUE_CLOSE)
