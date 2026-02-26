@@ -6,6 +6,7 @@ import com.acmerobotics.roadrunner.*;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
+import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.arcrobotics.ftclib.hardware.motors.MotorGroup;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
@@ -20,9 +21,15 @@ public class Shooter extends SubsystemBase {
     private boolean isRunning = false;
 
     public Shooter(HardwareMap hardwareMap) {
+        MotorEx leftFlywheel = new MotorEx(hardwareMap, "rightFlywheel", Motor.GoBILDA.BARE);
+        leftFlywheel.setInverted(false);
+
+        MotorEx rightFlywheel = new MotorEx(hardwareMap, "rightFlywheel", Motor.GoBILDA.BARE);
+        rightFlywheel.setInverted(true);
+
         flywheel = new MotorGroup(
-                new Motor(hardwareMap, "flywheel_left", Motor.GoBILDA.BARE),
-                new Motor(hardwareMap, "flywheel_right", Motor.GoBILDA.BARE)
+                leftFlywheel,
+                rightFlywheel
         );
 
         flywheel.setInverted(false);

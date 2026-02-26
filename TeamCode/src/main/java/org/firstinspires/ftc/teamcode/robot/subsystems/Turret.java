@@ -13,16 +13,16 @@ import org.firstinspires.ftc.teamcode.robot.Logger;
 public class Turret extends SubsystemBase {
     private final ServoEx turret0;
     private final ServoEx turret1;
-    private double targetAngle = Constants.Turret.MAX_ANGLE / 2;
+    private double targetAngle = Constants.Turret.RANGE_MAX_ANGLE / 2;
     public Turret(HardwareMap hardwareMap) {
         turret0 = new SimpleServo(
-                hardwareMap, "turret0",
+                hardwareMap, "leftTurret",
                 Constants.Turret.RANGE_MIN_ANGLE,
                 Constants.Turret.RANGE_MAX_ANGLE,
                 AngleUnit.DEGREES
         );
         turret1 = new SimpleServo(
-                hardwareMap, "turret1",
+                hardwareMap, "rightTurret",
                 Constants.Turret.RANGE_MIN_ANGLE,
                 Constants.Turret.RANGE_MAX_ANGLE,
                 AngleUnit.DEGREES
@@ -38,15 +38,17 @@ public class Turret extends SubsystemBase {
         turret1.turnToAngle(targetAngle);
     }
 
-    public void set(double targetAngle) {
-        targetAngle = Math.min(
-                Constants.Turret.MAX_ANGLE,
-                Math.max(
-                        Constants.Turret.MIN_ANGLE,
-                        targetAngle
-                )
-        );
-        this.targetAngle = targetAngle;
+    public void set(double servoTarget) {
+        double center = Constants.Turret.RANGE_MAX_ANGLE / 2.0;
+
+        double maxServoOffset = Constants.Turret.RANGE / Constants.Turret.GEAR_RATIO;
+
+        double min = center - maxServoOffset;
+        double max = center + maxServoOffset;
+
+        servoTarget = Math.max(min, Math.min(max, servoTarget));
+
+        this.targetAngle = servoTarget;
     }
 
     public boolean isHealthy() {
@@ -55,9 +57,11 @@ public class Turret extends SubsystemBase {
 
     public void updateTelemetry(Telemetry telemetry, Logger logger) {
         telemetry.addData(getName() + " Healthy", isHealthy());
+        telemetry.addData(getName() + " targetAngle", targetAngle);
 
         if (logger != null) {
             logger.put(getName() + " Healthy", isHealthy());
+            logger.put(getName() + " targetAngle", targetAngle);
         }
     }
 

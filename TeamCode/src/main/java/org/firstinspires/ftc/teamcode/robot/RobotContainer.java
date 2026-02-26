@@ -135,9 +135,9 @@ public class RobotContainer {
      */
     private DriverInputs getDriveInputs() {
         return new DriverInputs(
-                controls.driver.getLeftY(),
-                -controls.driver.getLeftX(),
-                controls.driver.getRightX()
+                -controls.driver.getLeftY(),
+                controls.driver.getLeftX(),
+                -controls.driver.getRightX()
         );
     }
 

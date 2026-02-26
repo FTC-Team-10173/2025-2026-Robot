@@ -9,6 +9,7 @@ import com.arcrobotics.ftclib.hardware.ServoEx;
 import com.arcrobotics.ftclib.hardware.SimpleServo;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -17,13 +18,14 @@ import org.firstinspires.ftc.teamcode.robot.Logger;
 
 public class Intake extends SubsystemBase {
     private final Motor intakeMotor;
-    private final ServoEx feedGate;
+    private final ServoEx leftGate;
+    private  final ServoEx rightGate;
     private final double openAngle;
     private final double closedAngle;
 
     public Intake(HardwareMap hardwareMap) {
         // configure motor
-        intakeMotor = new Motor(hardwareMap, "intake", Motor.GoBILDA.RPM_435);
+        intakeMotor = new Motor(hardwareMap, "intake", Motor.GoBILDA.RPM_312);
         intakeMotor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
         intakeMotor.setInverted(false);
 
@@ -31,13 +33,21 @@ public class Intake extends SubsystemBase {
         closedAngle = Constants.Gate.CLOSED_ANGLE;
 
         // configure gate servo
-        feedGate = new SimpleServo(
-                hardwareMap, "feedGate",
+        leftGate = new SimpleServo(
+                hardwareMap, "leftGate",
                 Constants.Gate.MIN_ANGLE,
                 Constants.Gate.MAX_ANGLE,
                 AngleUnit.DEGREES
         );
-        feedGate.setInverted(false);
+        leftGate.setInverted(true);
+
+        rightGate = new SimpleServo(
+                hardwareMap, "rightGate",
+                Constants.Gate.MIN_ANGLE,
+                Constants.Gate.MAX_ANGLE,
+                AngleUnit.DEGREES
+        );
+        rightGate.setInverted(false);
     }
 
     public void setPower(double power) {
@@ -45,7 +55,8 @@ public class Intake extends SubsystemBase {
     }
 
     public void setGateAngle(double angle) {
-        feedGate.turnToAngle(angle);
+        leftGate.turnToAngle(angle);
+        rightGate.turnToAngle(angle);
     }
 
     public void openGate() {
@@ -81,7 +92,7 @@ public class Intake extends SubsystemBase {
     }
 
     public boolean isHealthy() {
-        return intakeMotor != null && feedGate != null;
+        return intakeMotor != null && leftGate != null && rightGate != null;
     }
 
     public void updateTelemetry(Telemetry telemetry, Logger logger) {

@@ -35,7 +35,7 @@ public final class ShooterMath {
      *
      * @param pose The robot's current pose
      * @param alliance The robot's alliance (Blue or Red)
-     * @return The error (in degrees) the robot is from the goal
+     * @return The error (in radians) the robot is from the goal
      */
     static double getGoalError(Pose2d pose, Constants.Alliance alliance) {
         Translation2d goalPose = Constants.GoalPoses.get(alliance);
@@ -60,10 +60,17 @@ public final class ShooterMath {
      * @return The angle (in degrees) the servos need to turn to
      */
     static double getTurretTarget(Pose2d pose, Constants.Alliance alliance) {
-        double range = (Constants.Turret.MAX_ANGLE - Constants.Turret.MIN_ANGLE) * Constants.Turret.GEAR_RATIO;
+        double errorRadians = getGoalError(pose, alliance);
 
-        double error = getGoalError(pose, alliance);
+        double turretDegrees = Math.toDegrees(errorRadians);
 
-        return Constants.Turret.MIN_ANGLE + (((range / 2) + Math.toDegrees(error)) / Constants.Turret.GEAR_RATIO);
+        // Clamp turret to physical turn radius -90 to +90
+        turretDegrees = Math.max(-Constants.Turret.RANGE, Math.min(Constants.Turret.RANGE, turretDegrees));
+
+        // Convert turret degrees to servo degrees using gear ratio
+        double servoDegrees = turretDegrees / Constants.Turret.GEAR_RATIO;
+
+        // Centered at 900
+        return (Constants.Turret.RANGE_MAX_ANGLE / 2.0) + servoDegrees;
     }
 }

@@ -81,7 +81,7 @@ public final class Constants {
                 throw new IllegalStateException("OPEN_ANGLE out of range");
             }
             if (CLOSED_ANGLE < MIN_ANGLE || CLOSED_ANGLE > MAX_ANGLE) {
-                throw new IllegalStateException("OPEN_ANGLE out of range");
+                throw new IllegalStateException("CLOSED_ANGLE out of range");
             }
         }
     }
@@ -89,10 +89,9 @@ public final class Constants {
     @Config
     public static class Turret {
         public static final double RANGE_MIN_ANGLE = 0;
-        public static final double RANGE_MAX_ANGLE = 300;
-        public static final double MIN_ANGLE = 0;
-        public static final double MAX_ANGLE = 300;
-        public static final double GEAR_RATIO = (double) 3 / 8;
+        public static final double RANGE_MAX_ANGLE = 1800;
+        public static final double RANGE = 90;
+        public static final double GEAR_RATIO = (double) 50/135;
     }
 
     @Config
