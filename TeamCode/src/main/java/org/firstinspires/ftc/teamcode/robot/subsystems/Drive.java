@@ -94,6 +94,14 @@ public class Drive extends SubsystemBase {
         return imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
     }
 
+    public double getHeadingCorrected(Constants.Alliance alliance) {
+        double heading = getHeadingRadians();
+
+        double correction = alliance == Constants.Alliance.BLUE ? Math.PI / 2 : -(Math.PI / 2);
+
+        return heading + correction;
+    }
+
     public double getHeadingDegrees() {
         return imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
     }
@@ -122,6 +130,7 @@ public class Drive extends SubsystemBase {
         Pose2d pose = getPose();
 
         telemetry.addData(getName() + " Healthy", isHealthy());
+        telemetry.addData(getName() + " IMU", getHeadingRadians());
         telemetry.addData(getName() + " X", pose.position.x);
         telemetry.addData(getName() + " Y", pose.position.y);
         telemetry.addData(getName() + " Heading", pose.heading.toDouble());

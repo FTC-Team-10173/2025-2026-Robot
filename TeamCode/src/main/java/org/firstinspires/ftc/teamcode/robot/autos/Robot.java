@@ -6,11 +6,11 @@ import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.arcrobotics.ftclib.command.CommandScheduler;
-import com.arcrobotics.ftclib.geometry.Translation2d;
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.teamcode.Roadrunner.Localizer;
 import org.firstinspires.ftc.teamcode.robot.Constants;
+import org.firstinspires.ftc.teamcode.robot.ShooterMath;
 import org.firstinspires.ftc.teamcode.robot.commands.*;
 import org.firstinspires.ftc.teamcode.robot.subsystems.*;
 
@@ -20,6 +20,7 @@ public class Robot {
     // Subsystems
     private final Drive drive;
     private final Shooter shooter;
+    private final Turret turret;
     private final Intake intake;
     private final LED led;
     private final Limelight limelight;
@@ -43,6 +44,7 @@ public class Robot {
         intake = new Intake(hardwareMap);
         led = new LED(hardwareMap);
         drive = new Drive(hardwareMap);
+        turret = new Turret(hardwareMap);
 
         limelight.setPipeline(0);
     }
@@ -51,7 +53,7 @@ public class Robot {
         return new Action() {
             @Override
             public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-                double power = calculateShooterPower(robotPose, alliance);
+                double power = ShooterMath.getShooterPower(robotPose, alliance);
                 shooter.setPower(power);
 
                 return false;
@@ -59,21 +61,9 @@ public class Robot {
         };
     }
 
-    private double calculateShooterPower(Pose2d robotPose, Constants.Alliance alliance) {
-        Translation2d GoalPose = Constants.GoalPoses.get(alliance);
-
-        double distance = Math.hypot(
-                GoalPose.getX() - robotPose.position.x,
-                GoalPose.getY() - robotPose.position.y
-        );
-
-        if (distance > 0) {
-            return (Constants.Shooter.SLOPE * distance) + Constants.Shooter.INTERCEPT;
-        }
-        return Constants.ShootingPower.CLOSE; // Default
-    }
-
     private void updateRobotState() {
+
+
         if (shooter.isRunning()) {
             if (shooter.isReady()) {
                 led.set(LED.State.SHOOTING_READY);

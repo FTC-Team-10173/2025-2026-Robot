@@ -97,6 +97,14 @@ public class RobotContainer {
                 new HeadingLockCommand(drive, alliance, drive::getPose, ShooterMath::getGoalError, this::getDriveInputs),
                 false
         );
+
+        controls.upTrigger.whileActiveOnce(
+                new Test(shooter, () -> true)
+        );
+
+        controls.downTrigger.whileActiveOnce(
+                new Test(shooter, () -> false)
+        );
     }
 
     private void registerDefaultCommands() {
@@ -125,7 +133,7 @@ public class RobotContainer {
         // Set default turret command - face towards goal
         turret.setDefaultCommand(
                 new DefaultTurret(
-                        turret, alliance, ShooterMath::getTurretTarget, drive::getPose
+                        turret, alliance, ShooterMath::getTurretTarget, drive::getPose, drive::getHeadingCorrected
                 )
         );
     }
@@ -135,9 +143,9 @@ public class RobotContainer {
      */
     private DriverInputs getDriveInputs() {
         return new DriverInputs(
-                -controls.driver.getLeftY(),
-                controls.driver.getLeftX(),
-                -controls.driver.getRightX()
+                controls.driver.getLeftY(),
+                -controls.driver.getLeftX(),
+                controls.driver.getRightX()
         );
     }
 

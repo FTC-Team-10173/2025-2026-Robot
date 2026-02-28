@@ -2,11 +2,12 @@ package org.firstinspires.ftc.teamcode.robot.subsystems;
 
 import androidx.annotation.NonNull;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.*;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
-import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.arcrobotics.ftclib.hardware.motors.MotorGroup;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
@@ -14,23 +15,22 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.robot.Constants;
 import org.firstinspires.ftc.teamcode.robot.Logger;
 
+@Config
 public class Shooter extends SubsystemBase {
     private final MotorGroup flywheel;
     private double targetPower = 0;
     private double targetVelocity = 0;
     private boolean isRunning = false;
+    Motor leftFlywheel;
+    Motor rightFlywheel;
+
+    double testPower = 0.1;
 
     public Shooter(HardwareMap hardwareMap) {
-        MotorEx leftFlywheel = new MotorEx(hardwareMap, "rightFlywheel", Motor.GoBILDA.BARE);
-        leftFlywheel.setInverted(false);
+        leftFlywheel = getMotor(hardwareMap, "leftFlywheel", false, Motor.GoBILDA.BARE);
+        rightFlywheel = getMotor(hardwareMap, "rightFlywheel", true, Motor.GoBILDA.BARE);
 
-        MotorEx rightFlywheel = new MotorEx(hardwareMap, "rightFlywheel", Motor.GoBILDA.BARE);
-        rightFlywheel.setInverted(true);
-
-        flywheel = new MotorGroup(
-                leftFlywheel,
-                rightFlywheel
-        );
+        flywheel = new MotorGroup(leftFlywheel, rightFlywheel);
 
         flywheel.setInverted(false);
         flywheel.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
@@ -46,6 +46,27 @@ public class Shooter extends SubsystemBase {
                 Constants.Shooter.kV,
                 Constants.Shooter.kA
         );
+    }
+
+    @NonNull
+    public Motor getMotor(HardwareMap hardwareMap, String id, Boolean inverted, Motor.GoBILDA type) {
+        Motor motor = new Motor(hardwareMap, id, type);
+        motor.setInverted(inverted);
+        motor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.FLOAT);
+        motor.setRunMode(Motor.RunMode.VelocityControl);
+
+        motor.setVeloCoefficients(
+                Constants.Shooter.kP,
+                Constants.Shooter.kI,
+                Constants.Shooter.kD
+        );
+        motor.setFeedforwardCoefficients(
+                Constants.Shooter.kS,
+                Constants.Shooter.kV,
+                Constants.Shooter.kA
+        );
+
+        return motor;
     }
 
     @Override
@@ -72,6 +93,16 @@ public class Shooter extends SubsystemBase {
 
     public void stop() {
         isRunning = false;
+    }
+
+    public void test(boolean positive) {
+        double additive = positive ? 0.005 : -0.005;
+
+        testPower += additive;
+    }
+
+    public double getTest() {
+        return testPower;
     }
 
     public boolean isReady() {
@@ -104,12 +135,15 @@ public class Shooter extends SubsystemBase {
 
     public void updateTelemetry(Telemetry telemetry, Logger logger) {
         telemetry.addData(getName() + " Healthy", isHealthy());
+        telemetry.addData(getName() + " Test", getTest());
+        telemetry.addData(getName() + " Power", getTargetPower());
         telemetry.addData(getName() + " Velocity", getVelocity());
         telemetry.addData(getName() + " Target", getTargetVelocity());
         telemetry.addData(getName() + " Ready", isReady());
 
         if (logger != null) {
             logger.put(getName() + " Healthy", isHealthy());
+            logger.put(getName() + " Power", getTargetPower());
             logger.put(getName() + " Velocity", getVelocity());
             logger.put(getName() + " Target", getTargetVelocity());
             logger.put(getName() + " Ready", isReady());

@@ -25,9 +25,9 @@ import org.firstinspires.ftc.teamcode.messages.ThreeDeadWheelInputsMessage;
 @Config
 public final class ThreeDeadWheelLocalizer implements Localizer {
     public static class Params {
-        public double par0YTicks = -2503.9029780485457; // y position of the first parallel encoder (in tick units)
-        public double par1YTicks = 2456.4507767973378; // y position of the second parallel encoder (in tick units)
-        public double perpXTicks = -1773.5233019594993; // x position of the perpendicular encoder (in tick units)
+        public double par0YTicks = -2483.8057790799962; // y position of the first parallel encoder (in tick units)
+        public double par1YTicks = 2487.042060194885; // y position of the second parallel encoder (in tick units)
+        public double perpXTicks = -1514.0426010859885; // x position of the perpendicular encoder (in tick units)
     }
 
     public static Params PARAMS = new Params();
@@ -47,7 +47,7 @@ public final class ThreeDeadWheelLocalizer implements Localizer {
         //   see https://ftc-docs.firstinspires.org/en/latest/hardware_and_software_configuration/configuring/index.html
         par0 = new OverflowEncoder(new RawEncoder(hardwareMap.get(DcMotorEx.class, "frontLeft")));
         par1 = new OverflowEncoder(new RawEncoder(hardwareMap.get(DcMotorEx.class, "frontRight")));
-        perp = new OverflowEncoder(new RawEncoder(hardwareMap.get(DcMotorEx.class, "backLeft")));
+        perp = new OverflowEncoder(new RawEncoder(hardwareMap.get(DcMotorEx.class, "backRight")));
 
         // TODO: reverse encoder directions if needed
         //   par0.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -74,13 +74,14 @@ public final class ThreeDeadWheelLocalizer implements Localizer {
             if (result.getStaleness() <= 20) {
                 Pose3D botpose = result.getBotpose();
 
-                Translation2d llPose = new Translation2d(                        botpose.getPosition().x * 39.37,
+                Translation2d llPose = new Translation2d(
+                        botpose.getPosition().x * 39.37,
                         botpose.getPosition().y * 39.37
                 );
 
                 return new Pose2d(
-                        (pose.position.x * 0.5) + (llPose.getX() * 0.5),
-                        (pose.position.y * 0.5) + (llPose.getY() * 0.5),
+                        (pose.position.x * 0.25) + (llPose.getX() * 0.75),
+                        (pose.position.y * 0.25) + (llPose.getY() * 0.75),
                         pose.heading.toDouble()
                 );
             }
