@@ -1,5 +1,10 @@
 package org.firstinspires.ftc.teamcode.robot.subsystems;
 
+import androidx.annotation.NonNull;
+
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.acmerobotics.roadrunner.Action;
+import com.acmerobotics.roadrunner.Pose2d;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.hardware.ServoEx;
 import com.arcrobotics.ftclib.hardware.SimpleServo;
@@ -9,6 +14,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.robot.Constants;
 import org.firstinspires.ftc.teamcode.robot.Logger;
+import org.firstinspires.ftc.teamcode.robot.ShooterMath;
 
 public class Turret extends SubsystemBase {
     private final ServoEx turret0;
@@ -78,6 +84,19 @@ public class Turret extends SubsystemBase {
                 turret0.getPosition(),
                 turret1.getPosition()
         );
+    }
+
+    public Action goTo(Pose2d targetPose, Constants.Alliance alliance) {
+        return new Action() {
+            @Override
+            public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+                double targetHeading = ShooterMath.getTurretTarget(targetPose, alliance);
+
+                set(targetHeading);
+
+                return false;
+            }
+        };
     }
 
     public static class TurretPosition {

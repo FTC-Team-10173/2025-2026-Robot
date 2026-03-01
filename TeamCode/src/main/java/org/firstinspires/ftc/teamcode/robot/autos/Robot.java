@@ -90,6 +90,8 @@ public class Robot {
     public Intake getIntake() { return intake; }
     public LED getLed() { return led; }
     public Limelight getLimelight() { return limelight; }
+    public Turret getTurret() { return turret; }
+
 
     public Action estimatePose() {
         return new Action() {

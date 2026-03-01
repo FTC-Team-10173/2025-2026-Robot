@@ -63,39 +63,22 @@ public class RobotContainer {
         // Shoot command - Left Bumper
         controls.shootTrigger
                 .whileActiveOnce(
-                new ShootCommand(shooter, drive::getPose, alliance, ShooterMath::getShooterPower)
-        )
-                .whileActiveContinuous(// Open gate when at 50% target speed - Left Bumper
-                new OpenGateCommand(shooter, intake)
-        );
-
-        // Full Intake - Right Bumper
-        controls.fullIntakeTrigger.whileActiveOnce(
-                new IntakeCommand(intake, () -> 1.0, () -> true),
-                false
+                new ShootCommand(shooter, intake, drive::getPose, alliance, ShooterMath::getShooterPower)
         );
 
         // Half Intake - Right Trigger
         controls.intakeTrigger.whileActiveOnce(
-                new IntakeCommand(intake, () -> 1.0, () -> false),
-                false
+                new IntakeCommand(intake, () -> 1.0, () -> false)
         );
 
         // Outtake - Left Trigger
         controls.outtakeTrigger.whileActiveOnce(
-                new IntakeCommand(intake, () -> -1.0, () -> false),
-                false
+                new IntakeCommand(intake, () -> -1.0, () -> false)
         );
 
         // Yaw Reset - Back button
         controls.yawResetTrigger.whenActive(
                 new ResetYawCommand(drive)
-        );
-
-        // Heading Lock - A button
-        controls.lockDriveTrigger.whileActiveOnce(
-                new HeadingLockCommand(drive, alliance, drive::getPose, ShooterMath::getGoalError, this::getDriveInputs),
-                false
         );
 
         controls.upTrigger.whileActiveOnce(

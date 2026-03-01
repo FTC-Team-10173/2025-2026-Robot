@@ -17,7 +17,13 @@ public class DefaultTurret extends CommandBase {
     private final Function<Constants.Alliance, Double> headingSupplier;
     private final BiFunction<Pose2d, Constants.Alliance, Double> targetSupplier;
 
-    public DefaultTurret(Turret turret, Constants.Alliance alliance, BiFunction<Pose2d, Constants.Alliance, Double> targetSupplier, Supplier<Pose2d> poseSupplier, Function<Constants.Alliance, Double> headingSupplier) {
+    public DefaultTurret(
+            Turret turret,
+            Constants.Alliance alliance,
+            BiFunction<Pose2d, Constants.Alliance, Double> targetSupplier,
+            Supplier<Pose2d> poseSupplier,
+            Function<Constants.Alliance, Double> headingSupplier
+    ) {
         this.turret = turret;
         this.alliance = alliance;
         this.poseSupplier = poseSupplier;

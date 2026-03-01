@@ -44,6 +44,8 @@ public class Drive extends SubsystemBase {
         );
 
         turnPower = 0;
+
+        resetYaw();
     }
 
     @Override

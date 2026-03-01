@@ -113,6 +113,15 @@ public class Shooter extends SubsystemBase {
         return getVelocity() >= (targetVelocity * speedPercent - Constants.Shooter.VELOCITY_TOLERANCE);
     }
 
+    public void feed(Runnable feedAction, Runnable openAction) {
+        if (isReady(0.5)) {
+            openAction.run();
+        }
+        if (isReady()) {
+            feedAction.run();
+        }
+    }
+
     public double getVelocity() {
         return flywheel.getVelocity();
     }

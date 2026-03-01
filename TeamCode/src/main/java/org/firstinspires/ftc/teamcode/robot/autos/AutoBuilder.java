@@ -22,6 +22,7 @@ import org.firstinspires.ftc.teamcode.robot.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.robot.subsystems.LED;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Limelight;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Shooter;
+import org.firstinspires.ftc.teamcode.robot.subsystems.Turret;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,6 +69,7 @@ public class AutoBuilder {
     private final Intake intake;
     private final LED led;
     private final Limelight limelight;
+    private final Turret turret;
 
     private final Constants.Alliance alliance;
     private final List<Action> actions = new ArrayList<>();
@@ -89,6 +91,7 @@ public class AutoBuilder {
         this.intake = robot.getIntake();
         this.led = robot.getLed();
         this.limelight = robot.getLimelight();
+        this.turret = robot.getTurret();
 
         this.alliance = alliance;
         this.side = side;
@@ -120,6 +123,7 @@ public class AutoBuilder {
                                     )
                                     .build(),
                             robot.setPower(targetPose),
+                            turret.goTo(targetPose, alliance),
                             shooter.startShooter(),
                             intake.open()
                     );
