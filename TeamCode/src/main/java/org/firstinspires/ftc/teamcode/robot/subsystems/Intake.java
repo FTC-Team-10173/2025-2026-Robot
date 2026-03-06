@@ -34,6 +34,10 @@ public class Intake extends SubsystemBase {
         setPower(1.0);
     }
 
+    public void farFeed() {
+        setPower(0.5);
+    }
+
     public void outtake() {
         setPower(-1.0);
     }

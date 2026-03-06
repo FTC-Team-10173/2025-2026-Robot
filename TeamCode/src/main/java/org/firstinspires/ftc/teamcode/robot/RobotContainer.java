@@ -69,7 +69,7 @@ public class RobotContainer {
         );
 
         controls.feedTrigger.whileActiveOnce(
-                new FeedCommand(intake, gate)
+                new FeedCommand(intake, gate, drive::getPose)
         );
 
         // Half Intake - Right Trigger
@@ -165,7 +165,9 @@ public class RobotContainer {
      */
     private void updateRobotState() {
         if (shooter.isRunning()) {
-            if (shooter.isReady()) {
+            if (Math.abs(turret.getTurretDegrees()) >= 90) {
+                led.set(LED.State.OUT_OF_RANGE);
+            } else if (shooter.isReady()) {
                 led.set(LED.State.SHOOTING_READY);
             } else {
                 led.set(LED.State.SPINNING_UP);

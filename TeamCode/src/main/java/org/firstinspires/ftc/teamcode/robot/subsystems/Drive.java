@@ -16,6 +16,7 @@ import org.firstinspires.ftc.teamcode.Roadrunner.MecanumDrive;
 import org.firstinspires.ftc.teamcode.robot.Constants;
 import org.firstinspires.ftc.teamcode.robot.Logger;
 import org.firstinspires.ftc.teamcode.robot.PoseEstimator;
+import org.firstinspires.ftc.teamcode.robot.ShooterMath;
 
 import java.lang.Math;
 
@@ -29,6 +30,7 @@ public class Drive extends SubsystemBase {
     private boolean useHeadingLock = false;
     private double headingLockError = 0;
     private double turnPower;
+    private double goalHeadingError = 0;
 
     public Drive(HardwareMap hardwareMap) {
         imu = hardwareMap.get(IMU.class, "imu");
@@ -102,6 +104,10 @@ public class Drive extends SubsystemBase {
         this.headingLockError = targetError;
     }
 
+    public void updateGoalHeadingError(Pose2d pose, Constants.Alliance alliance) {
+        goalHeadingError = ShooterMath.getGoalError(pose, alliance);
+    }
+
     public void resetYaw() {
         imu.resetYaw();
     }
@@ -152,6 +158,7 @@ public class Drive extends SubsystemBase {
         telemetry.addData(getName() + " Heading", pose.heading.toDouble());
         telemetry.addData(getName() + " Turn Power", turnPower);
         telemetry.addData(getName() + " Heading Error", headingLockError);
+        telemetry.addData(getName() + " goalHeadingError", goalHeadingError);
         if (logger != null) {
             logger.put(getName() + " Healthy", isHealthy());
             logger.put(getName() + " X", pose.position.x);

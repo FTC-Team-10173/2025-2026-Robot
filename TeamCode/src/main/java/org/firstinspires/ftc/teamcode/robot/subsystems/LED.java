@@ -55,7 +55,9 @@ public class LED extends SubsystemBase {
             case SPINNING_UP:
                 indicator.setPosition(PWMColor.YELLOW.getPMW());
                 break;
-            case IDLE:
+            case OUT_OF_RANGE:
+                indicator.setPosition(PWMColor.BLUE.getPMW());
+                break;
             default:
                 indicator.setPosition(PWMColor.PINK.getPMW());
                 break;
@@ -88,14 +90,16 @@ public class LED extends SubsystemBase {
     public enum State {
         IDLE,
         SHOOTING_READY,
-        SPINNING_UP
+        SPINNING_UP,
+        OUT_OF_RANGE
     }
 
     // enumeration for simpler controls
     public enum PWMColor {
         PINK(0.722),
         YELLOW(0.388),
-        GREEN(0.500);
+        GREEN(0.500),
+        BLUE(0.600);
 
         private final double pmw;
 

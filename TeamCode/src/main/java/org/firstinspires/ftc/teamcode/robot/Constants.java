@@ -31,8 +31,8 @@ public final class Constants {
         public static Pose2d BLUE_CLOSE_BACK = new Pose2d(-18, -18, Math.toRadians(-45));
         public static final Pose2d RED_CLOSE = new Pose2d(-18, 18, Math.toRadians(135)); // 0.001368206908*46.86149806
         public static Pose2d RED_CLOSE_BACK = new Pose2d(-18, 18, Math.toRadians(45));
-        public static final Pose2d BLUE_FAR = new Pose2d(54, -16, Math.toRadians(203.5)); // 112.6410227
-        public static final Pose2d RED_FAR = new Pose2d(54, 16, Math.toRadians(156.5)); // 112.6410227
+        public static final Pose2d BLUE_FAR = new Pose2d(58, -16, Math.toRadians(200)); // 112.6410227
+        public static final Pose2d RED_FAR = new Pose2d(58, 16, Math.toRadians(160)); // 112.6410227
     }
 
     
@@ -82,9 +82,9 @@ public final class Constants {
     
     public static class GatePoses {
         public static final Pose2d BLUE_OPEN = new Pose2d(0, -54, Math.toRadians(270));
-        public static final Pose2d BLUE_INTAKE = new Pose2d(11, -66, Math.toRadians(220));
+        public static final Pose2d BLUE_INTAKE = new Pose2d(9, -66, Math.toRadians(225));
         public static final Pose2d RED_OPEN = new Pose2d(0, 54, Math.toRadians(90));
-        public static final Pose2d RED_INTAKE = new Pose2d(11, 66, Math.toRadians(140));
+        public static final Pose2d RED_INTAKE = new Pose2d(9, 66, Math.toRadians(135));
 
     }
 
@@ -114,15 +114,15 @@ public final class Constants {
         public static final double RANGE_MIN_ANGLE = 0;
         public static final double RANGE_MAX_ANGLE = 1800;
         public static final double RANGE = 90;
-        public static final double GEAR_RATIO = (double) 50/150;
+        public static final double GEAR_RATIO = (double) 150/50;
     }
 
     
     public static class Shooter {
         // Shooter velocity control constants
         public static final double BASE = 1.0054;
-        public static final double INTERCEPT = 0.258343;
-        public static final double VELOCITY_TOLERANCE = 10;
+        public static final double INTERCEPT = 0.258;
+        public static final double VELOCITY_TOLERANCE = 40;
         public static final double MAX_RPM = 2800;
 
         // Feedforward gains

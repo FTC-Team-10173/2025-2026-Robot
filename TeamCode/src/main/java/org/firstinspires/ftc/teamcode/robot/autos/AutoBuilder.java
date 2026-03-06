@@ -280,9 +280,13 @@ public class AutoBuilder {
 
         moveToPose(gatePose);
 
+        actions.add(wait(0.15));
+
+        moveToPose(new Pose2d(gatePose.position.x + 4, gatePose.position.y + offsetY, Math.toRadians(heading)));
+
         actions.add(intake.intake(1, intakeTime));
 
-        moveToPose(new Pose2d(gatePose.position.x, gatePose.position.y + offsetY, Math.toRadians(heading)));
+        moveToPose(new Pose2d(gatePose.position.x, gatePose.position.y, Math.toRadians(heading)));
 
         return this;
     }

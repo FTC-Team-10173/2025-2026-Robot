@@ -23,6 +23,8 @@ public class Turret extends SubsystemBase {
     private boolean locked = false;
     private double turretDegrees = 0;
 
+    public static final double CENTER = Constants.Turret.RANGE_MAX_ANGLE / 2.0;
+
     public Turret(HardwareMap hardwareMap) {
         turret0 = new SimpleServo(
                 hardwareMap, "leftTurret",
@@ -51,13 +53,13 @@ public class Turret extends SubsystemBase {
         if (!locked) {
             turretDegrees = turretTarget;
 
-            double servoDegrees = turretTarget / Constants.Turret.GEAR_RATIO;
+            double servoDegrees = turretTarget * Constants.Turret.GEAR_RATIO;
 
             double servoTarget = (Constants.Turret.RANGE_MAX_ANGLE / 2.0) + servoDegrees;
 
             double center = Constants.Turret.RANGE_MAX_ANGLE / 2.0;
 
-            double maxServoOffset = Constants.Turret.RANGE / Constants.Turret.GEAR_RATIO;
+            double maxServoOffset = Constants.Turret.RANGE * Constants.Turret.GEAR_RATIO;
 
             double min = center - maxServoOffset;
             double max = center + maxServoOffset;
@@ -73,16 +75,14 @@ public class Turret extends SubsystemBase {
     public void autoSet(double turretTarget) {
         turretDegrees = turretTarget;
 
-        double servoDegrees = turretTarget / Constants.Turret.GEAR_RATIO;
+        double servoDegrees = turretTarget * Constants.Turret.GEAR_RATIO;
 
         double servoTarget = (Constants.Turret.RANGE_MAX_ANGLE / 2.0) + servoDegrees;
 
-        double center = Constants.Turret.RANGE_MAX_ANGLE / 2.0;
+        double maxServoOffset = Constants.Turret.RANGE * Constants.Turret.GEAR_RATIO;
 
-        double maxServoOffset = Constants.Turret.RANGE / Constants.Turret.GEAR_RATIO;
-
-        double min = center - maxServoOffset;
-        double max = center + maxServoOffset;
+        double min = CENTER - maxServoOffset;
+        double max = CENTER + maxServoOffset;
 
         servoTarget = Math.max(min, Math.min(max, servoTarget));
 

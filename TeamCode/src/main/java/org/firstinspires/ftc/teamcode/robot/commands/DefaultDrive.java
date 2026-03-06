@@ -39,6 +39,8 @@ public class DefaultDrive extends CommandBase {
                         alliance
                 )
         );
+
+        drive.updateGoalHeadingError(drive.getPose(), alliance);
     }
 
     @Override

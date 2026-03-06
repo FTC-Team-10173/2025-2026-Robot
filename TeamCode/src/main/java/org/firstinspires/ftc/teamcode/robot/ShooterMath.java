@@ -23,7 +23,7 @@ public final class ShooterMath {
 
         double distance = translationalPose.getDistance(goal);
 
-        double powerOffset = pose.position.x > 24 ? -0.035 : 0;
+        double powerOffset = pose.position.x > 24 ? -0.04 : 0;
 
         if (distance > 0) {
             return Constants.Shooter.INTERCEPT * Math.pow(Constants.Shooter.BASE, distance) + powerOffset;
