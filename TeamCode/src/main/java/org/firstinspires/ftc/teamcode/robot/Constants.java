@@ -20,9 +20,9 @@ public final class Constants {
     
     public static class StartingPoses {
         public static Pose2d BLUE_CLOSE = new Pose2d(-54, -48, Math.toRadians(225));
-        public static Pose2d BLUE_FAR = new Pose2d(64, -16, Math.toRadians(180));
+        public static Pose2d BLUE_FAR = new Pose2d(66, -18, Math.toRadians(180));
         public static Pose2d RED_CLOSE = new Pose2d(-54, 48, Math.toRadians(135));
-        public static Pose2d RED_FAR = new Pose2d(64, 16, Math.toRadians(180));
+        public static Pose2d RED_FAR = new Pose2d(66, 18, Math.toRadians(180));
     }
 
     
@@ -31,8 +31,8 @@ public final class Constants {
         public static Pose2d BLUE_CLOSE_BACK = new Pose2d(-18, -18, Math.toRadians(-45));
         public static final Pose2d RED_CLOSE = new Pose2d(-18, 18, Math.toRadians(135)); // 0.001368206908*46.86149806
         public static Pose2d RED_CLOSE_BACK = new Pose2d(-18, 18, Math.toRadians(45));
-        public static final Pose2d BLUE_FAR = new Pose2d(58, -16, Math.toRadians(200)); // 112.6410227
-        public static final Pose2d RED_FAR = new Pose2d(58, 16, Math.toRadians(160)); // 112.6410227
+        public static final Pose2d BLUE_FAR = new Pose2d(60, -18, Math.toRadians(200)); // 112.6410227
+        public static final Pose2d RED_FAR = new Pose2d(60, 18, Math.toRadians(160)); // 112.6410227
     }
 
     
@@ -40,12 +40,12 @@ public final class Constants {
         public static final Translation2d BLUE = new Translation2d(-72, -72);
         public static final Translation2d RED = new Translation2d(-72, 72);
 
-        public static Translation2d get(Alliance alliance) {
-            return alliance == Alliance.BLUE ? BLUE : RED;
+        public static Translation2d get(boolean blue) {
+            return blue ? BLUE : RED;
         }
 
-        public static Translation2d getTurretGoal(Alliance alliance) {
-            if (alliance == Alliance.BLUE) {
+        public static Translation2d getTurretGoal(boolean blue) {
+            if (blue) {
                 return new Translation2d(
                         BLUE.getX() + 12, BLUE.getY() + 12
                 );
@@ -61,8 +61,8 @@ public final class Constants {
         public static int BLUE = 20;
         public static int RED = 24;
 
-        public static int getID(Alliance alliance) {
-            return alliance == Alliance.BLUE ? BLUE : RED ;
+        public static int getID(boolean blue) {
+            return blue ? BLUE : RED ;
         }
     }
     
@@ -140,17 +140,6 @@ public final class Constants {
         public static final double GATE_TIME_SEC = 1.25;
     }
 
-    
-    public static class Vision {
-        // Camera settings
-        public static final int EXPOSURE = 25;
-        public static final int GAIN = -325;
-
-        // AprilTag IDs
-        public static final int BLUE_GOAL_ID = 20;
-        public static final int RED_GOAL_ID = 24;
-    }
-
     public static HashMap<String, Object> BlackBoard = new HashMap<>();
 
     
@@ -158,7 +147,4 @@ public final class Constants {
         public static final String POSE = "pose";
         public static final String ALLIANCE = "alliance";
     }
-
-    
-    public enum Alliance { RED, BLUE }
 }

@@ -27,14 +27,15 @@ public final class BlueCloseGate extends LinearOpMode {
                 Constants.Alliance.BLUE,
                 AutoBuilder.Side.CLOSE
         )
-                .moveAndShoot(FEED_TIME, BLUE_CLOSE)
+                .moveAndShoot(FEED_TIME, BLUE_CLOSE, 1.0)
                 .alignWithArtifacts(22)
                 .straightIntake()
-                .moveAndShoot(FEED_TIME, BLUE_CLOSE_BACK)
+                .moveAndShoot(FEED_TIME, BLUE_CLOSE_BACK, 1.0)
                 .intakeGate(INTAKE_GATE, GATE_TIME)
-                .moveAndShoot(FEED_TIME, BLUE_CLOSE_BACK)
-                .intakeGate(INTAKE_GATE, GATE_TIME)
-                .moveAndShoot(FEED_TIME, BLUE_CLOSE_BACK)
+                .moveAndShoot(FEED_TIME, BLUE_CLOSE_BACK, 1.0)
+                .alignWithArtifacts()
+                .straightIntake()
+                .moveAndShoot(FEED_TIME, BLUE_CLOSE_BACK, 1.0)
                 .moveToPose(PARK);
 
         waitForStart();

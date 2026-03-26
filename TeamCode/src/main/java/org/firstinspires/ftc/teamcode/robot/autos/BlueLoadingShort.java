@@ -6,31 +6,30 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.robot.Constants;
 
-@Autonomous(name = "Red Far", group = "2025-2026")
-public final class RedFar extends LinearOpMode {
+@Autonomous(name = "Blue Loading Short", group = "2025-2026")
+public final class BlueLoadingShort extends LinearOpMode {
 
     @Override
     public void runOpMode() {
 
-        Pose2d startPose = Constants.StartingPoses.RED_FAR;
-        Pose2d RED_FAR = Constants.ShootingPoses.RED_FAR;
-        Pose2d PARK = Constants.ParkingPoses.RED_FAR;
+        Pose2d startPose = Constants.StartingPoses.BLUE_FAR;
+        Pose2d BLUE_FAR = Constants.ShootingPoses.BLUE_FAR;
+        Pose2d PARK = Constants.ParkingPoses.BLUE_FAR;
 
         double FEED_TIME = Constants.Intake.FEED_TIME_SEC;
 
         AutoBuilder autoBuilder = new AutoBuilder(
                 hardwareMap,
                 startPose,
-                Constants.Alliance.RED,
+                Constants.Alliance.BLUE,
                 AutoBuilder.Side.FAR
         )
-                .moveAndShoot(FEED_TIME, RED_FAR, 0.5)
+                .moveAndShoot(FEED_TIME, BLUE_FAR, 0.5)
                 .alignWithArtifacts()
                 .straightIntake()
-                .moveAndShoot(FEED_TIME, RED_FAR, 0.5)
-                .alignWithArtifacts()
-                .straightIntakeGate()
-                .moveAndShoot(FEED_TIME, RED_FAR, 0.5)
+                .moveAndShoot(FEED_TIME, BLUE_FAR, 0.5)
+                .intakeLoading()
+                .moveAndShoot(FEED_TIME, BLUE_FAR, 0.5)
                 .moveToPose(PARK);
 
         waitForStart();

@@ -26,14 +26,14 @@ public final class RedFarGateLoading extends LinearOpMode {
                 Constants.Alliance.RED,
                 AutoBuilder.Side.FAR
         )
-                .moveAndShoot(FEED_TIME, RED_FAR)
+                .moveAndShoot(FEED_TIME, RED_FAR, 0.5)
                 .alignWithArtifacts()
                 .straightIntake()
-                .moveAndShoot(FEED_TIME, RED_FAR)
+                .moveAndShoot(FEED_TIME, RED_FAR, 0.5)
                 .intakeGate(INTAKE_GATE, GATE_TIME)
-                .moveAndShoot(FEED_TIME, RED_FAR)
+                .moveAndShoot(FEED_TIME, RED_FAR, 0.5)
                 .intakeLoading()
-                .moveAndShoot(FEED_TIME, RED_FAR)
+                .moveAndShoot(FEED_TIME, RED_FAR, 0.5)
                 .moveToPose(PARK);
 
         waitForStart();

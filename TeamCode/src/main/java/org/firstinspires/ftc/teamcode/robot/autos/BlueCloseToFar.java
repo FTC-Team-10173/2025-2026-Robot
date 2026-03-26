@@ -26,16 +26,16 @@ public final class BlueCloseToFar extends LinearOpMode {
                 Constants.Alliance.BLUE,
                 AutoBuilder.Side.CLOSE
         )
-                .moveAndShoot(FEED_TIME, BLUE_CLOSE)
+                .moveAndShoot(FEED_TIME, BLUE_CLOSE, 1.0)
                 .alignWithArtifacts()
                 .straightIntake()
-                .moveAndShoot(FEED_TIME, BLUE_CLOSE_BACK)
+                .moveAndShoot(FEED_TIME, BLUE_CLOSE_BACK, 1.0)
                 .alignWithArtifacts()
                 .straightIntake()
-                .moveAndShoot(FEED_TIME, BLUE_CLOSE_BACK)
+                .moveAndShoot(FEED_TIME, BLUE_CLOSE_BACK, 1.0)
                 .alignWithArtifacts()
                 .straightIntake()
-                .moveAndShoot(FEED_TIME, BLUE_FAR)
+                .moveAndShoot(FEED_TIME, BLUE_FAR, 0.5)
                 .moveToPose(PARK);
 
         waitForStart();

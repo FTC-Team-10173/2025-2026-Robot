@@ -6,8 +6,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.robot.Constants;
 
-@Autonomous(name = "Red Far", group = "2025-2026")
-public final class RedFar extends LinearOpMode {
+@Autonomous(name = "Red Far Shoot", group = "2025-2026")
+public final class RedFarShoot extends LinearOpMode {
 
     @Override
     public void runOpMode() {
@@ -24,12 +24,6 @@ public final class RedFar extends LinearOpMode {
                 Constants.Alliance.RED,
                 AutoBuilder.Side.FAR
         )
-                .moveAndShoot(FEED_TIME, RED_FAR, 0.5)
-                .alignWithArtifacts()
-                .straightIntake()
-                .moveAndShoot(FEED_TIME, RED_FAR, 0.5)
-                .alignWithArtifacts()
-                .straightIntakeGate()
                 .moveAndShoot(FEED_TIME, RED_FAR, 0.5)
                 .moveToPose(PARK);
 

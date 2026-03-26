@@ -2,20 +2,14 @@ package org.firstinspires.ftc.teamcode.robot.subsystems;
 
 import androidx.annotation.NonNull;
 
-import com.acmerobotics.dashboard.config.Config;
-import com.acmerobotics.roadrunner.*;
-import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
-
-import com.arcrobotics.ftclib.command.SubsystemBase;
-import com.arcrobotics.ftclib.hardware.motors.Motor;
-import com.arcrobotics.ftclib.hardware.motors.MotorGroup;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+
+import com.seattlesolvers.solverslib.command.SubsystemBase;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.robot.Constants;
 import org.firstinspires.ftc.teamcode.robot.Logger;
 
-@Config
 public class Shooter extends SubsystemBase {
     private final MotorGroup flywheel;
     private double targetPower = 0;
@@ -25,6 +19,8 @@ public class Shooter extends SubsystemBase {
     Motor rightFlywheel;
 
     double testPower = 0.1;
+
+    boolean control = false;
 
     public Shooter(HardwareMap hardwareMap) {
         leftFlywheel = getMotor(hardwareMap, "leftFlywheel", false, Motor.GoBILDA.BARE);
@@ -79,6 +75,10 @@ public class Shooter extends SubsystemBase {
     }
 
     public void setPower(double power) {
+        if (control) {
+            power -= 0.02;
+        }
+
         this.targetPower = power;
         this.targetVelocity = Constants.Shooter.MAX_RPM * power;
     }
@@ -95,12 +95,6 @@ public class Shooter extends SubsystemBase {
         isRunning = false;
     }
 
-    public void test(boolean positive) {
-        double additive = positive ? 0.005 : -0.005;
-
-        testPower += additive;
-    }
-
     public double getTest() {
         return testPower;
     }
@@ -111,15 +105,6 @@ public class Shooter extends SubsystemBase {
 
     public boolean isReady(double speedPercent) {
         return getVelocity() >= (targetVelocity * speedPercent - Constants.Shooter.VELOCITY_TOLERANCE);
-    }
-
-    public void feed(Runnable feedAction, Runnable openAction) {
-        if (isReady(0.5)) {
-            openAction.run();
-        }
-        if (isReady()) {
-            feedAction.run();
-        }
     }
 
     public double getVelocity() {
@@ -149,6 +134,7 @@ public class Shooter extends SubsystemBase {
         telemetry.addData(getName() + " Velocity", getVelocity());
         telemetry.addData(getName() + " Target", getTargetVelocity());
         telemetry.addData(getName() + " Ready", isReady());
+        telemetry.addData(getName() + " Control", control);
 
         if (logger != null) {
             logger.put(getName() + " Healthy", isHealthy());
@@ -194,5 +180,13 @@ public class Shooter extends SubsystemBase {
                 return false;
             }
         };
+    }
+
+    public void powerControl() {
+        if (control == false) {
+            control = true;
+        } else {
+            control = false;
+        }
     }
 }

@@ -1,12 +1,13 @@
 package org.firstinspires.ftc.teamcode.robot;
 
-import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.seattlesolvers.solverslib.command.CommandScheduler;
+import com.seattlesolvers.solverslib.gamepad.GamepadEx;
+
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 // commands
 import org.firstinspires.ftc.teamcode.robot.commands.*;
-import com.arcrobotics.ftclib.command.CommandScheduler;
 
 // subsystems
 import org.firstinspires.ftc.teamcode.robot.subsystems.*;
@@ -28,9 +29,6 @@ public class RobotContainer {
     // Controls
     private final DriverControls controls;
 
-    // Alliance
-    private final Constants.Alliance alliance;
-
     public RobotContainer(HardwareMap hardwareMap, GamepadEx driverGamepad, Telemetry telemetry) {
         this.telemetry = telemetry;
         this.logger = new Logger("TeleOp_" + System.currentTimeMillis());
@@ -49,11 +47,6 @@ public class RobotContainer {
         // Initialize controls
         controls = new DriverControls(driverGamepad);
 
-        // Initialize alliance
-        this.alliance = !Constants.BlackBoard.containsKey(Constants.Keys.ALLIANCE) ?
-                Constants.Alliance.BLUE :
-                (Constants.Alliance) Constants.BlackBoard.get(Constants.Keys.ALLIANCE);
-
         // Configure button bindings
         configureBindings();
 
@@ -65,7 +58,7 @@ public class RobotContainer {
         // Shoot command - Left Bumper
         controls.shootTrigger
                 .toggleWhenActive(
-                new ShootCommand(shooter, drive::getPose, alliance, ShooterMath::getShooterPower)
+                new ShootCommand(shooter, drive::getPose, ShooterMath::getShooterPower)
         );
 
         controls.feedTrigger.whileActiveOnce(
@@ -97,8 +90,7 @@ public class RobotContainer {
         drive.setDefaultCommand(
                 new DefaultDrive(
                         drive,
-                        this::getDriveInputs,
-                        alliance
+                        this::getDriveInputs
                 )
         );
 
@@ -117,8 +109,7 @@ public class RobotContainer {
         limelight.setDefaultCommand(
                 new DefaultLimelight(
                         limelight,
-                        drive.getLocalizer(),
-                        alliance,
+                        drive.getLocalizer()
                         drive::getHeadingCorrected,
                         turret::getTurretDegrees
                 )
@@ -127,7 +118,7 @@ public class RobotContainer {
         // Set default turret command - face towards goal
         turret.setDefaultCommand(
                 new DefaultTurret(
-                        turret, alliance, ShooterMath::getTurretTarget, drive::getPose, drive::getHeadingCorrected
+                        turret, ShooterMath::getTurretTarget, drive::getPose, drive::getHeadingCorrected
                 )
         );
     }

@@ -24,14 +24,16 @@ public final class BlueLoading extends LinearOpMode {
                 Constants.Alliance.BLUE,
                 AutoBuilder.Side.FAR
         )
-                .moveAndShoot(FEED_TIME, BLUE_FAR)
+                .moveAndShoot(FEED_TIME, BLUE_FAR, 0.5)
                 .alignWithArtifacts()
                 .straightIntake()
-                .moveAndShoot(FEED_TIME, BLUE_FAR)
+                .moveAndShoot(FEED_TIME, BLUE_FAR, 0.5)
                 .intakeLoading()
-                .moveAndShoot(FEED_TIME, BLUE_FAR)
+                .moveAndShoot(FEED_TIME, BLUE_FAR, 0.5)
                 .intakeLoading()
-                .moveAndShoot(FEED_TIME, BLUE_FAR)
+                .moveAndShoot(FEED_TIME, BLUE_FAR, 0.5)
+                .intakeLoading()
+                .moveAndShoot(FEED_TIME, BLUE_FAR, 0.5)
                 .moveToPose(PARK);
 
         waitForStart();

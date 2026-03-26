@@ -1,31 +1,24 @@
 package org.firstinspires.ftc.teamcode.robot.commands;
 
-import com.acmerobotics.roadrunner.Pose2d;
-import com.arcrobotics.ftclib.command.CommandBase;
+import com.seattlesolvers.solverslib.command.CommandBase;
 
-import org.firstinspires.ftc.teamcode.robot.Constants;
-import org.firstinspires.ftc.teamcode.robot.subsystems.Gate;
-import org.firstinspires.ftc.teamcode.robot.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Shooter;
 
-import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class ShootCommand extends CommandBase {
     private final Shooter shooter;
     private final Supplier<Pose2d> poseSupplier;
-    private final Constants.Alliance alliance;
-    private final BiFunction<Pose2d, Constants.Alliance, Double> powerSupplier;
+    private final Function<Pose2d, Double> powerSupplier;
 
     public ShootCommand(
             Shooter shooter,
             Supplier<Pose2d> poseSupplier,
-            Constants.Alliance alliance,
-            BiFunction<Pose2d, Constants.Alliance, Double> powerSupplier
+            Function<Pose2d, Double> powerSupplier
     ) {
         this.shooter = shooter;
         this.poseSupplier = poseSupplier;
-        this.alliance = alliance;
         this.powerSupplier = powerSupplier;
 
         addRequirements(shooter);
@@ -34,7 +27,7 @@ public class ShootCommand extends CommandBase {
     @Override
     public void initialize() {
         shooter.setPower(
-                powerSupplier.apply(poseSupplier.get(), alliance)
+                powerSupplier.apply(poseSupplier.get())
         );
         shooter.startFlywheel();
     }
@@ -43,7 +36,7 @@ public class ShootCommand extends CommandBase {
     public void execute() {
         // Update power if needed
         shooter.setPower(
-                powerSupplier.apply(poseSupplier.get(), alliance)
+                powerSupplier.apply(poseSupplier.get())
         );
     }
 

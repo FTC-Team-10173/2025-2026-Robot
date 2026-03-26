@@ -1,22 +1,24 @@
 package org.firstinspires.ftc.teamcode.robot.subsystems;
 
 import com.acmerobotics.roadrunner.*;
-import com.arcrobotics.ftclib.command.SubsystemBase;
-import com.arcrobotics.ftclib.controller.PIDController;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
-import com.qualcomm.robotcore.hardware.ImuOrientationOnRobot;
+
+import com.seattlesolvers.solverslib.command.SubsystemBase;
+import com.seattlesolvers.solverslib.controller.PIDController;
+import com.seattlesolvers.solverslib.geometry.Vector2d;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.Quaternion;
 import org.firstinspires.ftc.teamcode.Roadrunner.Localizer;
 import org.firstinspires.ftc.teamcode.Roadrunner.MecanumDrive;
+import org.firstinspires.ftc.teamcode.robot.Alliance;
 import org.firstinspires.ftc.teamcode.robot.Constants;
 import org.firstinspires.ftc.teamcode.robot.Logger;
 import org.firstinspires.ftc.teamcode.robot.PoseEstimator;
 import org.firstinspires.ftc.teamcode.robot.ShooterMath;
+
 
 import java.lang.Math;
 
@@ -104,8 +106,8 @@ public class Drive extends SubsystemBase {
         this.headingLockError = targetError;
     }
 
-    public void updateGoalHeadingError(Pose2d pose, Constants.Alliance alliance) {
-        goalHeadingError = ShooterMath.getGoalError(pose, alliance);
+    public void updateGoalHeadingError(Pose2d pose) {
+        goalHeadingError = ShooterMath.getGoalError(pose);
     }
 
     public void resetYaw() {
@@ -116,10 +118,10 @@ public class Drive extends SubsystemBase {
         return imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
     }
 
-    public double getHeadingCorrected(Constants.Alliance alliance) {
+    public double getHeadingCorrected() {
         double heading = getHeadingRadians();
 
-        double correction = alliance == Constants.Alliance.BLUE ? -(Math.PI / 2) : Math.PI / 2;
+        double correction = Alliance.isBlue() ? -(Math.PI / 2) : Math.PI / 2;
 
         return heading + correction;
     }

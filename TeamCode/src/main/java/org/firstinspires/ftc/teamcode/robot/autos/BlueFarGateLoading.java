@@ -26,14 +26,14 @@ public final class BlueFarGateLoading extends LinearOpMode {
                 Constants.Alliance.BLUE,
                 AutoBuilder.Side.FAR
         )
-                .moveAndShoot(FEED_TIME, BLUE_FAR)
+                .moveAndShoot(FEED_TIME, BLUE_FAR, 0.5)
                 .alignWithArtifacts()
                 .straightIntake()
-                .moveAndShoot(FEED_TIME, BLUE_FAR)
+                .moveAndShoot(FEED_TIME, BLUE_FAR, 0.5)
                 .intakeGate(INTAKE_GATE, GATE_TIME)
-                .moveAndShoot(FEED_TIME, BLUE_FAR)
+                .moveAndShoot(FEED_TIME, BLUE_FAR, 0.5)
                 .intakeLoading()
-                .moveAndShoot(FEED_TIME, BLUE_FAR)
+                .moveAndShoot(FEED_TIME, BLUE_FAR, 0.5)
                 .moveToPose(PARK);
 
         waitForStart();

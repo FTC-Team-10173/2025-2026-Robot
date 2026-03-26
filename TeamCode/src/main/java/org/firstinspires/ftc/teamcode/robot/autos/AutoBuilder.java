@@ -104,7 +104,7 @@ public class AutoBuilder {
 
     /* Shooter Actions */
 
-    public AutoBuilder moveAndShoot(double feedTime, Pose2d targetPose) {
+    public AutoBuilder moveAndShoot(double feedTime, Pose2d targetPose, double feedPower) {
 
         actions.add(new Action() {
 
@@ -137,7 +137,11 @@ public class AutoBuilder {
             }
         });
 
-        actions.add(intake.feed(1.0, feedTime));
+        actions.add(intake.feed(feedPower, feedTime));
+
+        if (feedPower < 1.0) {
+            actions.add(intake.feed(1.0, 0.25));
+        }
 
         return this;
     }
@@ -148,6 +152,48 @@ public class AutoBuilder {
     }
 
     /* Intake Actions */
+
+    public AutoBuilder straightIntakeGate() {
+        double y = (alliance == Constants.Alliance.BLUE) ? -55 : 55;
+
+        double gateY = (alliance == Constants.Alliance.BLUE) ? -60 : 60;
+
+        actions.add(intake.intake(1));
+
+        actions.add(gate.closeAction());
+
+        actions.add(new Action() {
+
+            private Action inner = null;
+
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+
+                // Build ONCE
+                if (inner == null) {
+
+                    Pose2d currentPose = drive.localizer.getPose();
+
+                    inner = drive.actionBuilder(currentPose)
+                            .strafeToLinearHeading(
+                                    new Vector2d(currentPose.position.x, y),
+                                    currentPose.heading.toDouble()
+                            )
+                            .strafeToLinearHeading(
+                                    new Vector2d(0, gateY),
+                                    currentPose.heading.toDouble()
+                            )
+                            .build();
+                }
+
+                return inner.run(packet);
+            }
+        });
+
+        actions.add(intake.intake(1, 0.5));
+
+        return this;
+    }
 
     public AutoBuilder straightIntake() {
         double y = (alliance == Constants.Alliance.BLUE) ? -55 : 55;
@@ -280,13 +326,13 @@ public class AutoBuilder {
 
         moveToPose(gatePose);
 
-        actions.add(wait(0.15));
+        actions.add(intake.intake(1, 0.05));
 
-        moveToPose(new Pose2d(gatePose.position.x + 4, gatePose.position.y + offsetY, Math.toRadians(heading)));
+        moveToPose(new Pose2d(gatePose.position.x + 12, gatePose.position.y, gatePose.heading.toDouble()));
 
         actions.add(intake.intake(1, intakeTime));
 
-        moveToPose(new Pose2d(gatePose.position.x, gatePose.position.y, Math.toRadians(heading)));
+        moveToPose(new Pose2d(gatePose.position.x, gatePose.position.y + offsetY, Math.toRadians(heading)));
 
         return this;
     }
@@ -427,33 +473,6 @@ public class AutoBuilder {
     }
 
     public AutoBuilder intakeLoading() {
-        actions.add(new Action() {
-            private Action inner = null;
-
-            @Override
-            public boolean run(@NonNull TelemetryPacket packet) {
-
-                // Build ONCE
-                if (inner == null) {
-
-                    double y = (alliance == Constants.Alliance.BLUE) ? -66 : 66;
-                    double heading = Math.toRadians(
-                            (alliance == Constants.Alliance.BLUE) ? 345 : 15
-                    );
-
-                    Pose2d currentPose = drive.localizer.getPose();
-
-                    inner = drive.actionBuilder(currentPose)
-                                .strafeToLinearHeading(
-                                        new Vector2d(48, y),
-                                        0
-                                )
-                                .build();
-                }
-
-                return inner.run(packet);
-            }
-        });
 
         actions.add(intake.intake(1));
 
@@ -470,15 +489,23 @@ public class AutoBuilder {
 
                     double y = (alliance == Constants.Alliance.BLUE) ? -66 : 66;
                     double heading = Math.toRadians(
-                            (alliance == Constants.Alliance.BLUE) ? 345 : 15
+                            (alliance == Constants.Alliance.BLUE) ? 270 : 90
+                    );
+
+                    double headingOffset = Math.toRadians(
+                            (alliance == Constants.Alliance.BLUE) ? 30 : -30
                     );
 
                     Pose2d currentPose = drive.localizer.getPose();
 
                     inner = drive.actionBuilder(currentPose)
                                 .strafeToLinearHeading(
+                                        new Vector2d(64, y/2),
+                                        heading
+                                )
+                                .strafeToLinearHeading(
                                         new Vector2d(66, y),
-                                        0
+                                        heading + headingOffset
                                 )
                                 .build();
                 }
@@ -487,35 +514,6 @@ public class AutoBuilder {
             }
         });
 
-        actions.add(new Action() {
-            private Action inner = null;
-
-            @Override
-            public boolean run(@NonNull TelemetryPacket packet) {
-
-                // Build ONCE
-                if (inner == null) {
-
-                    double y = (alliance == Constants.Alliance.BLUE) ? -66 : 66;
-                    double heading = Math.toRadians(
-                            (alliance == Constants.Alliance.BLUE) ? 270 : 90
-                    );
-
-                    Pose2d currentPose = drive.localizer.getPose();
-
-                    inner = drive.actionBuilder(currentPose)
-                            .strafeToLinearHeading(
-                                    new Vector2d(66, y),
-                                    heading
-                            )
-                            .build();
-                }
-
-                return inner.run(packet);
-            }
-        });
-
-        actions.add(wait(0.5));
         actions.add(intake.intake(0));
 
         return this;
@@ -595,7 +593,7 @@ public class AutoBuilder {
 
     public AutoBuilder run() {
         Actions.runBlocking(build());
-        return  this;
+        return this;
     }
 
     public void stop() {

@@ -25,16 +25,16 @@ public final class RedFullClose extends LinearOpMode {
                 Constants.Alliance.RED,
                 AutoBuilder.Side.CLOSE
         )
-                .moveAndShoot(FEED_TIME, RED_CLOSE)
+                .moveAndShoot(FEED_TIME, RED_CLOSE, 1.0)
                 .alignWithArtifacts()
                 .straightIntake()
-                .moveAndShoot(FEED_TIME, RED_CLOSE_BACK)
+                .moveAndShoot(FEED_TIME, RED_CLOSE_BACK, 1.0)
+                .alignWithArtifacts()
+                .straightIntakeGate()
+                .moveAndShoot(FEED_TIME, RED_CLOSE_BACK, 1.0)
                 .alignWithArtifacts()
                 .straightIntake()
-                .moveAndShoot(FEED_TIME, RED_CLOSE_BACK)
-                .alignWithArtifacts()
-                .straightIntake()
-                .moveAndShoot(FEED_TIME, RED_CLOSE_BACK)
+                .moveAndShoot(FEED_TIME, RED_CLOSE_BACK, 1.0)
                 .moveToPose(PARK);
 
         waitForStart();

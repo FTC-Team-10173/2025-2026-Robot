@@ -1,23 +1,19 @@
 package org.firstinspires.ftc.teamcode.robot.commands;
 
-import com.arcrobotics.ftclib.command.CommandBase;
+import com.seattlesolvers.solverslib.command.CommandBase;
 
-import org.firstinspires.ftc.teamcode.robot.Constants;
 import org.firstinspires.ftc.teamcode.robot.RobotContainer.DriverInputs;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Drive;
-import org.opencv.core.Algorithm;
 
 import java.util.function.Supplier;
 
 public class DefaultDrive extends CommandBase {
     private final Drive drive;
     private final Supplier<DriverInputs> driveSupplier;
-    private final Constants.Alliance alliance;
 
-    public DefaultDrive(Drive drive, Supplier<DriverInputs> driveSupplier, Constants.Alliance alliance) {
+    public DefaultDrive(Drive drive, Supplier<DriverInputs> driveSupplier) {
         this.drive = drive;
         this.driveSupplier = driveSupplier;
-        this.alliance = alliance;
 
         drive.setHeadingLock(false, 0);
 
@@ -35,12 +31,10 @@ public class DefaultDrive extends CommandBase {
         );
 
         drive.getLocalizer().updateHeading(
-                drive.getHeadingCorrected(
-                        alliance
-                )
+                drive.getHeadingCorrected()
         );
 
-        drive.updateGoalHeadingError(drive.getPose(), alliance);
+        drive.updateGoalHeadingError(drive.getPose());
     }
 
     @Override

@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.robot.commands;
 
-import com.arcrobotics.ftclib.command.CommandBase;
+import com.seattlesolvers.solverslib.command.CommandBase;
 
 import org.firstinspires.ftc.teamcode.robot.subsystems.Gate;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Intake;

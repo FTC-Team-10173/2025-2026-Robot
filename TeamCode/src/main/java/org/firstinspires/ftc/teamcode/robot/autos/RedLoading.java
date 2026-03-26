@@ -16,8 +16,6 @@ public final class RedLoading extends LinearOpMode {
         Pose2d RED_FAR = Constants.ShootingPoses.RED_FAR;
         Pose2d PARK = Constants.ParkingPoses.RED_FAR;
 
-        double FAR_POWER = Constants.ShootingPower.FAR;
-
         double FEED_TIME = Constants.Intake.FEED_TIME_SEC;
 
         AutoBuilder autoBuilder = new AutoBuilder(
@@ -26,14 +24,16 @@ public final class RedLoading extends LinearOpMode {
                 Constants.Alliance.RED,
                 AutoBuilder.Side.FAR
         )
-                .moveAndShoot(FEED_TIME, RED_FAR)
+                .moveAndShoot(FEED_TIME, RED_FAR, 0.5)
                 .alignWithArtifacts()
                 .straightIntake()
-                .moveAndShoot(FEED_TIME, RED_FAR)
+                .moveAndShoot(FEED_TIME, RED_FAR, 0.5)
                 .intakeLoading()
-                .moveAndShoot(FEED_TIME, RED_FAR)
+                .moveAndShoot(FEED_TIME, RED_FAR, 0.5)
                 .intakeLoading()
-                .moveAndShoot(FEED_TIME, RED_FAR)
+                .moveAndShoot(FEED_TIME, RED_FAR, 0.5)
+                .intakeLoading()
+                .moveAndShoot(FEED_TIME, RED_FAR, 0.5)
                 .moveToPose(PARK);
 
         waitForStart();
