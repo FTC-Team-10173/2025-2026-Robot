@@ -1,7 +1,7 @@
-package org.firstinspires.ftc.teamcode.pedroPathing;
+package org.firstinspires.ftc.teamcode.PedroPathing;
 
 import static com.pedropathing.math.MathFunctions.quadraticFit;
-import static org.firstinspires.ftc.teamcode.pedroPathing.Tuning.*;
+import static org.firstinspires.ftc.teamcode.PedroPathing.Tuning.*;
 
 import android.annotation.SuppressLint;
 import com.bylazar.configurables.PanelsConfigurables;
@@ -912,13 +912,13 @@ class DriveTuner extends OpMode {
         follower.activateDrive();
 
         forwards = follower.pathBuilder()
-                .setGlobalDeceleration()
+                .setGlobalDeceleration(1)
                 .addPath(new BezierLine(new Pose(72,72), new Pose(DISTANCE + 72,72)))
                 .setConstantHeadingInterpolation(0)
                 .build();
 
         backwards = follower.pathBuilder()
-                .setGlobalDeceleration()
+                .setGlobalDeceleration(1)
                 .addPath(new BezierLine(new Pose(DISTANCE + 72,72), new Pose(72,72)))
                 .setConstantHeadingInterpolation(0)
                 .build();

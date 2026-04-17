@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.robot.autos;
+package org.firstinspires.ftc.teamcode.robot.autonomous.paths;
 
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierCurve;
@@ -6,18 +6,14 @@ import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
 
-public class BlueCloseFull {
-    public PathChain shootPreload;
-    public PathChain intake1;
-    public PathChain shootIntake1;
-    public PathChain intake2;
-    public PathChain shootIntake2;
-    public PathChain intake3;
-    public PathChain shootIntake3;
-    public PathChain park;
+import java.util.ArrayList;
+import java.util.List;
+
+public class BlueCloseFull implements AutonomousPath {
+    public List<PathChain> paths = new ArrayList<>();
 
     public BlueCloseFull(Follower follower) {
-        shootPreload = follower.pathBuilder()
+        paths.add(follower.pathBuilder()
                 .addPath(
                         new BezierCurve(
                                 new Pose(25.000, 127.000),
@@ -28,9 +24,9 @@ public class BlueCloseFull {
                 )
                 .setTangentHeadingInterpolation()
                 .setReversed()
-                .build();
+                .build());
 
-        intake1 = follower.pathBuilder()
+        paths.add(follower.pathBuilder()
                 .addPath(
                         new BezierLine(
                                 new Pose(60.000, 84.000),
@@ -45,9 +41,9 @@ public class BlueCloseFull {
                         )
                 )
                 .setTangentHeadingInterpolation()
-                .build();
+                .build());
 
-        shootIntake1 = follower.pathBuilder()
+        paths.add(follower.pathBuilder()
                 .addPath(
                         new BezierCurve(
                                 new Pose(14.000, 84.000),
@@ -57,9 +53,9 @@ public class BlueCloseFull {
                 )
                 .setTangentHeadingInterpolation()
                 .setReversed()
-                .build();
+                .build());
 
-        intake2 = follower.pathBuilder()
+        paths.add(follower.pathBuilder()
                 .addPath(
                         new BezierCurve(
                                 new Pose(48.000, 96.000),
@@ -75,9 +71,9 @@ public class BlueCloseFull {
                         )
                 )
                 .setTangentHeadingInterpolation()
-                .build();
+                .build());
 
-        shootIntake2 = follower.pathBuilder()
+        paths.add(follower.pathBuilder()
                 .addPath(
                         new BezierCurve(
                                 new Pose(14.000, 60.000),
@@ -87,9 +83,9 @@ public class BlueCloseFull {
                 )
                 .setTangentHeadingInterpolation()
                 .setReversed()
-                .build();
+                .build());
 
-        intake3 = follower.pathBuilder()
+        paths.add(follower.pathBuilder()
                 .addPath(
                         new BezierCurve(
                                 new Pose(60.000, 84.000),
@@ -105,9 +101,9 @@ public class BlueCloseFull {
                         )
                 )
                 .setTangentHeadingInterpolation()
-                .build();
+                .build());
 
-        shootIntake3 = follower.pathBuilder()
+        paths.add(follower.pathBuilder()
                 .addPath(
                         new BezierCurve(
                                 new Pose(14.000, 36.000),
@@ -118,9 +114,9 @@ public class BlueCloseFull {
                 )
                 .setTangentHeadingInterpolation()
                 .setReversed()
-                .build();
+                .build());
 
-        park = follower.pathBuilder()
+        paths.add(follower.pathBuilder()
                 .addPath(
                         new BezierLine(
                                 new Pose(60.000, 84.000),
@@ -128,6 +124,11 @@ public class BlueCloseFull {
                         )
                 )
                 .setLinearHeadingInterpolation(Math.toRadians(-135), Math.toRadians(180))
-                .build();
+                .build());
+    }
+
+    @Override
+    public List<PathChain> getPaths() {
+        return paths;
     }
 }
